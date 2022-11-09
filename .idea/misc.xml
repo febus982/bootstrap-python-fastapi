@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BlackConnectSettings" triggerOnEachSave="true" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Poetry (bootstrap-fastapi-service)" project-jdk-type="Python SDK" />
+  <component name="PythonCompatibilityInspectionAdvertiser">
+    <option name="version" value="3" />
+  </component>
+  <component name="com.github.timo_reymann.ansible_vault_integration.settings.AnsibleVaultSettings">
+    <option name="vaultExecutable" value="/usr/bin/ansible-vault" />
+  </component>
+</project>
