@@ -16,9 +16,9 @@ def create_app(test_config: dict | None = None) -> FastAPI:
         app = FastAPI(debug=False)
 
     # Initialise and wire DI container
-    Container()
+    c = Container()
 
-    init_storage(AppConfig())
+    init_storage()
     init_routes(app)
 
     @app.get('/new')
@@ -26,7 +26,7 @@ def create_app(test_config: dict | None = None) -> FastAPI:
         user = User(name="pippo")
         a = Address(name="aaa", user_id=user.user_id)
 
-        with SQLAlchemyManager().get_session() as session:
+        with c.SQLAlchemyManager().get_session() as session:
             session.add(user)
             session.add(a)
             session.commit()
@@ -39,7 +39,7 @@ def create_app(test_config: dict | None = None) -> FastAPI:
 
     @app.get('/get/{id}')
     def get(id: int):
-        with SQLAlchemyManager().get_session() as session:
+        with c.SQLAlchemyManager().get_session() as session:
             user_from_db = session.get(User, id)
             print(str(type(user_from_db)))
         return {"user_type": str(type(user_from_db))}

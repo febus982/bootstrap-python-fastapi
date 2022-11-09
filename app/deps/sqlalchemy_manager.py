@@ -1,13 +1,10 @@
 from contextlib import AbstractContextManager
-from dataclasses import dataclass, field
-from typing import Any, TypeVar
+from typing import TypeVar
 
 from pydantic import BaseModel
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.engine import Engine
-from sqlalchemy.orm import sessionmaker, registry, Session, declarative_base
-
-from app.deps.singleton import Singleton
+from sqlalchemy.orm import sessionmaker, registry, Session
 
 
 class SQLAlchemyBindConfig(BaseModel):
@@ -16,26 +13,29 @@ class SQLAlchemyBindConfig(BaseModel):
     session_options: dict = dict()
 
 
-@dataclass
-class SQLAlchemyBind:
+class SQLAlchemyBind(BaseModel):
     engine: Engine
     registry_mapper: registry
     session_class: sessionmaker
-    model_declarative_base: Any
+    model_declarative_base: type
+
+    class Config:
+        arbitrary_types_allowed = True
 
 
 SQLAlchemyConfig = TypeVar('SQLAlchemyConfig', bound=dict[str, SQLAlchemyBindConfig] | SQLAlchemyBindConfig)
 
 
-class SQLAlchemyManager(metaclass=Singleton):
+class SQLAlchemyManager:
     __binds: dict[str, SQLAlchemyBind] = {}
 
-    def init(self, config: SQLAlchemyConfig) -> None:
+    def __init__(self, config: SQLAlchemyConfig) -> None:
         if isinstance(config, SQLAlchemyBindConfig):
             self.__init_bind("default", config)
 
-        for name, conf in config.items():
-            self.__init_bind(name, conf)
+        if isinstance(config, dict):
+            for name, conf in config.items():
+                self.__init_bind(name, conf)
 
         # Shared session example
         # cls.__session_class = sessionmaker(
@@ -51,6 +51,7 @@ class SQLAlchemyManager(metaclass=Singleton):
 
     def __init_bind(self, name: str, config: SQLAlchemyBindConfig) -> None:
         if not isinstance(config, SQLAlchemyBindConfig):
+            print(name, config)
             raise ValueError("Config has to be a SQLAlchemyBindConfig object")
 
         engine_options = dict(
@@ -72,7 +73,7 @@ class SQLAlchemyManager(metaclass=Singleton):
             engine=engine,
             registry_mapper=registry_mapper,
             session_class=sessionmaker(bind=engine, **session_options),
-            model_declarative_base=declarative_base(metadata=registry_mapper.metadata)
+            model_declarative_base=registry_mapper.generate_base()
         )
 
     def get_binds(self) -> dict[str, SQLAlchemyBind]:

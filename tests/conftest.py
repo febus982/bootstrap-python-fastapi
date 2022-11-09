@@ -1,11 +1,13 @@
 import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
+from sqlalchemy.orm import clear_mappers
 
-from app import create_app
+from app import create_app, AppConfig
+from app.deps.sqlalchemy_manager import SQLAlchemyBindConfig
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def anyio_backend():
     """
     For now, we don't have reason to test anything but asyncio
@@ -14,9 +16,15 @@ def anyio_backend():
     return 'asyncio'
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def app() -> FastAPI:
-    test_config = {
-        "TESTING": True,
-    }
-    yield create_app(test_config=test_config)
+    # test_config = AppConfig(
+    #     SQLALCHEMY_CONFIG={
+    #         "default": SQLAlchemyBindConfig(
+    #             engine_url="sqlite:///./test.db",
+    #             engine_options=dict(connect_args={"check_same_thread": False}),
+    #         ),
+    #     }
+    # )
+    yield create_app(test_config={"TEST":True})
+    clear_mappers()

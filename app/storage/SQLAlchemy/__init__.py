@@ -1,18 +1,20 @@
-from app.deps.sqlalchemy_manager import SQLAlchemyManager, SQLAlchemyConfig
+from dependency_injector.wiring import inject, Provide
+
+from app.deps.sqlalchemy_manager import SQLAlchemyManager
 
 from . import default_tables
 
 
-def init_sqlalchemy(sqlalchemy_config: SQLAlchemyConfig):
-    SQLAlchemyManager().init(sqlalchemy_config)
+def init_sqlalchemy():
     init_tables()
 
 
-def init_tables():
+@inject
+def init_tables(sqlalchemy_manager: SQLAlchemyManager = Provide[SQLAlchemyManager.__name__]):
     function_registry: dict[str, callable] = {
         "default": default_tables.init_tables,
     }
-    for name, bind in SQLAlchemyManager().get_binds().items():
+    for name, bind in sqlalchemy_manager.get_binds().items():
         init_function = function_registry.get(name)
         if init_function:
             init_function(bind)

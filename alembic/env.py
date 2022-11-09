@@ -3,9 +3,8 @@ from logging.config import fileConfig
 
 from alembic import context
 
-import app.storage
-from app.deps.sqlalchemy_manager import SQLAlchemyManager
-from app.config import AppConfig
+from app.containers import Container
+from app.storage.SQLAlchemy import init_tables
 
 USE_TWOPHASE = False
 
@@ -23,10 +22,13 @@ logger = logging.getLogger("alembic.env")
 # databases.  These are named "engine1", "engine2"
 # in the sample .ini file.
 # db_names = config.get_main_option("databases")
-db_configs = AppConfig().SQLALCHEMY_CONFIG
-app.storage.init_sqlalchemy(db_configs)
 
-target_metadata = SQLAlchemyManager().get_bind_mappers_metadata()
+di_container = Container()
+db_configs = di_container.config.provided
+sa_manager = di_container.SQLAlchemyManager()
+init_tables()
+
+target_metadata = sa_manager.get_bind_mappers_metadata()
 db_names = target_metadata.keys()
 config.set_main_option("databases", ",".join(db_names))
 
@@ -67,7 +69,7 @@ def run_migrations_offline() -> None:
     engines = {}
     for name in db_names:
         engines[name] = {}
-        engines[name]["url"] = SQLAlchemyManager().get_binds()[name].engine.url
+        engines[name]["url"] = sa_manager.get_binds()[name].engine.url
 
     for name, rec in engines.items():
         logger.info("Migrating database %s" % name)
@@ -99,7 +101,7 @@ def run_migrations_online() -> None:
     engines = {}
     for name in db_names:
         engines[name] = {}
-        engines[name]["engine"] = SQLAlchemyManager().get_binds()[name].engine
+        engines[name]["engine"] = sa_manager.get_binds()[name].engine
 
     for name, rec in engines.items():
         engine = rec["engine"]

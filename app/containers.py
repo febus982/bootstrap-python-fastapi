@@ -13,16 +13,33 @@ class Container(containers.DeclarativeContainer):
     # Modules allowed to do dependency injection
     wiring_config = containers.WiringConfiguration(
         modules=[
-           "app.storage",
+            "app.storage.SQLAlchemy",
+            "app",
         ],
     )
 
-    config = providers.Configuration(pydantic_settings=[AppConfig()])
+    """
+    We could use the config provider but it would transform our nice typed
+    configuration in a dictionary, therefore we return it as a raw object.
+    """
+    config = providers.Object(AppConfig())
 
     """
     Class mappings
     
-    We use the class name as key so that we trigger the injection using class name.
+    These are classes we want the container to manage the life cycle for
+    (e.g. Singletons), we map them using their class name directly.
+    """
+    SQLAlchemyManager = providers.Singleton(
+        "app.deps.sqlalchemy_manager.SQLAlchemyManager",
+        config=config.provided.SQLALCHEMY_CONFIG,
+    )
+
+    """
+    Interface => Class mappings
+    
+    We use the interface class name as key so that we can trigger the injection
+    using `class.__name__` and avoid using any hardcoded string or constant.
     
     e.g.
     Mapping
