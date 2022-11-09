@@ -2,7 +2,6 @@ from fastapi import FastAPI
 
 from app.config import AppConfig
 from app.containers import Container
-from app.deps.sqlalchemy_manager import SQLAlchemyManager
 from app.routes import init_routes
 from app.storage import init_storage
 

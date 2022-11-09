@@ -63,7 +63,7 @@ class SQLAlchemyManager:
         session_options = dict(
             autocommit=False,
             autoflush=False,
-            # expire_on_commit=False,
+            expire_on_commit=False,
         )
         session_options.update(config.session_options)
 

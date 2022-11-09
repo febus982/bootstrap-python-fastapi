@@ -13,8 +13,9 @@ class Container(containers.DeclarativeContainer):
     # Modules allowed to do dependency injection
     wiring_config = containers.WiringConfiguration(
         modules=[
+            "app.services.books",
             "app.storage.SQLAlchemy",
-            "app",
+            "app.storage.repositories.abstract",
         ],
     )
 
@@ -51,3 +52,4 @@ class Container(containers.DeclarativeContainer):
             service: MyInterface = Provide[MyInterface.__name__],
         )
     """
+    BookRepositoryInterface = providers.Singleton("app.storage.repositories.BookRepository")
