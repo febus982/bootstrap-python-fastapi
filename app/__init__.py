@@ -9,14 +9,18 @@ from app.routes import init_routes
 from app.storage import init_storage
 
 
-def create_app(test_config: dict | None = None) -> FastAPI:
+def create_app(
+        test_config: AppConfig | None = None,
+        di_enabled: bool = True,
+) -> FastAPI:
+    if di_enabled:
+        # Initialise and wire DI container
+        c = Container()
+
     if test_config:
         app = FastAPI(debug=True)
     else:
         app = FastAPI(debug=False)
-
-    # Initialise and wire DI container
-    c = Container()
 
     init_storage()
     init_routes(app)
