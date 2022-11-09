@@ -4,7 +4,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 
 from app.models import Book
-from app.services.books import BookService
+from app.domains.books import BookService
 
 router = APIRouter(prefix="/books")
 

@@ -1,5 +1,5 @@
 from app.models import Book
-from app.services.books import BookRepositoryInterface
+from app.domains.books import BookRepositoryInterface
 from .abstract import SQLAlchemyRepository
 
 

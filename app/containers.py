@@ -13,7 +13,7 @@ class Container(containers.DeclarativeContainer):
     # Modules allowed to do dependency injection
     wiring_config = containers.WiringConfiguration(
         modules=[
-            "app.services.books",
+            "app.domains.books",
             "app.storage.SQLAlchemy",
             "app.storage.repositories.abstract",
         ],
