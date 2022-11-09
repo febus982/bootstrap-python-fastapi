@@ -55,16 +55,12 @@ class SQLAlchemyManager:
             raise ValueError("Config has to be a SQLAlchemyBindConfig object")
 
         engine_options = dict(
-            echo=True,
+            echo=False,
             future=True,
         )
         engine_options.update(config.engine_options)
 
-        session_options = dict(
-            autocommit=False,
-            autoflush=False,
-            expire_on_commit=False,
-        )
+        session_options = dict()
         session_options.update(config.session_options)
 
         engine = create_engine(config.engine_url, **engine_options)
