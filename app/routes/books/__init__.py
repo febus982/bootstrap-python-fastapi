@@ -1,6 +1,7 @@
 from dataclasses import asdict
 
-from fastapi import APIRouter
+from dependency_injector.wiring import inject, Provide
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
 from app.models import Book
@@ -51,8 +52,12 @@ The views defined here have the functionalities of two components:
 
 
 @router.post('/', response_model=CreateBookResponse)
-async def create_book(data: BookData) -> CreateBookResponse:
-    created_book = BookService().create_book(
+@inject
+async def create_book(
+        data: BookData,
+        book_service: BookService = Depends(Provide[BookService.__name__])
+) -> CreateBookResponse:
+    created_book = book_service.create_book(
         book=Book(**data.dict()),
     )
     return CreateBookResponse(

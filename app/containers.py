@@ -14,6 +14,7 @@ class Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
         modules=[
             "app.domains.books",
+            "app.routes.books",
             "app.storage.SQLAlchemy",
             "app.storage.repositories.abstract",
         ],
@@ -52,4 +53,5 @@ class Container(containers.DeclarativeContainer):
             service: MyInterface = Provide[MyInterface.__name__],
         )
     """
+    BookService = providers.Singleton("app.storage.repositories.BookRepository")
     BookRepositoryInterface = providers.Singleton("app.storage.repositories.BookRepository")
