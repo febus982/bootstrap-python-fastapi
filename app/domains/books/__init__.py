@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from app.models import Book
+from .dto import Book
 
 
 class BookService(ABC):

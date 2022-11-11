@@ -1,8 +1,7 @@
-from dataclasses import dataclass
+from pydantic import BaseModel
 
 
-@dataclass
-class Book:
+class Book(BaseModel):
     title: int
     author_name: str
     book_id: int = None

@@ -4,7 +4,7 @@ from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
-from app.models import Book
+from app.domains.books.local.models import BookModel
 from app.domains.books import BookService
 
 router = APIRouter(prefix="/books")
@@ -58,7 +58,7 @@ async def create_book(
         book_service: BookService = Depends(Provide[BookService.__name__])
 ) -> CreateBookResponse:
     created_book = book_service.create_book(
-        book=Book(**data.dict()),
+        book=BookModel(**data.dict()),
     )
     return CreateBookResponse(
         book=BookEntity(**asdict(created_book))

@@ -4,7 +4,7 @@ from sqlalchemy import Column
 from sqlalchemy import Integer
 from sqlalchemy import String
 
-from app.models import Book
+from app.domains.books.local.models import BookModel
 
 
 def init_tables(bind: SQLAlchemyBind):
@@ -15,4 +15,4 @@ def init_tables(bind: SQLAlchemyBind):
         Column("title", String(50)),
         Column("author_name", String(50)),
     )
-    bind.registry_mapper.map_imperatively(Book, books)
+    bind.registry_mapper.map_imperatively(BookModel, books)
