@@ -10,15 +10,8 @@ class Container(containers.DeclarativeContainer):
     Docs: https://python-dependency-injector.ets-labs.org/
     """
 
-    # Modules allowed to do dependency injection
-    wiring_config = containers.WiringConfiguration(
-        modules=[
-            "app.domains.books",
-            "app.routes.books",
-            "app.storage.SQLAlchemy",
-            "app.storage.repositories.abstract",
-        ],
-    )
+    # Enable injection on the whole app package
+    wiring_config = containers.WiringConfiguration(packages=["app"])
 
     """
     We could use the config provider but it would transform our nice typed
