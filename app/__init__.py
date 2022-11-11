@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from starlette_prometheus import PrometheusMiddleware, metrics
 
 from app.config import AppConfig
 from app.containers import Container
@@ -18,6 +19,9 @@ def create_app(
         app = FastAPI(debug=True)
     else:
         app = FastAPI(debug=False)
+
+    app.add_middleware(PrometheusMiddleware)
+    app.add_route("/metrics/", metrics)
 
     init_storage()
     init_routes(app)
