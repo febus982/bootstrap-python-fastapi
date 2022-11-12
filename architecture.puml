@@ -1,0 +1,40 @@
+@startuml
+allowmixing
+skinparam componentStyle uml1
+
+package app {
+    package routes #DDDDDD
+
+    package domains #DDDDDD {
+        package books {
+            class Book
+            interface BookService
+            package local {
+                class LocalBookService
+                interface BookRepositoryInterface
+                class BookModel
+            }
+        }
+    }
+
+    package storage #DDDDDD {
+        package Repositories {
+            class BookRepository
+        }
+    }
+}
+
+'links framework - domains
+routes --> BookService
+routes --> Book
+
+'links internal to books domain
+LocalBookService -u-|> BookService
+BookService -l-> Book
+LocalBookService --> BookModel
+LocalBookService --> BookRepositoryInterface
+BookRepositoryInterface -l-> BookModel
+
+'links domains - storage
+BookRepository ---d-|> BookRepositoryInterface
+@enduml
