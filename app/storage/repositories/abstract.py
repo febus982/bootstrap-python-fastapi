@@ -1,9 +1,11 @@
+from abc import ABC
+
 from dependency_injector.wiring import Provide, inject
 
 from app.deps.sqlalchemy_manager import SQLAlchemyManager
 
 
-class SQLAlchemyRepository:
+class SQLAlchemyRepository(ABC):
     sa_manager: SQLAlchemyManager
 
     @inject
