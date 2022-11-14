@@ -1,4 +1,4 @@
-from app.deps.sqlalchemy_manager import SQLAlchemyBind
+from deps.sqlalchemy_manager import SQLAlchemyBind
 from sqlalchemy import Table
 from sqlalchemy import Column
 from sqlalchemy import Integer

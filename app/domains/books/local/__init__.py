@@ -18,5 +18,7 @@ class LocalBookService(BookService):
 
     def create_book(self, book: Book) -> Book:
         return Book.from_orm(
-            self.book_repository.create_book(BookModel(**book.dict()))
+            self.book_repository.create_book(
+                BookModel(**book.dict())
+            )
         )

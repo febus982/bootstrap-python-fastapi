@@ -26,7 +26,7 @@ class Container(containers.DeclarativeContainer):
     (e.g. Singletons), we map them using their class name directly.
     """
     SQLAlchemyManager = providers.Singleton(
-        "app.deps.sqlalchemy_manager.SQLAlchemyManager",
+        "deps.sqlalchemy_manager.SQLAlchemyManager",
         config=config.provided.SQLALCHEMY_CONFIG,
     )
 
@@ -46,5 +46,5 @@ class Container(containers.DeclarativeContainer):
             service: MyInterface = Provide[MyInterface.__name__],
         )
     """
-    BookService = providers.Singleton("app.storage.repositories.BookRepository")
+    BookService = providers.Singleton("app.domains.books.local.LocalBookService")
     BookRepositoryInterface = providers.Singleton("app.storage.repositories.BookRepository")

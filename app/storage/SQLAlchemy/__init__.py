@@ -1,6 +1,6 @@
 from dependency_injector.wiring import inject, Provide
 
-from app.deps.sqlalchemy_manager import SQLAlchemyManager
+from deps.sqlalchemy_manager import SQLAlchemyManager
 
 from . import default_tables
 

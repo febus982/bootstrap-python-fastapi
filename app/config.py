@@ -1,6 +1,6 @@
 from pydantic import BaseSettings
 
-from app.deps.sqlalchemy_manager import SQLAlchemyBindConfig, SQLAlchemyConfig
+from deps.sqlalchemy_manager import SQLAlchemyBindConfig, SQLAlchemyConfig
 
 
 class AppConfig(BaseSettings):
