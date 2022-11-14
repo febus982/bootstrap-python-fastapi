@@ -1,6 +1,8 @@
 [run]
 branch = True
 source = app
+concurrency = multiprocessing
+parallel = true
 
 [report]
 exclude_lines =

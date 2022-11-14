@@ -22,6 +22,7 @@ coverage = "~6.5.0"
 mypy = "~0.990"
 pytest = "~7.2.0"
 pytest-factoryboy = "~2.5.0"
+pytest-xdist = "^3.0.2"
 
 [build-system]
 requires = ["poetry-core"]

@@ -34,13 +34,6 @@ def testapp() -> FastAPI:
             ),
         }
     )
-    # TODO: better test config management (perhaps remove from DI container)
-    # c = Container()
-    # c.config.override(providers.Object(test_config))
-
-    # sa_manager: SQLAlchemyManager = c.SQLAlchemyManager()
-    # for k, v in sa_manager.get_binds().items():
-    #     v.registry_mapper.metadata.create_all(v.engine)
 
     yield create_app(test_config=test_config)
     os.unlink(test_db_path)
