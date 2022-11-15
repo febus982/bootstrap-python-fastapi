@@ -15,7 +15,7 @@ async def test_create_book(testapp):
         )
     assert response.status_code == 200
     """
-    Check new_book_data is a subset of response.json()["book"] 
+    Check new_book_data is a subset of response.json()["book"]
     (response.json()["book"] contains also the generated primary key)
     """
     assert new_book_data.items() <= response.json()["book"].items()
