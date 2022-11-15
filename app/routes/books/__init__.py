@@ -3,38 +3,13 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
 from app.domains.books import BookService, Book
+from app.domains.books.dto import BookData
 
 router = APIRouter(prefix="/books")
 
 
-class BookData(BaseModel):
-    title: str
-    author_name: str
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "title": "The Hitchhiker's Guide to the Galaxy",
-                "author_name": "Douglas Adams",
-            }
-        }
-
-
-class BookEntity(BookData):
-    book_id: int
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "title": "The Hitchhiker's Guide to the Galaxy",
-                "author_name": "Douglas Adams",
-                "book_id": 123,
-            }
-        }
-
-
 class CreateBookResponse(BaseModel):
-    book: BookEntity
+    book: Book
 
 
 """
@@ -54,9 +29,5 @@ async def create_book(
         data: BookData,
         book_service: BookService = Depends(Provide[BookService.__name__])
 ) -> CreateBookResponse:
-    created_book = book_service.create_book(
-        book=Book(**data.dict()),
-    )
-    return CreateBookResponse(
-        book=BookEntity(**created_book.dict())
-    )
+    created_book = book_service.create_book(book=data)
+    return CreateBookResponse(book=created_book)
