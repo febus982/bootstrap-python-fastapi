@@ -1,6 +1,6 @@
 from dependency_injector.wiring import inject, Provide
 
-from app.domains.books import BookService, Book
+from app.domains.books import BookService, Book, BookData
 from app.domains.books.local.interfaces import BookRepositoryInterface
 from app.domains.books.local.models import BookModel
 
@@ -16,7 +16,7 @@ class LocalBookService(BookService):
         super().__init__()
         self.book_repository = book_repository
 
-    def create_book(self, book: Book) -> Book:
+    def create_book(self, book: BookData) -> Book:
         return Book.from_orm(
             self.book_repository.create_book(
                 BookModel(**book.dict())

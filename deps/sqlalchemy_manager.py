@@ -1,5 +1,5 @@
 from contextlib import AbstractContextManager
-from typing import TypeVar
+from typing import TypeVar, ClassVar, NewType
 
 from pydantic import BaseModel
 from sqlalchemy import create_engine, MetaData
@@ -23,6 +23,7 @@ class SQLAlchemyBind(BaseModel):
         arbitrary_types_allowed = True
 
 
+# SQLAlchemyConfig = NewType("SQLAlchemyConfig", dict[str, SQLAlchemyBindConfig] | SQLAlchemyBindConfig)
 SQLAlchemyConfig = TypeVar('SQLAlchemyConfig', bound=dict[str, SQLAlchemyBindConfig] | SQLAlchemyBindConfig)
 
 

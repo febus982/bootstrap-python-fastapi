@@ -18,7 +18,7 @@ class BookData(BaseModel):
 
 
 class Book(BookData):
-    book_id: int = None
+    book_id: int | None = None
 
     class Config:
         orm_mode = True

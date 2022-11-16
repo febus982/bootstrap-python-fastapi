@@ -5,4 +5,4 @@ from dataclasses import dataclass
 class BookModel:
     title: int
     author_name: str
-    book_id: int = None
+    book_id: int | None = None

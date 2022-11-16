@@ -1,10 +1,10 @@
 from pydantic import BaseSettings
 
-from deps.sqlalchemy_manager import SQLAlchemyBindConfig, SQLAlchemyConfig
+from deps.sqlalchemy_manager import SQLAlchemyBindConfig
 
 
 class AppConfig(BaseSettings):
-    SQLALCHEMY_CONFIG: SQLAlchemyConfig = {
+    SQLALCHEMY_CONFIG: dict[str, SQLAlchemyBindConfig] = {
         "default": SQLAlchemyBindConfig(
             engine_url="sqlite:///./sqlite.db",
             engine_options=dict(

@@ -1,3 +1,5 @@
+from typing import Callable
+
 from dependency_injector.wiring import inject, Provide
 
 from deps.sqlalchemy_manager import SQLAlchemyManager
@@ -11,7 +13,7 @@ def init_sqlalchemy():
 
 @inject
 def init_tables(sqlalchemy_manager: SQLAlchemyManager = Provide[SQLAlchemyManager.__name__]):
-    function_registry: dict[str, callable] = {
+    function_registry: dict[str, Callable] = {
         "default": default_tables.init_tables,
     }
     for name, bind in sqlalchemy_manager.get_binds().items():

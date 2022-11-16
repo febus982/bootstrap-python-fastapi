@@ -105,7 +105,7 @@ yaml = ["pyyaml"]
 
 [[package]]
 name = "exceptiongroup"
-version = "1.0.2"
+version = "1.0.4"
 description = "Backport of PEP 654 (exception groups)"
 category = "dev"
 optional = false
@@ -142,7 +142,7 @@ doc = ["Sphinx", "sphinx-rtd-theme", "sphinxcontrib-spelling"]
 
 [[package]]
 name = "Faker"
-version = "15.3.1"
+version = "15.3.2"
 description = "Faker is a Python package that generates fake data for you."
 category = "dev"
 optional = false
@@ -253,7 +253,7 @@ python-versions = "*"
 
 [[package]]
 name = "Mako"
-version = "1.2.3"
+version = "1.2.4"
 description = "A super-fast templating language that borrows the best ideas from the existing templating languages."
 category = "main"
 optional = false
@@ -502,6 +502,18 @@ pymysql = ["pymysql", "pymysql (<1)"]
 sqlcipher = ["sqlcipher3_binary"]
 
 [[package]]
+name = "sqlalchemy-stubs"
+version = "0.4"
+description = "SQLAlchemy stubs and mypy plugin"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+mypy = ">=0.790"
+typing-extensions = ">=3.7.4"
+
+[[package]]
 name = "starlette"
 version = "0.20.4"
 description = "The little ASGI library that shines."
@@ -561,7 +573,7 @@ standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "1.1"
 python-versions = "~3.10"
-content-hash = "0aa5f05b1ce49ac617a7ad827f3f1152efb16bd389f3852dac526a3e3fa1c9d0"
+content-hash = "9ab83c24bba62c5280a168966f0bf563a6d499919bee7dbde64d89b66499a46c"
 
 [metadata.files]
 alembic = [
@@ -679,8 +691,8 @@ dependency-injector = [
     {file = "dependency_injector-4.40.0-pp37-pypy37_pp73-win_amd64.whl", hash = "sha256:f40684c54bb9ed68322fcfff6e5aaa3c21812cc613f5426a379c0b02a6ee86b3"},
 ]
 exceptiongroup = [
-    {file = "exceptiongroup-1.0.2-py3-none-any.whl", hash = "sha256:c22f11ec6a10d2b453871c5c5fe887436c4d1961324ce9090f2ca6ddc4180c27"},
-    {file = "exceptiongroup-1.0.2.tar.gz", hash = "sha256:a31cd183c3dea02e617aab5153588d5f7258a77b51f0ef41b3815ae8a0d0f695"},
+    {file = "exceptiongroup-1.0.4-py3-none-any.whl", hash = "sha256:542adf9dea4055530d6e1279602fa5cb11dab2395fa650b8674eaec35fc4a828"},
+    {file = "exceptiongroup-1.0.4.tar.gz", hash = "sha256:bd14967b79cd9bdb54d97323216f8fdf533e278df937aa2a90089e7d6e06e5ec"},
 ]
 execnet = [
     {file = "execnet-1.9.0-py2.py3-none-any.whl", hash = "sha256:a295f7cc774947aac58dde7fdc85f4aa00c42adf5d8f5468fc630c1acf30a142"},
@@ -691,8 +703,8 @@ factory-boy = [
     {file = "factory_boy-3.2.1.tar.gz", hash = "sha256:a98d277b0c047c75eb6e4ab8508a7f81fb03d2cb21986f627913546ef7a2a55e"},
 ]
 Faker = [
-    {file = "Faker-15.3.1-py3-none-any.whl", hash = "sha256:4a3465624515a6807e8aa7e8eeb85bdd86a2fa53de4e258892dd6be95362462e"},
-    {file = "Faker-15.3.1.tar.gz", hash = "sha256:b9dd2fd9a9ac68a4e0c5040cd9e9bfaa099fa8dd15bae5f01f224a45431818d5"},
+    {file = "Faker-15.3.2-py3-none-any.whl", hash = "sha256:43da04aae745018e8bded768e74c84423d9dc38e4c498a53439e749d90e20bc0"},
+    {file = "Faker-15.3.2.tar.gz", hash = "sha256:0094fe3340ad73c490d3ffccc59cc171b161acfccccd52925c70970ba23e6d6b"},
 ]
 fastapi = [
     {file = "fastapi-0.86.0-py3-none-any.whl", hash = "sha256:1020d7ca205d8b95813881fb3282e9c3656e47993531af3aa4ae11065b61dd2c"},
@@ -782,8 +794,8 @@ iniconfig = [
     {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
 ]
 Mako = [
-    {file = "Mako-1.2.3-py3-none-any.whl", hash = "sha256:c413a086e38cd885088d5e165305ee8eed04e8b3f8f62df343480da0a385735f"},
-    {file = "Mako-1.2.3.tar.gz", hash = "sha256:7fde96466fcfeedb0eed94f187f20b23d85e4cb41444be0e542e2c8c65c396cd"},
+    {file = "Mako-1.2.4-py3-none-any.whl", hash = "sha256:c97c79c018b9165ac9922ae4f32da095ffd3c4e6872b45eded42926deea46818"},
+    {file = "Mako-1.2.4.tar.gz", hash = "sha256:d60a3903dc3bb01a18ad6a89cdbe2e4eadc69c0bc8ef1e3773ba53d44c3f7a34"},
 ]
 MarkupSafe = [
     {file = "MarkupSafe-2.1.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:86b1f75c4e7c2ac2ccdaec2b9022845dbb81880ca318bb7a0a01fbf7813e3812"},
@@ -991,6 +1003,10 @@ SQLAlchemy = [
     {file = "SQLAlchemy-1.4.44-cp39-cp39-win32.whl", hash = "sha256:7cf7c7adbf4417e3f46fc5a2dbf8395a5a69698217337086888f79700a12e93a"},
     {file = "SQLAlchemy-1.4.44-cp39-cp39-win_amd64.whl", hash = "sha256:d3b6d4588994da73567bb00af9d7224a16c8027865a8aab53ae9be83f9b7cbd1"},
     {file = "SQLAlchemy-1.4.44.tar.gz", hash = "sha256:2dda5f96719ae89b3ec0f1b79698d86eb9aecb1d54e990abb3fdd92c04b46a90"},
+]
+sqlalchemy-stubs = [
+    {file = "sqlalchemy-stubs-0.4.tar.gz", hash = "sha256:c665d6dd4482ef642f01027fa06c3d5e91befabb219dc71fc2a09e7d7695f7ae"},
+    {file = "sqlalchemy_stubs-0.4-py3-none-any.whl", hash = "sha256:5eec7aa110adf9b957b631799a72fef396b23ff99fe296df726645d01e312aa5"},
 ]
 starlette = [
     {file = "starlette-0.20.4-py3-none-any.whl", hash = "sha256:c0414d5a56297d37f3db96a84034d61ce29889b9eaccf65eb98a0b39441fcaa3"},
