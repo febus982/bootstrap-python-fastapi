@@ -15,6 +15,6 @@ class PingResponse(BaseModel):
         }
 
 
-@router.get('/ping', response_model=PingResponse)
+@router.get("/ping", response_model=PingResponse)
 async def ping() -> PingResponse:
     return PingResponse(ping="pong!")

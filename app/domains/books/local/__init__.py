@@ -1,8 +1,10 @@
 from dependency_injector.wiring import inject, Provide
 
-from app.domains.books import BookService, Book, BookData
-from app.domains.books.local.interfaces import BookRepositoryInterface
-from app.domains.books.local.models import BookModel
+from app.domains.books.boundary_interfaces import BookService
+from app.domains.books.dto import Book, BookData
+
+from .data_access_interfaces import BookRepositoryInterface
+from .models import BookModel
 
 
 class LocalBookService(BookService):
@@ -11,14 +13,12 @@ class LocalBookService(BookService):
     @inject
     def __init__(
             self,
-            book_repository: BookRepositoryInterface = Provide[BookRepositoryInterface.__name__]
+            book_repository: BookRepositoryInterface = Provide[
+                BookRepositoryInterface.__name__
+            ],
     ) -> None:
         super().__init__()
         self.book_repository = book_repository
 
     def create_book(self, book: BookData) -> Book:
-        return Book.from_orm(
-            self.book_repository.create_book(
-                BookModel(**book.dict())
-            )
-        )
+        return Book.from_orm(self.book_repository.create_book(BookModel(**book.dict())))

@@ -10,8 +10,7 @@ class SQLAlchemyRepository(ABC):
 
     @inject
     def __init__(
-            self,
-            sa_manager: SQLAlchemyManager = Provide[SQLAlchemyManager.__name__]
+        self, sa_manager: SQLAlchemyManager = Provide[SQLAlchemyManager.__name__]
     ) -> None:
         super().__init__()
         self.sa_manager = sa_manager

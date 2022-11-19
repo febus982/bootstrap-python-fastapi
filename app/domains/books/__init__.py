@@ -1,9 +1,4 @@
-from abc import ABC, abstractmethod
-
 from .dto import Book, BookData
+from .boundary_interfaces import BookService
 
-
-class BookService(ABC):
-    @abstractmethod
-    def create_book(self, book: BookData) -> Book:
-        pass
+__all__ = ["boundary_interfaces", "dto"]

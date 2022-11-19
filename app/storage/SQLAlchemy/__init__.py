@@ -12,7 +12,9 @@ def init_sqlalchemy():
 
 
 @inject
-def init_tables(sqlalchemy_manager: SQLAlchemyManager = Provide[SQLAlchemyManager.__name__]):
+def init_tables(
+    sqlalchemy_manager: SQLAlchemyManager = Provide[SQLAlchemyManager.__name__],
+):
     function_registry: dict[str, Callable] = {
         "default": default_tables.init_tables,
     }

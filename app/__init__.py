@@ -8,7 +8,7 @@ from app.storage import init_storage
 
 
 def create_app(
-        test_config: AppConfig | None = None,
+    test_config: AppConfig | None = None,
 ) -> FastAPI:
     # Initialise and wire DI container
     c = Container()

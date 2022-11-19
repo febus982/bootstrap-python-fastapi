@@ -23,11 +23,10 @@ The views defined here have the functionalities of two components:
 """
 
 
-@router.post('/', response_model=CreateBookResponse)
+@router.post("/", response_model=CreateBookResponse)
 @inject
 async def create_book(
-        data: BookData,
-        book_service: BookService = Depends(Provide[BookService.__name__])
+    data: BookData, book_service: BookService = Depends(Provide[BookService.__name__])
 ) -> CreateBookResponse:
     created_book = book_service.create_book(book=data)
     return CreateBookResponse(book=created_book)

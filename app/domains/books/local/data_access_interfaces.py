@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from app.domains.books.local.models import BookModel
+from .models import BookModel
 
 
 class BookRepositoryInterface(ABC):
