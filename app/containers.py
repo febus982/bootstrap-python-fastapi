@@ -47,4 +47,4 @@ class Container(containers.DeclarativeContainer):
         )
     """
     BookService = providers.Singleton("app.domains.books.local.LocalBookService")
-    BookRepositoryInterface = providers.Singleton("app.storage.repositories.BookRepository")
+    BookRepositoryInterface = providers.Singleton("app.storage.repositories.book_repository.BookRepository")
