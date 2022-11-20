@@ -3,6 +3,6 @@ from dataclasses import dataclass
 
 @dataclass
 class BookModel:
-    title: int
+    title: str
     author_name: str
     book_id: int | None = None
