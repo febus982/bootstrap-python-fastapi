@@ -33,7 +33,51 @@ never the opposite, applying in this way the Interface
 Segregation Principle.
 
 The wiring between the boundary interfaces and concrete classes
-is taken care by the IoC container. Code needing the service
+is taken care by the DI container. Code needing the service
 need only declare the interface class from `domains.books` as
-a parameter in a function and the IoC container will take care of
+a parameter in a function and the DI container will take care of
 passing the concrete class.
+
+## Alternate approaches to Interface Segregation
+
+The application uses an IoC container, however it is possible to 
+achieve interface segregation without using a Dependency Injection
+container.
+
+These are some examples (note the local imports to avoid exposing the
+imported classes).
+
+```python
+def inject_book_repository(f):
+    """
+    Decorator implementation for DI injection
+    """
+    @wraps(f)
+    def wrapper(*args, **kwds):
+        if "book_repository" not in kwds.keys():
+            from app.storage.repositories.book_repository import BookRepository
+            kwds["book_repository"] = BookRepository()  # Here we have to pass the SQLAlchemy manager
+        elif not isinstance(kwds["book_repository"], BookRepositoryInterface):
+            import warnings
+            warnings.warn(
+                f"The specified object ({type(kwds['book_repository'])})"
+                f" is not an instance of BookRepositoryInterface"
+            )
+        return f(*args, **kwds)
+
+    return wrapper
+```
+
+```python
+def book_repository_factory(sa_manager: SQLAlchemyManager) -> BookRepositoryInterface:
+    """Factory for Book Repository instantiation.
+
+    Args:
+        sa_manager: a SQLAlchemyManager instance
+
+    Returns:
+        The book repository.
+    """
+    from app.storage.repositories.book_repository import BookRepository
+    return BookRepository(sa_manager=sa_manager)
+```
