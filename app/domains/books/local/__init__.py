@@ -12,10 +12,10 @@ class LocalBookService(BookService):
 
     @inject
     def __init__(
-            self,
-            book_repository: BookRepositoryInterface = Provide[
-                BookRepositoryInterface.__name__
-            ],
+        self,
+        book_repository: BookRepositoryInterface = Provide[
+            BookRepositoryInterface.__name__
+        ],
     ) -> None:
         super().__init__()
         self.book_repository = book_repository

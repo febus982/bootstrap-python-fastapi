@@ -6,6 +6,10 @@ from deps.sqlalchemy_manager import SQLAlchemyManager
 
 from . import default_tables
 
+TABLE_INIT_REGISTRY: dict[str, Callable] = {
+    "default": default_tables.init_tables,
+}
+
 
 def init_sqlalchemy():
     init_tables()
@@ -15,10 +19,7 @@ def init_sqlalchemy():
 def init_tables(
     sqlalchemy_manager: SQLAlchemyManager = Provide[SQLAlchemyManager.__name__],
 ):
-    function_registry: dict[str, Callable] = {
-        "default": default_tables.init_tables,
-    }
     for name, bind in sqlalchemy_manager.get_binds().items():
-        init_function = function_registry.get(name)
+        init_function = TABLE_INIT_REGISTRY.get(name)
         if init_function:
             init_function(bind)
