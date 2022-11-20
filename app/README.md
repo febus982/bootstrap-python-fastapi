@@ -35,5 +35,5 @@ Segregation Principle.
 The wiring between the boundary interfaces and concrete classes
 is taken care by the IoC container. Code needing the service
 need only declare the interface class from `domains.books` as
-a parameter in a function and  DI container will take care of
+a parameter in a function and the IoC container will take care of
 passing the concrete class.
