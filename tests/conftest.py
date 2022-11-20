@@ -1,15 +1,3 @@
-import pytest
-
-
-@pytest.fixture
-def anyio_backend():
-    """
-    For now, we don't have reason to test anything but asyncio
-    https://anyio.readthedocs.io/en/stable/testing.html
-    """
-    return 'asyncio'
-
-
 import os
 from uuid import uuid4
 
@@ -38,3 +26,11 @@ def testapp() -> FastAPI:
     yield create_app(test_config=test_config)
     os.unlink(test_db_path)
     clear_mappers()
+
+@pytest.fixture
+def anyio_backend():
+    """
+    For now, we don't have reason to test anything but asyncio
+    https://anyio.readthedocs.io/en/stable/testing.html
+    """
+    return 'asyncio'
