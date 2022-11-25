@@ -3,6 +3,7 @@ from logging.config import fileConfig
 
 from alembic import context
 
+from app import AppConfig
 from app.containers import Container
 from app.storage.SQLAlchemy import init_tables
 
@@ -23,9 +24,8 @@ logger = logging.getLogger("alembic.env")
 # in the sample .ini file.
 # db_names = config.get_main_option("databases")
 
-di_container = Container()
-db_configs = di_container.config.provided
-sa_manager = di_container.SQLAlchemyManager()
+di_container = Container(config=AppConfig())
+sa_manager = di_container.SQLAlchemyBindManager()
 init_tables()
 
 target_metadata = sa_manager.get_bind_mappers_metadata()
