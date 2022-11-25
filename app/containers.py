@@ -26,7 +26,7 @@ class Container(containers.DeclarativeContainer):
     These are classes we want the container to manage the life cycle for
     (e.g. Singletons), we map them using their class name directly.
     """
-    SQLAlchemyBindManager = providers.Singleton(
+    SQLAlchemyBindManager = providers.ThreadSafeSingleton(
         SQLAlchemyBindManager,
         config=config.provided.SQLALCHEMY_CONFIG,
     )
