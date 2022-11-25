@@ -5,8 +5,6 @@ services:
     ports:
       - '8000:8000'
     command:
-      - 'poetry'
-      - 'run'
       - 'uvicorn'
       - 'app:create_app'
       - '--host'
@@ -22,8 +20,6 @@ services:
     ports:
       - '8000:8000'
     command:
-      - 'poetry'
-      - 'run'
       - 'uvicorn'
       - 'app:create_app'
       - '--host'
