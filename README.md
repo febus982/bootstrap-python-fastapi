@@ -15,3 +15,23 @@ and the persistence layer.
 ## Class dependency schema
 
 ![](architecture.png)
+
+## How to run
+
+Build docker containers
+
+```bash
+make build
+```
+
+Run dev application with hot reload
+
+```bash
+make dev
+```
+
+Run test suite with coverage
+
+```bash
+make test
+```
