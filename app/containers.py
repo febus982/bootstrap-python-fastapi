@@ -1,4 +1,5 @@
 from dependency_injector import containers, providers
+from sqlalchemy_bind_manager import SQLAlchemyBindManager
 
 from app import AppConfig
 
@@ -17,7 +18,7 @@ class Container(containers.DeclarativeContainer):
     We could use the config provider but it would transform our nice typed
     configuration in a dictionary, therefore we return it as a raw object.
     """
-    config = providers.Object(AppConfig())
+    config = providers.Dependency(instance_of=AppConfig)
 
     """
     Class mappings
@@ -25,8 +26,8 @@ class Container(containers.DeclarativeContainer):
     These are classes we want the container to manage the life cycle for
     (e.g. Singletons), we map them using their class name directly.
     """
-    SQLAlchemyManager = providers.Singleton(
-        "deps.sqlalchemy_manager.SQLAlchemyManager",
+    SQLAlchemyBindManager = providers.Singleton(
+        SQLAlchemyBindManager,
         config=config.provided.SQLALCHEMY_CONFIG,
     )
 
@@ -46,7 +47,9 @@ class Container(containers.DeclarativeContainer):
             service: MyInterface = Provide[MyInterface.__name__],
         )
     """
-    BookService = providers.Singleton("app.domains.books.local.LocalBookService")
-    BookRepositoryInterface = providers.Singleton(
+    BookService = providers.ThreadSafeSingleton(
+        "app.domains.books.local.LocalBookService"
+    )
+    BookRepositoryInterface = providers.ThreadSafeSingleton(
         "app.storage.repositories.book_repository.BookRepository"
     )

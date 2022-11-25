@@ -10,21 +10,18 @@ from app.storage import init_storage
 def create_app(
     test_config: AppConfig | None = None,
 ) -> FastAPI:
-    # Initialise and wire DI container
-    c = Container()
-    if test_config:
-        c.config.override(providers.Object(test_config))
-
     app = FastAPI(debug=test_config is not None)
-    app.add_middleware(PrometheusMiddleware)
-    app.add_route("/metrics/", metrics)
+
+    # Initialise and wire DI container
+    # TODO: Don't persist the container in the app object only to access it from pytest.
+    app.di_container = Container(
+        config=providers.Object(test_config or AppConfig()),
+    )
 
     init_storage()
-    # TODO: Do this in a more elegant way
-    if test_config:
-        sa_manager = c.SQLAlchemyManager()
-        for k, v in sa_manager.get_binds().items():
-            v.registry_mapper.metadata.create_all(v.engine)
+
+    app.add_middleware(PrometheusMiddleware)
+    app.add_route("/metrics/", metrics)
 
     init_routes(app)
 

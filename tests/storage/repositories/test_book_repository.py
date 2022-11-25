@@ -8,11 +8,13 @@ def test_create_book(testapp):
         book = session.get(BookModel, 1)
         assert book is None
 
-    repo.create_book(BookModel(
-        title="pippo",
-        author_name="pluto",
-        book_id=1,
-    ))
+    repo.create_book(
+        BookModel(
+            title="pippo",
+            author_name="pluto",
+            book_id=1,
+        )
+    )
 
     with repo.sa_manager.get_session() as session:
         book = session.get(BookModel, 1)

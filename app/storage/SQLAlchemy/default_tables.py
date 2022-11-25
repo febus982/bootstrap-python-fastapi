@@ -1,8 +1,8 @@
-from deps.sqlalchemy_manager import SQLAlchemyBind
 from sqlalchemy import Table
 from sqlalchemy import Column
 from sqlalchemy import Integer
 from sqlalchemy import String
+from sqlalchemy_bind_manager import SQLAlchemyBind
 
 from app.domains.books.local.models import BookModel
 

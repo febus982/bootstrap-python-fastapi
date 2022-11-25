@@ -69,11 +69,11 @@ def inject_book_repository(f):
 ```
 
 ```python
-def book_repository_factory(sa_manager: SQLAlchemyManager) -> BookRepositoryInterface:
+def book_repository_factory(sa_manager: SQLAlchemyBindManager) -> BookRepositoryInterface:
     """Factory for Book Repository instantiation.
 
     Args:
-        sa_manager: a SQLAlchemyManager instance
+        sa_manager: a SQLAlchemyBindManager instance
 
     Returns:
         The book repository.
