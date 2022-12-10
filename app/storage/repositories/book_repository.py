@@ -1,4 +1,4 @@
-from app.domains.books.local import BookRepositoryInterface, BookModel
+from app.domains.books._local import BookRepositoryInterface, BookModel
 from .abstract import SQLAlchemyRepository
 
 

@@ -48,7 +48,7 @@ class Container(containers.DeclarativeContainer):
         )
     """
     BookService = providers.ThreadSafeSingleton(
-        "app.domains.books.local.LocalBookService"
+        "app.domains.books._local.LocalBookService"
     )
     BookRepositoryInterface = providers.ThreadSafeSingleton(
         "app.storage.repositories.book_repository.BookRepository"

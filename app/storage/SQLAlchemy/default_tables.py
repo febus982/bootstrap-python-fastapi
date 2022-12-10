@@ -4,7 +4,7 @@ from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy_bind_manager import SQLAlchemyBind
 
-from app.domains.books.local.models import BookModel
+from app.domains.books._local.models import BookModel
 
 
 def init_tables(bind: SQLAlchemyBind):

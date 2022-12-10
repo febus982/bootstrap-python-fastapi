@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from app.domains.books.local import BookRepositoryInterface
+from app.domains.books._local import BookRepositoryInterface
 
 
 @pytest.fixture
