@@ -1,8 +1,9 @@
+from dependency_injector.providers import Object
 from fastapi import FastAPI
 from starlette_prometheus import PrometheusMiddleware, metrics
 
 from app.config import AppConfig
-from app.containers import Container, providers
+from app.containers import Container
 from app.routes import init_routes
 from app.storage import init_storage
 
@@ -14,8 +15,8 @@ def create_app(
 
     # Initialise and wire DI container
     # TODO: Don't persist the container in the app object only to access it from pytest.
-    app.di_container = Container(
-        config=providers.Object(test_config or AppConfig()),
+    app.di_container = Container(  # type: ignore
+        config=Object(test_config or AppConfig()),
     )
 
     init_storage()
