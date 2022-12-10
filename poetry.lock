@@ -569,7 +569,7 @@ sqlcipher = ["sqlcipher3_binary"]
 
 [[package]]
 name = "sqlalchemy-bind-manager"
-version = "0.1.1"
+version = "0.1.2"
 description = ""
 category = "main"
 optional = false
@@ -584,7 +584,7 @@ SQLAlchemy = {version = "~1.4.43", extras = ["asyncio", "mypy"]}
 type = "git"
 url = "https://github.com/febus982/sqlalchemy-bind-manager.git"
 reference = "main"
-resolved_reference = "63a666b5a3ffe0ff9d046d652cdccc5783ccc50d"
+resolved_reference = "2259662111b3c9abac32a10bebc4877b227481cb"
 
 [[package]]
 name = "sqlalchemy-stubs"
