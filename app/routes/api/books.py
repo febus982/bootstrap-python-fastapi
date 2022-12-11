@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from app.domains.books import BookService, Book
 from app.domains.books.dto import BookData
 
-router = APIRouter(prefix="/books")
+router = APIRouter(prefix="/api/books")
 
 
 class CreateBookResponse(BaseModel):

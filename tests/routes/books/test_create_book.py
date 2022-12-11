@@ -10,7 +10,7 @@ async def test_create_book(testapp):
     )
     async with AsyncClient(app=testapp, base_url="http://test") as ac:
         response = await ac.post(
-            "/books/",
+            "/api/books/",
             json=new_book_data,
         )
     assert response.status_code == 200
