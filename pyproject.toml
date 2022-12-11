@@ -4,7 +4,6 @@ version = "0.1.0"
 description = ""
 authors = ["Federico Busetti <729029+febus982@users.noreply.github.com>"]
 readme = "README.md"
-packages = [{include = "bootstrap_fastapi_service"}]
 
 [tool.poetry.dependencies]
 alembic = "~1.8.1"
