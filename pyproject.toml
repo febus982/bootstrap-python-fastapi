@@ -17,6 +17,9 @@ sqlalchemy-bind-manager = { git = "https://github.com/febus982/sqlalchemy-bind-m
 starlette-prometheus = "~0.9.0"
 uvicorn = "~0.20.0"
 
+[tool.poetry.group.html.dependencies]
+jinja2 = "~3.1.2"
+
 [tool.poetry.group.dev.dependencies]
 coverage = "~6.5.0"
 black = "~22.10.0"
