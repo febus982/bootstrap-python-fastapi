@@ -1,11 +1,11 @@
-from typing import Callable
+from typing import Callable, Dict
 
 from dependency_injector.wiring import inject, Provide
 from sqlalchemy_bind_manager import SQLAlchemyBindManager
 
 from . import default_tables
 
-TABLE_INIT_REGISTRY: dict[str, Callable] = {
+TABLE_INIT_REGISTRY: Dict[str, Callable] = {
     "default": default_tables.init_tables,
 }
 

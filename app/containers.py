@@ -1,10 +1,13 @@
-from dependency_injector import containers, providers
+from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
+from dependency_injector.providers import ThreadSafeSingleton, Dependency
 from sqlalchemy_bind_manager import SQLAlchemyBindManager
 
 from app import AppConfig
+from app.domains.books import BookService
+from app.storage.repositories.book_repository import BookRepositoryInterface
 
 
-class Container(containers.DeclarativeContainer):
+class Container(DeclarativeContainer):
     """
     Dependency injection container.
 
@@ -12,13 +15,13 @@ class Container(containers.DeclarativeContainer):
     """
 
     # Enable injection on the whole app package
-    wiring_config = containers.WiringConfiguration(packages=["app"])
+    wiring_config = WiringConfiguration(packages=["app"])
 
     """
     We could use the config provider but it would transform our nice typed
     configuration in a dictionary, therefore we return it as a raw object.
     """
-    config = providers.Dependency(instance_of=AppConfig)
+    config = Dependency(instance_of=AppConfig)
 
     """
     Class mappings
@@ -26,7 +29,7 @@ class Container(containers.DeclarativeContainer):
     These are classes we want the container to manage the life cycle for
     (e.g. Singletons), we map them using their class name directly.
     """
-    SQLAlchemyBindManager = providers.ThreadSafeSingleton(
+    SQLAlchemyBindManager = ThreadSafeSingleton(
         SQLAlchemyBindManager,
         config=config.provided.SQLALCHEMY_CONFIG,
     )
@@ -47,9 +50,9 @@ class Container(containers.DeclarativeContainer):
             service: MyInterface = Provide[MyInterface.__name__],
         )
     """
-    BookService = providers.ThreadSafeSingleton(
+    BookService: ThreadSafeSingleton[BookService] = ThreadSafeSingleton(
         "app.domains.books._local.LocalBookService"
     )
-    BookRepositoryInterface = providers.ThreadSafeSingleton(
+    BookRepositoryInterface: ThreadSafeSingleton[BookRepositoryInterface] = ThreadSafeSingleton(
         "app.storage.repositories.book_repository.BookRepository"
     )

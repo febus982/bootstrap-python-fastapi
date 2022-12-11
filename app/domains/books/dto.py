@@ -1,3 +1,5 @@
+from typing import Union
+
 from pydantic import BaseModel
 
 
@@ -16,7 +18,7 @@ class BookData(BaseModel):
 
 
 class Book(BookData):
-    book_id: int | None = None
+    book_id: Union[int, None] = None
 
     class Config:
         orm_mode = True
