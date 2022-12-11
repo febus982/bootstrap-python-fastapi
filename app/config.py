@@ -1,9 +1,11 @@
+from typing import Dict
+
 from pydantic import BaseSettings
 from sqlalchemy_bind_manager import SQLAlchemyBindConfig
 
 
 class AppConfig(BaseSettings):
-    SQLALCHEMY_CONFIG: dict[str, SQLAlchemyBindConfig] = {
+    SQLALCHEMY_CONFIG: Dict[str, SQLAlchemyBindConfig] = {
         "default": SQLAlchemyBindConfig(
             engine_url="sqlite:///./sqlite.db",
             engine_options=dict(connect_args={"check_same_thread": False}, echo=True),

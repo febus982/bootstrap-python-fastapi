@@ -7,7 +7,8 @@ class BookRepository(BookRepositoryInterface, SQLAlchemyRepository):
         self,
         book: BookModel,
     ) -> BookModel:
-        with self.sa_manager.get_session() as session:
+        # MyPy doesn't like session used as context manager
+        with self.sa_manager.get_session() as session:  # type: ignore
             session.add(book)
             session.commit()
 

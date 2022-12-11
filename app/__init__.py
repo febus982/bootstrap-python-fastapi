@@ -1,3 +1,5 @@
+from typing import Union
+
 from dependency_injector.providers import Object
 from fastapi import FastAPI
 from starlette_prometheus import PrometheusMiddleware, metrics
@@ -9,7 +11,7 @@ from app.storage import init_storage
 
 
 def create_app(
-    test_config: AppConfig | None = None,
+    test_config: Union[AppConfig, None] = None,
 ) -> FastAPI:
     app = FastAPI(debug=test_config is not None)
 
