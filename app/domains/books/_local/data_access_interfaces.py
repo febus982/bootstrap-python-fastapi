@@ -5,5 +5,5 @@ from .models import BookModel
 
 class BookRepositoryInterface(ABC):
     @abstractmethod
-    def create_book(self, book: BookModel) -> BookModel:
+    def save(self, book: BookModel) -> BookModel:
         pass

@@ -3,7 +3,7 @@ from .abstract import SQLAlchemyRepository
 
 
 class BookRepository(BookRepositoryInterface, SQLAlchemyRepository):
-    def create_book(
+    def save(
         self,
         book: BookModel,
     ) -> BookModel:
