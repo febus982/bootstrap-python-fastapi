@@ -1,9 +1,8 @@
-from abc import ABC, abstractmethod
+from typing import Protocol
 
 from .dto import BookData, Book
 
 
-class BookService(ABC):
-    @abstractmethod
+class BookService(Protocol):
     def create_book(self, book: BookData) -> Book:
-        pass
+        ...

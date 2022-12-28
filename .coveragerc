@@ -8,3 +8,4 @@ parallel = true
 exclude_lines =
     pragma: no cover
     pass
+    ...

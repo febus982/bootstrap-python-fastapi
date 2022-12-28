@@ -4,7 +4,7 @@ from sqlalchemy_bind_manager import SQLAlchemyBindManager
 
 from app import AppConfig
 from app.domains.books import BookService
-from app.storage.repositories.book_repository import BookRepositoryInterface
+from app.domains.books._local.data_access_interfaces import BookRepositoryInterface
 
 
 class Container(DeclarativeContainer):

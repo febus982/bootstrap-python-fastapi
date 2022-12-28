@@ -1,13 +1,12 @@
 from dependency_injector.wiring import inject, Provide
 
-from app.domains.books.boundary_interfaces import BookService
 from app.domains.books.dto import Book, BookData
 
 from .data_access_interfaces import BookRepositoryInterface
 from .models import BookModel
 
 
-class LocalBookService(BookService):
+class LocalBookService:
     book_repository: BookRepositoryInterface
 
     @inject
