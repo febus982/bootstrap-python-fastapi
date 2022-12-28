@@ -9,7 +9,7 @@ class BookRepository(SQLAlchemyRepository[BookModel], BookRepositoryInterface):
 
     @inject
     def __init__(
-            self,
-            sa_manager: SQLAlchemyBindManager = Provide[SQLAlchemyBindManager.__name__],
+        self,
+        sa_manager: SQLAlchemyBindManager = Provide[SQLAlchemyBindManager.__name__],
     ) -> None:
         super().__init__(sa_manager)

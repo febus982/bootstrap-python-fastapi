@@ -53,6 +53,6 @@ class Container(DeclarativeContainer):
     BookService: ThreadSafeSingleton[BookService] = ThreadSafeSingleton(
         "app.domains.books._local.LocalBookService"
     )
-    BookRepositoryInterface: ThreadSafeSingleton[BookRepositoryInterface] = ThreadSafeSingleton(
-        "app.storage.repositories.book_repository.BookRepository"
-    )
+    BookRepositoryInterface: ThreadSafeSingleton[
+        BookRepositoryInterface
+    ] = ThreadSafeSingleton("app.storage.repositories.book_repository.BookRepository")
