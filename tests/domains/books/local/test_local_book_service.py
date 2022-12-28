@@ -10,4 +10,4 @@ def test_create_book(book_repository):
     )
     returned_book = service.create_book(book)
     assert book == returned_book
-    book_repository.create_book.assert_called_once()
+    book_repository.save.assert_called_once()
