@@ -3,7 +3,7 @@ from dependency_injector.providers import ThreadSafeSingleton, Dependency
 from sqlalchemy_bind_manager import SQLAlchemyBindManager
 
 from app import AppConfig
-from app.domains.books import BookService
+from app.domains.books import BookServiceInterface
 from app.domains.books._local.data_access_interfaces import BookRepositoryInterface
 
 
@@ -50,7 +50,7 @@ class Container(DeclarativeContainer):
             service: MyInterface = Provide[MyInterface.__name__],
         )
     """
-    BookService: ThreadSafeSingleton[BookService] = ThreadSafeSingleton(
+    BookServiceInterface: ThreadSafeSingleton[BookServiceInterface] = ThreadSafeSingleton(
         "app.domains.books._local.LocalBookService"
     )
     BookRepositoryInterface: ThreadSafeSingleton[
