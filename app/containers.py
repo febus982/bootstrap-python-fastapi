@@ -50,9 +50,9 @@ class Container(DeclarativeContainer):
             service: MyInterface = Provide[MyInterface.__name__],
         )
     """
-    BookServiceInterface: ThreadSafeSingleton[BookServiceInterface] = ThreadSafeSingleton(
-        "app.domains.books._local.LocalBookService"
-    )
+    BookServiceInterface: ThreadSafeSingleton[
+        BookServiceInterface
+    ] = ThreadSafeSingleton("app.domains.books._local.LocalBookService")
     BookRepositoryInterface: ThreadSafeSingleton[
         BookRepositoryInterface
     ] = ThreadSafeSingleton("app.storage.repositories.book_repository.BookRepository")

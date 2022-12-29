@@ -6,3 +6,6 @@ dev:
 
 test:
 	docker compose run --rm dev pytest --cov
+
+format:
+	black app tests alembic

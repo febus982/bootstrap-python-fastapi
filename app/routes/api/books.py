@@ -27,7 +27,9 @@ The views defined here have the functionalities of two components:
 @inject
 async def create_book(
     data: BookData,
-    book_service: BookServiceInterface = Depends(Provide[BookServiceInterface.__name__])
+    book_service: BookServiceInterface = Depends(
+        Provide[BookServiceInterface.__name__]
+    ),
 ) -> CreateBookResponse:
     created_book = book_service.create_book(book=data)
     return CreateBookResponse(book=created_book)
