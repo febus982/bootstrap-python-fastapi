@@ -1,6 +1,7 @@
 # Bootstrap FastAPI service
 <a href="https://codeclimate.com/github/febus982/bootstrap-python-fastapi/maintainability"><img src="https://api.codeclimate.com/v1/badges/a2ab183e64778e21ae14/maintainability" /></a>
 <a href="https://codeclimate.com/github/febus982/bootstrap-python-fastapi/test_coverage"><img src="https://api.codeclimate.com/v1/badges/a2ab183e64778e21ae14/test_coverage" /></a>
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 This is an example implementation of a API service applying
 concepts from [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
