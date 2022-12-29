@@ -1,6 +1,6 @@
 # Bootstrap FastAPI service
-<a href="https://codeclimate.com/github/febus982/bootstrap-python-fastapi/maintainability"><img src="https://api.codeclimate.com/v1/badges/a2ab183e64778e21ae14/maintainability" /></a>
-<a href="https://codeclimate.com/github/febus982/bootstrap-python-fastapi/test_coverage"><img src="https://api.codeclimate.com/v1/badges/a2ab183e64778e21ae14/test_coverage" /></a>
+[![Maintainability](https://api.codeclimate.com/v1/badges/a2ab183e64778e21ae14/maintainability)](https://codeclimate.com/github/febus982/bootstrap-python-fastapi/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/a2ab183e64778e21ae14/test_coverage)](https://codeclimate.com/github/febus982/bootstrap-python-fastapi/test_coverage)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 This is an example implementation of a API service applying
