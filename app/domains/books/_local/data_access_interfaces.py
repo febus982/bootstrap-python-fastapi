@@ -1,9 +1,8 @@
-from abc import ABC, abstractmethod
+from typing import Protocol
 
 from .models import BookModel
 
 
-class BookRepositoryInterface(ABC):
-    @abstractmethod
+class BookRepositoryInterface(Protocol):
     def save(self, book: BookModel) -> BookModel:
-        pass
+        ...
