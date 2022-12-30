@@ -8,10 +8,10 @@ package app {
     package domains #DDDDDD {
         package books {
             class Book
-            interface BookService
+            protocol BookServiceInterface
             package local {
                 class LocalBookService
-                interface BookRepositoryInterface
+                protocol BookRepositoryInterface
                 class BookModel
             }
         }
@@ -25,12 +25,12 @@ package app {
 }
 
 'links framework - domains
-routes --> BookService
+routes --> BookServiceInterface
 routes --> Book
 
 'links internal to books domain
-LocalBookService -u-|> BookService
-BookService -l-> Book
+LocalBookService -u-|> BookServiceInterface
+BookServiceInterface -l-> Book
 LocalBookService --> BookModel
 LocalBookService --> BookRepositoryInterface
 BookRepositoryInterface -l-> BookModel
