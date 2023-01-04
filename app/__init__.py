@@ -34,7 +34,6 @@ def create_app(
         prefix_format="/api/v{major}",
         docs_url="/docs",
         redoc_url="/redoc",
-        enable_latest=True,
     )
 
     """
