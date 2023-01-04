@@ -41,7 +41,7 @@ async def create_book(
 @api_version(2)
 @router.post("/", response_model=CreateBookResponse)
 @inject
-async def create_book(
+async def create_book_v2(
     data: BookData,
     some_optional_query_param: bool = False,
     book_service: BookServiceInterface = Depends(
