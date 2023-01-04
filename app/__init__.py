@@ -2,11 +2,12 @@ from typing import Union
 
 from dependency_injector.providers import Object
 from fastapi import FastAPI
+from fastapi_versionizer import versionize
 from starlette_prometheus import PrometheusMiddleware, metrics
 
 from app.config import AppConfig
 from app.containers import Container
-from app.routes import init_routes
+from app.routes import init_versioned_routes, init_unversioned_routes
 from app.storage import init_storage
 
 
@@ -26,6 +27,19 @@ def create_app(
     app.add_middleware(PrometheusMiddleware)
     app.add_route("/metrics/", metrics)
 
-    init_routes(app)
+    init_versioned_routes(app)
+
+    versionize(
+        app=app,
+        prefix_format="/api/v{major}",
+        docs_url="/docs",
+        redoc_url="/redoc",
+        enable_latest=True,
+    )
+
+    """
+    Routes initalised after `versionize` are not versioned
+    """
+    init_unversioned_routes(app)
 
     return app
