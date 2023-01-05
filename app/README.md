@@ -26,9 +26,9 @@ relevant Data transfer objects. The concrete implementation for the
 interfaces is in the nested modules. E.g.:
 
 * `domains.books` contains the boundary interfaces
-* `domains.books.local` contains the concrete implementation
+* `domains.books._local` contains the concrete implementation
 
-In the example `domains.books.local` imports `domains.books`,
+In the example `domains.books._local` imports `domains.books`,
 never the opposite, applying in this way the Interface
 Segregation Principle.
 
@@ -47,6 +47,8 @@ container.
 These are some examples (note the local imports to avoid exposing the
 imported classes).
 
+Using a decorator to be applied to function:
+
 ```python
 def inject_book_repository(f):
     """
@@ -56,7 +58,7 @@ def inject_book_repository(f):
     def wrapper(*args, **kwds):
         if "book_repository" not in kwds.keys():
             from app.storage.repositories.book_repository import BookRepository
-            kwds["book_repository"] = BookRepository()  # Here we have to pass the SQLAlchemy manager
+            kwds["book_repository"] = BookRepository()  # Here we might have to pass the SQLAlchemy manager
         elif not isinstance(kwds["book_repository"], BookRepositoryInterface):
             import warnings
             warnings.warn(
@@ -67,6 +69,8 @@ def inject_book_repository(f):
 
     return wrapper
 ```
+
+Using a factory class:
 
 ```python
 def book_repository_factory(sa_manager: SQLAlchemyBindManager) -> BookRepositoryInterface:
