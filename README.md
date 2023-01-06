@@ -43,6 +43,12 @@ Build docker containers
 make build
 ```
 
+Run database migrations
+
+```bash
+make migrate
+```
+
 Run dev application with hot reload
 
 ```bash
