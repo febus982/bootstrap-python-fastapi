@@ -4,7 +4,7 @@ from logging.config import fileConfig
 from alembic import context
 
 from http_app import AppConfig
-from http_app.containers import Container
+from di_container import Container
 from storage.SQLAlchemy import init_tables
 
 USE_TWOPHASE = False

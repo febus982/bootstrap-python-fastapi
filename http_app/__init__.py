@@ -5,8 +5,8 @@ from fastapi import FastAPI
 from fastapi_versionizer import versionize
 from starlette_prometheus import PrometheusMiddleware, metrics
 
-from http_app.config import AppConfig
-from http_app.containers import Container
+from config import AppConfig
+from di_container import Container
 from http_app.routes import init_versioned_routes, init_unversioned_routes
 from storage import init_storage
 
