@@ -8,7 +8,7 @@ from starlette_prometheus import PrometheusMiddleware, metrics
 from app.config import AppConfig
 from app.containers import Container
 from app.routes import init_versioned_routes, init_unversioned_routes
-from app.storage import init_storage
+from storage import init_storage
 
 
 def create_app(

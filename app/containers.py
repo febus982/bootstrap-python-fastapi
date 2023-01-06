@@ -5,6 +5,7 @@ from sqlalchemy_bind_manager import SQLAlchemyBindManager
 from app import AppConfig
 from app.domains.books import BookServiceInterface
 from app.domains.books._local.data_access_interfaces import BookRepositoryInterface
+from storage.repositories.book_repository import BookRepository
 
 
 class Container(DeclarativeContainer):
@@ -15,7 +16,7 @@ class Container(DeclarativeContainer):
     """
 
     # Enable injection on the whole app package
-    wiring_config = WiringConfiguration(packages=["app"])
+    wiring_config = WiringConfiguration(packages=["app", "storage"])
 
     """
     We could use the config provider but it would transform our nice typed
@@ -55,4 +56,4 @@ class Container(DeclarativeContainer):
     ] = ThreadSafeSingleton("app.domains.books._local.LocalBookService")
     BookRepositoryInterface: ThreadSafeSingleton[
         BookRepositoryInterface
-    ] = ThreadSafeSingleton("app.storage.repositories.book_repository.BookRepository")
+    ] = ThreadSafeSingleton(BookRepository)

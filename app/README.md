@@ -54,10 +54,11 @@ def inject_book_repository(f):
     """
     Decorator implementation for DI injection
     """
+
     @wraps(f)
     def wrapper(*args, **kwds):
         if "book_repository" not in kwds.keys():
-            from app.storage.repositories.book_repository import BookRepository
+            from storage.repositories.book_repository import BookRepository
             kwds["book_repository"] = BookRepository()  # Here we might have to pass the SQLAlchemy manager
         elif not isinstance(kwds["book_repository"], BookRepositoryInterface):
             import warnings
@@ -82,6 +83,6 @@ def book_repository_factory(sa_manager: SQLAlchemyBindManager) -> BookRepository
     Returns:
         The book repository.
     """
-    from app.storage.repositories.book_repository import BookRepository
+    from storage.repositories.book_repository import BookRepository
     return BookRepository(sa_manager=sa_manager)
 ```
