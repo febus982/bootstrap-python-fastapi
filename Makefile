@@ -11,4 +11,4 @@ migrate:
 	docker compose run --rm alembic upgrade heads
 
 format:
-	black app domains storage tests alembic
+	black http_app domains storage tests alembic
