@@ -23,7 +23,7 @@ done
 
 if [ $CROSSIMPORTFOUND -eq 1 ]
 then
-  echo "Nested domain module or wider 'app.domains' import detected."
+  echo "Nested domain module or wider 'domains' import detected."
 fi
 
 exit $CROSSIMPORTFOUND

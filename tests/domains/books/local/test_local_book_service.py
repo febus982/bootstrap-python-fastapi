@@ -1,5 +1,5 @@
-from app.domains.books import Book
-from app.domains.books._local import LocalBookService
+from domains.books import Book
+from domains.books._local import LocalBookService
 
 
 def test_create_book(book_repository):

@@ -3,8 +3,9 @@ from dependency_injector.providers import ThreadSafeSingleton, Dependency
 from sqlalchemy_bind_manager import SQLAlchemyBindManager
 
 from app import AppConfig
-from app.domains.books import BookServiceInterface
-from app.domains.books._local.data_access_interfaces import BookRepositoryInterface
+from domains.books import BookServiceInterface
+from domains.books._local import LocalBookService
+from domains.books._local.data_access_interfaces import BookRepositoryInterface
 from storage.repositories.book_repository import BookRepository
 
 
@@ -16,7 +17,7 @@ class Container(DeclarativeContainer):
     """
 
     # Enable injection on the whole app package
-    wiring_config = WiringConfiguration(packages=["app", "storage"])
+    wiring_config = WiringConfiguration(packages=["app", "storage", "domains"])
 
     """
     We could use the config provider but it would transform our nice typed
@@ -53,7 +54,8 @@ class Container(DeclarativeContainer):
     """
     BookServiceInterface: ThreadSafeSingleton[
         BookServiceInterface
-    ] = ThreadSafeSingleton("app.domains.books._local.LocalBookService")
+    ] = ThreadSafeSingleton(LocalBookService)
+
     BookRepositoryInterface: ThreadSafeSingleton[
         BookRepositoryInterface
     ] = ThreadSafeSingleton(BookRepository)

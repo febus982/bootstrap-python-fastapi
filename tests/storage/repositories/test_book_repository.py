@@ -1,4 +1,4 @@
-from app.domains.books._local import BookModel
+from domains.books._local import BookModel
 from storage.repositories.book_repository import BookRepository
 
 
