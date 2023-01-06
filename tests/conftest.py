@@ -6,7 +6,8 @@ from fastapi import FastAPI
 from sqlalchemy.orm import clear_mappers
 from sqlalchemy_bind_manager import SQLAlchemyBindConfig
 
-from http_app import create_app, AppConfig
+from config import AppConfig
+from http_app import create_app
 
 
 @pytest.fixture(scope="function")

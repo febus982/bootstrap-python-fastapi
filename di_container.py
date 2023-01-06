@@ -2,7 +2,7 @@ from dependency_injector.containers import DeclarativeContainer, WiringConfigura
 from dependency_injector.providers import ThreadSafeSingleton, Dependency
 from sqlalchemy_bind_manager import SQLAlchemyBindManager
 
-from http_app import AppConfig
+from config import AppConfig
 from domains.books import BookServiceInterface
 from domains.books._local import LocalBookService
 from domains.books._local.data_access_interfaces import BookRepositoryInterface

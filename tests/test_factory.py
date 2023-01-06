@@ -4,7 +4,8 @@ from uuid import uuid4
 from sqlalchemy.orm import clear_mappers
 from sqlalchemy_bind_manager import SQLAlchemyBindConfig
 
-from http_app import create_app, AppConfig
+from config import AppConfig
+from http_app import create_app
 
 
 def test_without_config_test() -> None:
