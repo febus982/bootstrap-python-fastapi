@@ -1,25 +1,4 @@
-# Application structure
-
-This application is structured following the principles of Clean Architecture.
-Higher level layers can import directly lower level layers. An inversion of control
-pattern has to be used for lower level layers to use higher level ones.
-
-## Packager layers
-
-Packages are ordered from the highest level to the lowest one.
-
-------
-
-* routes
-* storage (database connection manager, repository implementation)
-
-------
-
-* domains (services, repository interfaces)
-
-------
-
-## Domain subpackages
+# Domain subpackages
 
 Each subpackage in `domains` exposes only interface classes and the
 relevant Data transfer objects. The concrete implementation for the
@@ -54,10 +33,11 @@ def inject_book_repository(f):
     """
     Decorator implementation for DI injection
     """
+
     @wraps(f)
     def wrapper(*args, **kwds):
         if "book_repository" not in kwds.keys():
-            from app.storage.repositories.book_repository import BookRepository
+            from storage.repositories.book_repository import BookRepository
             kwds["book_repository"] = BookRepository()  # Here we might have to pass the SQLAlchemy manager
         elif not isinstance(kwds["book_repository"], BookRepositoryInterface):
             import warnings
@@ -82,6 +62,6 @@ def book_repository_factory(sa_manager: SQLAlchemyBindManager) -> BookRepository
     Returns:
         The book repository.
     """
-    from app.storage.repositories.book_repository import BookRepository
+    from storage.repositories.book_repository import BookRepository
     return BookRepository(sa_manager=sa_manager)
 ```

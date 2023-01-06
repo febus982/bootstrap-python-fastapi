@@ -1,6 +1,6 @@
 [run]
 branch = True
-source = app
+source = app, domains, storage
 concurrency = multiprocessing
 parallel = true
 

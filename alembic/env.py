@@ -5,7 +5,7 @@ from alembic import context
 
 from app import AppConfig
 from app.containers import Container
-from app.storage.SQLAlchemy import init_tables
+from storage.SQLAlchemy import init_tables
 
 USE_TWOPHASE = False
 

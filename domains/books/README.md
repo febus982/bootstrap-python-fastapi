@@ -1,8 +1,8 @@
 # Books
 
 The app should always import only classes available from
-`app.domains.books` and _never_ import anything from the
-nested modules (e.g. `app.domains.books.local`)
+`domains.books` and _never_ import anything from the
+nested modules (e.g. `domains.books.local`)
 
 We will use an IoC container to do dependency injection
 using the interface class. In this way we achieve:

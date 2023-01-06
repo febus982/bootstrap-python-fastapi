@@ -5,22 +5,24 @@ skinparam componentStyle uml1
 package app {
     package routes #DDDDDD
 
-    package domains #DDDDDD {
-        package books {
-            class Book
-            protocol BookServiceInterface
-            package local {
-                class LocalBookService
-                protocol BookRepositoryInterface
-                class BookModel
-            }
+
+}
+
+package domains #DDDDDD {
+    package books {
+        class Book
+        protocol BookServiceInterface
+        package local {
+            class LocalBookService
+            protocol BookRepositoryInterface
+            class BookModel
         }
     }
+}
 
-    package storage #DDDDDD {
-        package Repositories {
-            class BookRepository
-        }
+package storage #DDDDDD {
+    package Repositories {
+        class BookRepository
     }
 }
 

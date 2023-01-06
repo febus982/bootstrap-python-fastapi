@@ -1,6 +1,6 @@
 from dependency_injector.wiring import inject, Provide
 
-from app.domains.books.dto import Book, BookData
+from domains.books.dto import Book, BookData
 
 from .data_access_interfaces import BookRepositoryInterface
 from .models import BookModel
