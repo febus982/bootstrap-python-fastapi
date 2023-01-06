@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 shopt -s extglob
 
+# TODO: Review this script for new directory structure
 export CROSSIMPORTFOUND=0
 
-cd app/domains
+cd http_app/domains
 
 
 for dir in $(ls -d !(__pycache__)/ )

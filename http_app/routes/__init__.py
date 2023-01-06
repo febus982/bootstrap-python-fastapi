@@ -2,9 +2,9 @@ from fastapi import FastAPI
 from fastapi.openapi.docs import get_swagger_ui_html
 from starlette.responses import HTMLResponse
 
-from app.routes.ping import router as ping_router
-from app.routes.hello import router as hello_router
-from app.routes.api.books import router as api_books_router
+from http_app.routes.ping import router as ping_router
+from http_app.routes.hello import router as hello_router
+from http_app.routes.api.books import router as api_books_router
 
 
 def init_versioned_routes(app: FastAPI) -> None:
