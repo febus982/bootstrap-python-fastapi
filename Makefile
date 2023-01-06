@@ -8,4 +8,4 @@ test:
 	docker compose run --rm dev pytest --cov
 
 format:
-	black app tests alembic
+	black app domains storage tests alembic
