@@ -1,25 +1,4 @@
-# Application structure
-
-This application is structured following the principles of Clean Architecture.
-Higher level layers can import directly lower level layers. An inversion of control
-pattern has to be used for lower level layers to use higher level ones.
-
-## Packager layers
-
-Packages are ordered from the highest level to the lowest one.
-
-------
-
-* routes
-* storage (database connection manager, repository implementation)
-
-------
-
-* domains (services, repository interfaces)
-
-------
-
-## Domain subpackages
+# Domain subpackages
 
 Each subpackage in `domains` exposes only interface classes and the
 relevant Data transfer objects. The concrete implementation for the

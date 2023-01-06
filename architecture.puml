@@ -38,5 +38,5 @@ LocalBookService --> BookRepositoryInterface
 BookRepositoryInterface -l-> BookModel
 
 'links domains - storage
-BookRepository ---u-|> BookRepositoryInterface
+BookRepository ---d-|> BookRepositoryInterface
 @enduml

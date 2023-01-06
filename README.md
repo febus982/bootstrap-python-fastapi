@@ -15,6 +15,8 @@ and [SOLID principles](https://en.wikipedia.org/wiki/SOLID).
 * The book domain is isolated behind an interface class, enforcing the [Interface Segregation principle](https://en.wikipedia.org/wiki/Interface_segregation_principle) 
   and the [Inversion of Control principle](https://en.wikipedia.org/wiki/Inversion_of_control)
 * The same principles are used for the BookRepository class
+* The application framework is decoupled from the domain logic (we can potentially add a new application and reuse the same domain logic to provide e.g. a GRPC interface)
+* The storage layer is decoupled from the domain logic
 
 In this way our components are loosely coupled and the application logic
 (the domains package) is completely independent of from the chosen framework
@@ -30,6 +32,25 @@ There are 3 different API documentation paths:
 * `/api/v1/docs` and `/api/v1/redoc`: v1 OpenAPI schema
 * `/api/v2/docs` and `/api/v2/redoc`: v2 OpenAPI schema
 * `/docs` : non-versioned routes OpenAPI schema (e.g. health check endpoint)
+
+## Package layers
+
+This application is structured following the principles of Clean Architecture.
+Higher level layers can import directly lower level layers. An inversion of control
+pattern has to be used for lower level layers to use higher level ones.
+
+Packages are ordered from the highest level to the lowest one.
+
+------
+
+* `app` (http presentation layer)
+* `storage` (database connection manager, repository implementation)
+
+------
+
+* `domains` (services, repository interfaces)
+
+------
 
 ## Class dependency schema
 
