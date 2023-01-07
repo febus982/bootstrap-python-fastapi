@@ -21,3 +21,18 @@ services:
       - '8001:8000'
     volumes:
       - './sqlite.db:/app/sqlite.db'
+
+  generate-proto:
+    build: .
+    volumes:
+      - '.:/app'
+    working_dir: "/app/grpc_app/"
+    command: ["make", "generate-proto"]
+
+  grpc_app:
+    build: .
+    ports:
+      - "50051:50051"
+    volumes:
+      - '.:/app'
+    command: ["python3", "-m", "grpc_app"]
