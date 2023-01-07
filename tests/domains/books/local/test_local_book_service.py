@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock
 
 from domains.books import Book
-from domains.books._local import LocalBookService
+from domains.books._local import LocalBookService, BookModel
 
 
 def test_create_book(book_repository):
@@ -17,11 +17,12 @@ def test_create_book(book_repository):
 
 def test_list_books(book_repository):
     service = LocalBookService(book_repository=book_repository)
-    book = Book(
+    book = BookModel(
+        book_id=2,
         title="test",
         author_name="other",
     )
-    book_repository.find = MagicMock(side_effect=lambda: book)
+    book_repository.find = MagicMock(side_effect=lambda: [book])
     returned_books = service.list_books()
-    assert [book] == returned_books
+    assert [Book.from_orm(book)] == returned_books
     book_repository.find.assert_called_once()
