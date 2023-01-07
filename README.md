@@ -43,6 +43,7 @@ Packages are ordered from the highest level to the lowest one.
 ------
 
 * `http_app` (http presentation layer)
+* `grpc_app` (grpc presentation layer)
 * `storage` (database connection manager, repository implementation)
 
 ------
