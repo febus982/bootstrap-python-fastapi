@@ -21,7 +21,7 @@ def init_unversioned_routes(app: FastAPI) -> None:
         Swagger page for non-versioned routes.
         """
 
-        return get_swagger_ui_html(
+        return get_swagger_ui_html(  # pragma: no cover
             openapi_url=f"{app.openapi_url}",
             title=f"{app.title}",
             swagger_ui_parameters={"defaultModelsExpandDepth": -1},
