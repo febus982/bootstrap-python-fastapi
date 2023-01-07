@@ -3,7 +3,7 @@ from dependency_injector.providers import ThreadSafeSingleton, Dependency
 from sqlalchemy_bind_manager import SQLAlchemyBindManager
 
 from config import AppConfig
-from domains.books import BookServiceInterface
+from domains.books.boundary_interfaces import BookServiceInterface
 from domains.books._local import LocalBookService
 from domains.books._local.data_access_interfaces import BookRepositoryInterface
 from storage.repositories.book_repository import BookRepository
@@ -17,7 +17,12 @@ class Container(DeclarativeContainer):
     """
 
     # Enable injection on the whole http_app package
-    wiring_config = WiringConfiguration(packages=["http_app", "storage", "domains"])
+    wiring_config = WiringConfiguration(packages=[
+        "http_app",
+        "grpc_app",
+        "storage",
+        "domains",
+    ])
 
     """
     We could use the config provider but it would transform our nice typed

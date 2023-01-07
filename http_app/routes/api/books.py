@@ -3,8 +3,8 @@ from fastapi import APIRouter, Depends
 from fastapi_versionizer import api_version
 from pydantic import BaseModel
 
-from domains.books import BookServiceInterface, Book
-from domains.books.dto import BookData
+from domains.books.boundary_interfaces import BookServiceInterface
+from domains.books.dto import BookData, Book
 
 router = APIRouter(prefix="/books")
 

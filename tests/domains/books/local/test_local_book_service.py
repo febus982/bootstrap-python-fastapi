@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock
 
-from domains.books import Book
+from domains.books.dto import Book
 from domains.books._local import LocalBookService, BookModel
 
 

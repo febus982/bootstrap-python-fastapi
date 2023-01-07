@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from domains.books import BookServiceInterface
+from domains.books.boundary_interfaces import BookServiceInterface
 
 
 @pytest.fixture
