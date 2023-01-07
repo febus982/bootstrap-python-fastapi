@@ -30,7 +30,7 @@ generate-proto:
 	grpc_app/proto/*.proto
 	git add ./grpc_app/generated
 
-# Setup to be used with grpclib and betterproto libraries
+# Setup to be used with grpclib and betterproto libraries (not yet implemented)
 generate-betterproto:
 	rm -rf ./grpc_app/generated/*.p*
 	touch ./grpc_app/generated/__init__.py
