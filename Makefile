@@ -17,7 +17,7 @@ format:
 # packages. The following setup appears to work, however it might need
 # to be reviewed. https://github.com/protocolbuffers/protobuf/issues/1491
 generate-proto:
-	rm -rf ./grpc_app/generated/*
+	rm -rf ./grpc_app/generated/*.p*
 	touch ./grpc_app/generated/__init__.py
 	python -m grpc_tools.protoc \
 	-I grpc_app.generated=./grpc_app/proto/ \
@@ -32,7 +32,7 @@ generate-proto:
 
 # Setup to be used with grpclib and betterproto libraries
 generate-betterproto:
-	rm -rf ./grpc_app/generated/*
+	rm -rf ./grpc_app/generated/*.p*
 	touch ./grpc_app/generated/__init__.py
 	python -m grpc_tools.protoc \
 	-I grpc_app.generated=./grpc_app/proto/ \
