@@ -1,3 +1,5 @@
+from collections.abc import Iterable
+
 from dependency_injector.wiring import inject, Provide
 
 from domains.books.dto import Book, BookData
@@ -21,3 +23,7 @@ class LocalBookService:
 
     def create_book(self, book: BookData) -> Book:
         return Book.from_orm(self.book_repository.save(BookModel(**book.dict())))
+
+    def list_books(self) -> Iterable[Book]:
+        books = self.book_repository.find()
+        return [Book.from_orm(x) for x in books]
