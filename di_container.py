@@ -19,7 +19,6 @@ class Container(DeclarativeContainer):
     # Enable injection on the whole http_app package
     wiring_config = WiringConfiguration(packages=[
         "http_app",
-        "grpc_app",
         "storage",
         "domains",
     ])
