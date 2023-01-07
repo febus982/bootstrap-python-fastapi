@@ -27,11 +27,11 @@ jobs:
         poetry install --no-root
     - name: Check typing
       run: |
-        mypy app storage domains
+        mypy
     - name: Lint with black
       run: |
         # stop the build if code style check fails
-        black --check app domains storage tests alembic
+        black --check http_app domains storage tests alembic
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names

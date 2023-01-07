@@ -8,7 +8,7 @@ test:
 	docker compose run --rm dev pytest --cov
 
 migrate:
-	docker compose run --rm alembic upgrade heads
+	docker compose run --rm dev alembic upgrade heads
 
 format:
-	black app domains storage tests alembic
+	black http_app domains storage tests alembic

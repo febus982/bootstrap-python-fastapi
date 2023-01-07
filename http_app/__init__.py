@@ -5,9 +5,9 @@ from fastapi import FastAPI
 from fastapi_versionizer import versionize
 from starlette_prometheus import PrometheusMiddleware, metrics
 
-from app.config import AppConfig
-from app.containers import Container
-from app.routes import init_versioned_routes, init_unversioned_routes
+from config import AppConfig
+from di_container import Container
+from http_app.routes import init_versioned_routes, init_unversioned_routes
 from storage import init_storage
 
 
@@ -17,7 +17,7 @@ def create_app(
     app = FastAPI(debug=test_config is not None)
 
     # Initialise and wire DI container
-    # TODO: Don't persist the container in the app object only to access it from pytest.
+    # TODO: Don't persist the container in the http_app object only to access it from pytest.
     app.di_container = Container(  # type: ignore
         config=Object(test_config or AppConfig()),
     )

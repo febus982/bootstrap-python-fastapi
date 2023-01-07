@@ -2,10 +2,8 @@
 allowmixing
 skinparam componentStyle uml1
 
-package app {
+package http_app {
     package routes #DDDDDD
-
-
 }
 
 package domains #DDDDDD {

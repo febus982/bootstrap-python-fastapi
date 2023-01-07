@@ -3,8 +3,8 @@ from logging.config import fileConfig
 
 from alembic import context
 
-from app import AppConfig
-from app.containers import Container
+from config import AppConfig
+from di_container import Container
 from storage.SQLAlchemy import init_tables
 
 USE_TWOPHASE = False

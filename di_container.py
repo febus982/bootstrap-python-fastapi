@@ -2,8 +2,8 @@ from dependency_injector.containers import DeclarativeContainer, WiringConfigura
 from dependency_injector.providers import ThreadSafeSingleton, Dependency
 from sqlalchemy_bind_manager import SQLAlchemyBindManager
 
-from app import AppConfig
-from domains.books import BookServiceInterface
+from config import AppConfig
+from domains.books.boundary_interfaces import BookServiceInterface
 from domains.books._local import LocalBookService
 from domains.books._local.data_access_interfaces import BookRepositoryInterface
 from storage.repositories.book_repository import BookRepository
@@ -16,8 +16,12 @@ class Container(DeclarativeContainer):
     Docs: https://python-dependency-injector.ets-labs.org/
     """
 
-    # Enable injection on the whole app package
-    wiring_config = WiringConfiguration(packages=["app", "storage", "domains"])
+    # Enable injection on the whole http_app package
+    wiring_config = WiringConfiguration(packages=[
+        "http_app",
+        "storage",
+        "domains",
+    ])
 
     """
     We could use the config provider but it would transform our nice typed
@@ -44,7 +48,7 @@ class Container(DeclarativeContainer):
     
     e.g.
     Mapping
-        MyInterface = providers.Factory("app.storage.repositories.ConcreteClass")
+        MyInterface = providers.Factory("http_app.storage.repositories.ConcreteClass")
 
     Usage
         @inject
