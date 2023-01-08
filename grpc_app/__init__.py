@@ -10,6 +10,7 @@ from grpc_app.services.books import BooksService
 from storage import init_storage
 
 
+# TODO: Add asyncio support: https://stackoverflow.com/questions/38387443/how-to-implement-a-async-grpc-python-server
 def create_server():
     Container(  # type: ignore
         config=Object(AppConfig()),
