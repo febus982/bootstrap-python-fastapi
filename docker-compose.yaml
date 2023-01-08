@@ -4,15 +4,7 @@ services:
     build: .
     ports:
       - '8000:8000'
-    command:
-      - 'uvicorn'
-      - 'http_app:create_app'
-      - '--host'
-      - '0.0.0.0'
-      - '--port'
-      - '8000'
-      - '--factory'
-      - '--reload'
+    command: ["make", "dev"]
     volumes:
       - '.:/app'
   app:
@@ -21,3 +13,17 @@ services:
       - '8001:8000'
     volumes:
       - './sqlite.db:/app/sqlite.db'
+
+  generate-proto:
+    build: .
+    volumes:
+      - '.:/app'
+    command: ["make", "generate-proto"]
+
+  grpc:
+    build: .
+    ports:
+      - "50051:50051"
+    volumes:
+      - '.:/app'
+    command: ["make", "grpc"]
