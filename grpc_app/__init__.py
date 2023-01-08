@@ -1,4 +1,5 @@
 import logging
+import time
 from concurrent import futures
 
 import grpc
@@ -22,3 +23,17 @@ def create_server():
     add_BooksServicer_to_server(BooksService(), server)
     server.add_insecure_port("[::]:50051")
     return server
+
+
+def main():
+    _ONE_DAY_IN_SECONDS = 60 * 60 * 24
+
+    server = create_server()
+    server.start()
+    logging.info("GRPC started")
+    try:
+        while True:
+            time.sleep(_ONE_DAY_IN_SECONDS)
+    except KeyboardInterrupt:
+        logging.debug("GRPC stop")
+        server.stop(0)
