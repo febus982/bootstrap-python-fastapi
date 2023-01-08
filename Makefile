@@ -14,7 +14,7 @@ migrate:
 	poetry run alembic upgrade heads
 
 format:
-	poetry run black http_app domains storage tests alembic
+	poetry run black http_app grpc_app domains storage tests alembic
 
 # There are issues on how python imports are generated when using nested
 # packages. The following setup appears to work, however it might need

@@ -19,7 +19,7 @@ def create_server(test_config: Optional[AppConfig] = None):
     )
     init_storage()
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    server.container = c   # type: ignore
+    server.container = c  # type: ignore
     # Register service
     add_BooksServicer_to_server(BooksService(), server)
     server.add_insecure_port("[::]:50051")
