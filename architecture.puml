@@ -35,12 +35,12 @@ services --> BookServiceInterface
 services --> Book
 
 'links internal to books domain
-LocalBookService -u-|> BookServiceInterface
+LocalBookService -u-|> BookServiceInterface: implements >
 BookServiceInterface -l-> Book
 LocalBookService --> BookModel
 LocalBookService --> BookRepositoryInterface
 BookRepositoryInterface -l-> BookModel
 
 'links domains - storage
-BookRepository ---d-|> BookRepositoryInterface
+BookRepository ---d-|> BookRepositoryInterface: implements >
 @enduml
