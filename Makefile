@@ -29,15 +29,3 @@ generate-proto:
 	--grpc_python_out=. \
 	grpc_app/proto/*.proto
 	git add ./grpc_app/generated
-
-# Setup to be used with grpclib and betterproto libraries (not yet implemented)
-generate-betterproto:
-	rm -rf ./grpc_app/generated/*.p*
-	touch ./grpc_app/generated/__init__.py
-	python -m grpc_tools.protoc \
-	-I grpc_app.generated=./grpc_app/proto/ \
-	--python_betterproto_out=./grpc_app/generated \
-	--python_out=. \
-	--grpclib_python_out=. \
-	grpc_app/proto/*.proto
-	git add ./grpc_app/generated

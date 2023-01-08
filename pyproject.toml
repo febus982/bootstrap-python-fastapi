@@ -21,8 +21,6 @@ starlette-prometheus = "~0.9.0"
 uvicorn = "~0.20.0"
 
 [tool.poetry.group.grpc.dependencies]
- # TODO: Review what grpc dependencies can be moved to dev group
-betterproto = { version = "~1.2.5", extras = ["compiler"] }
 grpcio = "~1.51.1"
 grpcio-tools = "~1.51.1"
 grpc-stubs = "~1.24.11"
