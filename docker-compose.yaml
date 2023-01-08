@@ -35,4 +35,4 @@ services:
       - "50051:50051"
     volumes:
       - '.:/app'
-    command: ["python3", "-m", "grpc_app.entrypoint"]
+    command: ["python3", "-m", "grpc_app"]
