@@ -58,26 +58,17 @@ Packages are ordered from the highest level to the lowest one.
 
 ## How to run
 
-Build docker containers
+Using Docker:
 
-```bash
-make build
-```
+* `docker compose build`: Build containers
+* `docker compose run --rm dev make migrate`: Run database migrations
+* `docker compose up dev`: Run HTTP application with hot reload
+* `docker compose up grpc`: Run GRPC application with hot reload
+* `docker compose run --rm test`: Run test suite
 
-Run database migrations
+Locally:
 
-```bash
-make migrate
-```
-
-Run dev application with hot reload
-
-```bash
-make dev
-```
-
-Run test suite with coverage
-
-```bash
-make test
-```
+* `make migrate`: Run database migrations
+* `make dev`: Run HTTP application with hot reload
+* `make grpc`: Run GRPC application with hot reload
+* `make test`: Run test suite
