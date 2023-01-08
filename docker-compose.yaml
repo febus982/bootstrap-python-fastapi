@@ -18,7 +18,6 @@ services:
     build: .
     volumes:
       - '.:/app'
-    working_dir: "/app/grpc_app/"
     command: ["make", "generate-proto"]
 
   grpc:
