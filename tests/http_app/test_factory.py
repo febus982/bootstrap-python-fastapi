@@ -24,7 +24,8 @@ def test_with_config_test() -> None:
                     engine_url=f"sqlite:///{db_name}",
                     engine_options=dict(connect_args={"check_same_thread": False}),
                 ),
-            }
+            },
+            ENVIRONMENT="test",
         )
     )
 
