@@ -22,7 +22,8 @@ def testapp() -> Container:
                 engine_options=dict(connect_args={"check_same_thread": False}),
                 session_options=dict(expire_on_commit=False),
             ),
-        }
+        },
+        ENVIRONMENT="test",
     )
 
     di_container = Container(  # type: ignore

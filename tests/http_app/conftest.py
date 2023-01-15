@@ -21,7 +21,8 @@ def testapp() -> FastAPI:
                 engine_options=dict(connect_args={"check_same_thread": False}),
                 session_options=dict(expire_on_commit=False),
             ),
-        }
+        },
+        ENVIRONMENT="test",
     )
 
     app = create_app(test_config=test_config)
