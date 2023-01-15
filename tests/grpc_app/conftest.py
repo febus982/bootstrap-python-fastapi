@@ -29,6 +29,8 @@ def testserver() -> Server:
     for k, v in sa_manager.get_binds().items():
         v.registry_mapper.metadata.create_all(v.engine)
 
+    server.start()
     yield server
+    server.stop(grace=0)
     os.unlink(test_db_path)
     clear_mappers()
