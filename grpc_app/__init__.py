@@ -8,7 +8,7 @@ from dependency_injector.providers import Object
 from config import AppConfig
 from di_container import Container
 from grpc_app.generated.books_pb2_grpc import add_BooksServicer_to_server
-from grpc_app.services.books import BooksService
+from grpc_app.servicers.books import BooksServicer
 from storage import init_storage
 
 
@@ -21,7 +21,7 @@ def create_server(test_config: Optional[AppConfig] = None):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     server.container = c  # type: ignore
     # Register service
-    add_BooksServicer_to_server(BooksService(), server)
+    add_BooksServicer_to_server(BooksServicer(), server)
     server.add_insecure_port("[::]:50051")
     return server
 

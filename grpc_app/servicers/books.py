@@ -6,7 +6,7 @@ import grpc_app.generated.books_pb2_grpc as books_grpc
 from domains.books.boundary_interfaces import BookServiceInterface
 
 
-class BooksService(books_grpc.BooksServicer):
+class BooksServicer(books_grpc.BooksServicer):
     @inject
     def ListBooks(
         self,
