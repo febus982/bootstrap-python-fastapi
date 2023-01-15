@@ -1,4 +1,4 @@
-# Bootstrap FastAPI service
+# Bootstrap python service
 [![Python 3.9](https://github.com/febus982/bootstrap-python-fastapi/actions/workflows/python-3.9.yml/badge.svg?event=push)](https://github.com/febus982/bootstrap-python-fastapi/actions/workflows/python-3.9.yml)
 [![Python 3.10](https://github.com/febus982/bootstrap-python-fastapi/actions/workflows/python-3.10.yml/badge.svg?event=push)](https://github.com/febus982/bootstrap-python-fastapi/actions/workflows/python-3.10.yml)
 [![Python 3.11](https://github.com/febus982/bootstrap-python-fastapi/actions/workflows/python-3.11.yml/badge.svg?event=push)](https://github.com/febus982/bootstrap-python-fastapi/actions/workflows/python-3.11.yml)
@@ -7,14 +7,14 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/a2ab183e64778e21ae14/test_coverage)](https://codeclimate.com/github/febus982/bootstrap-python-fastapi/test_coverage)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-This is an example implementation of a API service applying
+This is an example implementation of microservice applying
 concepts from [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 and [SOLID principles](https://en.wikipedia.org/wiki/SOLID).
 
 * The books domain is isolated behind an interface class, enforcing the [Interface Segregation principle](https://en.wikipedia.org/wiki/Interface_segregation_principle) 
   and the [Inversion of Control principle](https://en.wikipedia.org/wiki/Inversion_of_control)
 * The same principles are used for the BookRepository class
-* The application framework is decoupled from the domain logic (we can potentially add a new application and reuse the same domain logic to provide e.g. a GRPC interface)
+* The application frameworks are decoupled from the domain logic
 * The storage layer is decoupled from the domain logic
 
 In this way our components are loosely coupled and the application logic
@@ -43,6 +43,7 @@ Packages are ordered from the highest level to the lowest one.
 ------
 
 * `http_app` (http presentation layer)
+* `grpc_app` (grpc presentation layer)
 * `storage` (database connection manager, repository implementation)
 
 ------
@@ -57,26 +58,17 @@ Packages are ordered from the highest level to the lowest one.
 
 ## How to run
 
-Build docker containers
+Using Docker:
 
-```bash
-make build
-```
+* `docker compose build`: Build containers
+* `docker compose run --rm dev make migrate`: Run database migrations
+* `docker compose up dev`: Run HTTP application with hot reload
+* `docker compose up grpc`: Run GRPC application with hot reload
+* `docker compose run --rm test`: Run test suite
 
-Run database migrations
+Locally:
 
-```bash
-make migrate
-```
-
-Run dev application with hot reload
-
-```bash
-make dev
-```
-
-Run test suite with coverage
-
-```bash
-make test
-```
+* `make migrate`: Run database migrations
+* `make dev`: Run HTTP application with hot reload
+* `make grpc`: Run GRPC application with hot reload
+* `make test`: Run test suite

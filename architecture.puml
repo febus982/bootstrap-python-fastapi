@@ -6,6 +6,10 @@ package http_app {
     package routes #DDDDDD
 }
 
+package grpc_app {
+    package services #DDDDDD
+}
+
 package domains #DDDDDD {
     package books {
         class Book
@@ -27,14 +31,16 @@ package storage #DDDDDD {
 'links framework - domains
 routes --> BookServiceInterface
 routes --> Book
+services --> BookServiceInterface
+services --> Book
 
 'links internal to books domain
-LocalBookService -u-|> BookServiceInterface
+LocalBookService -u-|> BookServiceInterface: implements >
 BookServiceInterface -l-> Book
 LocalBookService --> BookModel
 LocalBookService --> BookRepositoryInterface
 BookRepositoryInterface -l-> BookModel
 
 'links domains - storage
-BookRepository ---d-|> BookRepositoryInterface
+BookRepository ---d-|> BookRepositoryInterface: implements >
 @enduml

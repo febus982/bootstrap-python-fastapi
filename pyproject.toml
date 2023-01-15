@@ -7,25 +7,31 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 alembic = "~1.8.1"
-attrs = "~22.1.0"
 dependency-injector = { version = "~4.40.0", extras = ["pydantic"] }
-fastapi = "~0.87.0"
-fastapi-versionizer = "~0.1.2"
-httpx = "~0.23.0"
 python = "~3.10"
 SQLAlchemy = { version = "~1.4.43", extras = ["asyncio", "mypy"] }
 sqlalchemy-bind-manager = { git = "https://github.com/febus982/sqlalchemy-bind-manager.git", branch = "main" }
+
+[tool.poetry.group.html.dependencies]
+fastapi = "~0.87.0"
+fastapi-versionizer = "~0.1.2"
+httpx = "~0.23.0"
+jinja2 = "~3.1.2"
 starlette-prometheus = "~0.9.0"
 uvicorn = "~0.20.0"
 
-[tool.poetry.group.html.dependencies]
-jinja2 = "~3.1.2"
+[tool.poetry.group.grpc.dependencies]
+grpcio = "~1.51.1"
+grpcio-tools = "~1.51.1"
+grpc-stubs = "~1.24.11"
+mypy-protobuf = "^3.4.0"
 
 [tool.poetry.group.dev.dependencies]
 coverage = "~6.5.0"
 black = "~22.10.0"
 flake8 = "~5.0.4"
 mypy = "~0.990"
+mypy-protobuf = "~3.4.0"
 pytest = "~7.2.0"
 pytest-cov = "^4.0.0"
 pytest-factoryboy = "~2.5.0"
@@ -35,3 +41,10 @@ sqlalchemy-stubs = "^0.4"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-n auto --cov-report=term-missing"
+testpaths = [
+    "tests",
+]
