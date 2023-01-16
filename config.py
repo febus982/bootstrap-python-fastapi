@@ -26,16 +26,18 @@ class AppConfig(BaseSettings):
 def init_logger(config: AppConfig):
 
     processors: List[Processor] = [
+        structlog.contextvars.merge_contextvars,
         structlog.stdlib.add_logger_name,
-        structlog.stdlib.add_log_level,
         structlog.stdlib.PositionalArgumentsFormatter(),
-        structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M.%S"),
+        structlog.processors.add_log_level,
+        structlog.processors.TimeStamper(fmt="iso", utc=True),
         structlog.processors.StackInfoRenderer(),
     ]
 
     if config.ENVIRONMENT not in ["local", "test"]:
-        processors.append(structlog.processors.JSONRenderer())
         log_level = logging.INFO
+        processors.append(structlog.processors.dict_tracebacks)
+        processors.append(structlog.processors.JSONRenderer())
     else:
         log_level = logging.DEBUG
         processors.append(structlog.dev.ConsoleRenderer())
@@ -45,6 +47,6 @@ def init_logger(config: AppConfig):
         wrapper_class=structlog.make_filtering_bound_logger(log_level),
         processors=processors,
         logger_factory=structlog.stdlib.LoggerFactory(),
-        cache_logger_on_first_use=False,
+        cache_logger_on_first_use=True,
     )
 
