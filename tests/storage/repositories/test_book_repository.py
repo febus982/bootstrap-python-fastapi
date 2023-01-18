@@ -4,7 +4,7 @@ from storage.repositories.book_repository import BookRepository
 
 def test_create_book(testapp):
     repo = BookRepository()
-    with repo._sa_manager.get_session() as session:
+    with repo._session as session:
         book = session.get(BookModel, 1)
         assert book is None
 
@@ -16,7 +16,7 @@ def test_create_book(testapp):
         )
     )
 
-    with repo._sa_manager.get_session() as session:
+    with repo._session as session:
         book = session.get(BookModel, 1)
         assert book is not None
         assert book.book_id == 1
