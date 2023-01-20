@@ -8,13 +8,16 @@ readme = "README.md"
 [tool.poetry.dependencies]
 alembic = "~1.8.1"
 dependency-injector = { version = "~4.40.0", extras = ["pydantic"] }
-python = "~3.10"
+python = "<3.12"
 SQLAlchemy = { version = "~1.4.43", extras = ["asyncio", "mypy"] }
 rich = "^13.1.0"
 sqlalchemy-bind-manager = { git = "https://github.com/febus982/sqlalchemy-bind-manager.git", branch = "main" }
 structlog = "~22.3.0"
 
-[tool.poetry.group.html.dependencies]
+[tool.poetry.group.http]
+optional = true
+
+[tool.poetry.group.http.dependencies]
 fastapi = "~0.87.0"
 fastapi-versionizer = "~0.1.2"
 httpx = "~0.23.0"
@@ -22,11 +25,17 @@ jinja2 = "~3.1.2"
 starlette-prometheus = "~0.9.0"
 uvicorn = "~0.20.0"
 
+[tool.poetry.group.grpc]
+optional = true
+
 [tool.poetry.group.grpc.dependencies]
 grpcio = "~1.51.1"
 grpcio-tools = "~1.51.1"
 grpc-stubs = "~1.24.11"
 mypy-protobuf = "^3.4.0"
+
+[tool.poetry.group.dev]
+optional = true
 
 [tool.poetry.group.dev.dependencies]
 coverage = "~6.5.0"
