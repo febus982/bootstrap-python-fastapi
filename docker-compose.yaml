@@ -1,29 +1,50 @@
-version: '3'
+version: '3.8'
 services:
   dev:
-    build: .
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: http_app
     ports:
       - '8000:8000'
     command: ["make", "dev"]
     volumes:
       - '.:/app'
-  app:
-    build: .
+  http:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: http_app
     ports:
       - '8001:8000'
     volumes:
       - './sqlite.db:/app/sqlite.db'
 
   generate-proto:
-    build: .
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: grpc_builder
     volumes:
       - '.:/app'
     command: ["make", "generate-proto"]
 
   grpc:
-    build: .
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: grpc_app
     ports:
       - "50051:50051"
     volumes:
       - '.:/app'
     command: ["make", "grpc"]
+
+  test:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: test
+    volumes:
+      - '.:/app'
+    command: ["make", "test"]

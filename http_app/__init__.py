@@ -23,6 +23,7 @@ def create_app(
     app.di_container = Container(  # type: ignore
         config=Object(app_config),
     )
+    app.di_container.wire(packages=["http_app"])  # type: ignore
 
     init_storage()
 

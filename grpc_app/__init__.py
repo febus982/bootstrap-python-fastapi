@@ -18,6 +18,7 @@ def create_server(test_config: Optional[AppConfig] = None):
     c = Container(
         config=Object(test_config or AppConfig()),
     )
+    c.wire(packages=["grpc_app"])
     init_storage()
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     server.container = c  # type: ignore
