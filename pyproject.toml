@@ -6,11 +6,11 @@ authors = ["Federico Busetti <729029+febus982@users.noreply.github.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-alembic = "~1.8.1"
-dependency-injector = { version = "~4.40.0", extras = ["pydantic"] }
-python = "<3.12"
+alembic = "~1.9.2"
+dependency-injector = { version = "~4.41.0", extras = ["pydantic"] }
+python = ">=3.9,<3.12"
 SQLAlchemy = { version = "~1.4.43", extras = ["asyncio", "mypy"] }
-rich = "^13.1.0"
+rich = "^13.2.0"
 sqlalchemy-bind-manager = { git = "https://github.com/febus982/sqlalchemy-bind-manager.git", branch = "main" }
 structlog = "~22.3.0"
 
