@@ -1,38 +1,29 @@
 import os
+from collections.abc import Iterator
 from uuid import uuid4
 
 import pytest
 from dependency_injector.providers import Object
 from sqlalchemy.orm import clear_mappers
-from sqlalchemy_bind_manager import SQLAlchemyBindConfig
 
-from config import AppConfig
 from di_container import Container
 from storage import init_storage
 
 
-@pytest.fixture(scope="function")
-def testapp() -> Container:
+@pytest.fixture(scope="function", autouse=True)
+def test_di_container(test_config) -> Iterator[Container]:
     test_db_path = f"./{uuid4()}.db"
     clear_mappers()
-    test_config = AppConfig(
-        SQLALCHEMY_CONFIG={
-            "default": SQLAlchemyBindConfig(
-                engine_url=f"sqlite:///{test_db_path}",
-                engine_options=dict(connect_args={"check_same_thread": False}),
-                session_options=dict(expire_on_commit=False),
-            ),
-        },
-        ENVIRONMENT="test",
-    )
 
-    di_container = Container(  # type: ignore
+    test_config.SQLALCHEMY_CONFIG["default"].engine_url = f"sqlite:///{test_db_path}"
+    di_container = Container(
         config=Object(test_config),
     )
     init_storage()
     sa_manager = di_container.SQLAlchemyBindManager()
     for k, v in sa_manager.get_binds().items():
-        v.registry_mapper.metadata.create_all(v.engine)
+        # TODO: Review this typing on sqlalchemy_bind_manager (AsyncEngine not compatible with create_all
+        v.registry_mapper.metadata.create_all(v.engine)  # type: ignore
 
     yield di_container
     os.unlink(test_db_path)

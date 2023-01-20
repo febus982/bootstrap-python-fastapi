@@ -13,17 +13,17 @@ from storage import init_storage
 
 def create_app(
     test_config: Union[AppConfig, None] = None,
+    test_di_container: Union[Container, None] = None,
 ) -> FastAPI:
     app_config = test_config or AppConfig()
     init_logger(app_config)
     app = FastAPI(debug=test_config is not None)
 
     # Initialise and wire DI container
-    # TODO: Don't persist the container in the http_app object only to access it from pytest.
-    app.di_container = Container(  # type: ignore
+    c = test_di_container or Container(
         config=Object(app_config),
     )
-    app.di_container.wire(packages=["http_app"])  # type: ignore
+    c.wire(packages=["http_app"])
 
     init_storage()
 

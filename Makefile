@@ -9,6 +9,7 @@ grpc:
 
 test:
 	poetry run pytest --cov
+	poetry run mypy
 
 migrate:
 	poetry run alembic upgrade heads
