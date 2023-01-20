@@ -2,7 +2,7 @@ from domains.books._local import BookModel
 from storage.repositories.book_repository import BookRepository
 
 
-def test_create_book(testapp):
+def test_create_book():
     repo = BookRepository()
     with repo._session as session:
         book = session.get(BookModel, 1)
