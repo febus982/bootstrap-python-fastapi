@@ -4,21 +4,18 @@ from typing import Dict, Literal, List
 
 import structlog
 from pydantic import BaseSettings
-from sqlalchemy_bind_manager import SQLAlchemyBindConfig
+from sqlalchemy_bind_manager import SQLAlchemyAsyncBindConfig
 from structlog.typing import Processor
 
 TYPE_ENVIRONMENT = Literal['local', 'test', 'staging', 'production']
 
 
 class AppConfig(BaseSettings):
-    SQLALCHEMY_CONFIG: Dict[str, SQLAlchemyBindConfig] = {
-        "default": SQLAlchemyBindConfig(
-            engine_url=f"sqlite:///{os.path.dirname(os.path.abspath(__file__))}/sqlite.db",
+    SQLALCHEMY_CONFIG = {
+        "default": SQLAlchemyAsyncBindConfig(
+            engine_url=f"sqlite+aiosqlite:///{os.path.dirname(os.path.abspath(__file__))}/sqlite.db",
             engine_options=dict(connect_args={"check_same_thread": False}, echo=True),
-            session_options=dict(expire_on_commit=False),
         ),
-        # Add additional bindings here, e.g.:
-        # "customer": SQLAlchemyBindConfig(engine_url="sqlite:///./customer.db"),
     }
     ENVIRONMENT: TYPE_ENVIRONMENT = "local"
 

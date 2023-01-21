@@ -22,8 +22,8 @@ class LocalBookService:
         self.book_repository = book_repository
 
     async def create_book(self, book: BookData) -> Book:
-        return Book.from_orm(self.book_repository.save(BookModel(**book.dict())))
+        return Book.from_orm(await self.book_repository.save(BookModel(**book.dict())))
 
     async def list_books(self) -> Iterable[Book]:
         books = self.book_repository.find()
-        return [Book.from_orm(x) for x in books]
+        return [Book.from_orm(x) async for x in books]

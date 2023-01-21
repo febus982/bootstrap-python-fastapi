@@ -1,5 +1,5 @@
 import os
-from collections.abc import Iterator
+from collections.abc import AsyncIterator
 from uuid import uuid4
 
 import pytest
@@ -11,20 +11,23 @@ from storage import init_storage
 
 
 @pytest.fixture(scope="function", autouse=True)
-def test_di_container(test_config) -> Iterator[Container]:
+async def test_di_container(test_config) -> AsyncIterator[Container]:
     test_db_path = f"./{uuid4()}.db"
     clear_mappers()
 
-    test_config.SQLALCHEMY_CONFIG["default"].engine_url = f"sqlite:///{test_db_path}"
+    test_config.SQLALCHEMY_CONFIG["default"].engine_url = f"sqlite+aiosqlite:///{test_db_path}"
     di_container = Container(
         config=Object(test_config),
     )
     init_storage()
     sa_manager = di_container.SQLAlchemyBindManager()
     for k, v in sa_manager.get_binds().items():
-        # TODO: Review this typing on sqlalchemy_bind_manager (AsyncEngine not compatible with create_all
-        v.registry_mapper.metadata.create_all(v.engine)  # type: ignore
+        async with v.engine.begin() as conn:  # type: ignore
+            await conn.run_sync(v.registry_mapper.metadata.create_all)
 
     yield di_container
-    os.unlink(test_db_path)
+    try:
+        os.unlink(test_db_path)
+    except FileNotFoundError:
+        pass
     clear_mappers()

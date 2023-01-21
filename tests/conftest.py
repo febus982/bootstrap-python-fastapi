@@ -2,7 +2,7 @@ from uuid import uuid4
 
 import pytest
 from dependency_injector.providers import Object
-from sqlalchemy_bind_manager import SQLAlchemyBindConfig
+from sqlalchemy_bind_manager import SQLAlchemyAsyncBindConfig
 
 from config import AppConfig
 from di_container import Container
@@ -21,10 +21,9 @@ def anyio_backend():
 def test_config() -> AppConfig:
     return AppConfig(
         SQLALCHEMY_CONFIG={
-            "default": SQLAlchemyBindConfig(
-                engine_url=f"sqlite:///{uuid4()}.db",
+            "default": SQLAlchemyAsyncBindConfig(
+                engine_url=f"sqlite+aiosqlite:///{uuid4()}.db",
                 engine_options=dict(connect_args={"check_same_thread": False}),
-                session_options=dict(expire_on_commit=False),
             ),
         },
         ENVIRONMENT="test",

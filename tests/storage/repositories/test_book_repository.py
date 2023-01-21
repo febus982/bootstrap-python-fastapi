@@ -2,13 +2,13 @@ from domains.books._local import BookModel
 from storage.repositories.book_repository import BookRepository
 
 
-def test_create_book():
+async def test_create_book():
     repo = BookRepository()
-    with repo._session as session:
-        book = session.get(BookModel, 1)
+    async with repo._session as session:
+        book = await session.get(BookModel, 1)
         assert book is None
 
-    repo.save(
+    await repo.save(
         BookModel(
             title="pippo",
             author_name="pluto",
@@ -16,7 +16,7 @@ def test_create_book():
         )
     )
 
-    with repo._session as session:
-        book = session.get(BookModel, 1)
+    async with repo._session as session:
+        book = await session.get(BookModel, 1)
         assert book is not None
         assert book.book_id == 1

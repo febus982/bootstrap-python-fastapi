@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock
+from asynctest import MagicMock
 
 from domains.books.dto import Book
 from domains.books._local import LocalBookService, BookModel
@@ -22,7 +22,12 @@ async def test_list_books(book_repository):
         title="test",
         author_name="other",
     )
-    book_repository.find = MagicMock(side_effect=lambda: [book])
+
+    async def fake_find():
+        for x in [book]:
+            yield x
+    book_repository.find = MagicMock(side_effect=fake_find)
+
     returned_books = await service.list_books()
     assert [Book.from_orm(book)] == returned_books
     book_repository.find.assert_called_once()

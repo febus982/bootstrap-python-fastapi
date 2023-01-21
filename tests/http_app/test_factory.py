@@ -2,7 +2,7 @@ from unittest.mock import patch
 from uuid import uuid4
 
 from sqlalchemy.orm import clear_mappers
-from sqlalchemy_bind_manager import SQLAlchemyBindConfig
+from sqlalchemy_bind_manager import SQLAlchemyAsyncBindConfig
 
 from config import AppConfig
 from http_app import create_app
@@ -20,8 +20,8 @@ def test_with_config_test() -> None:
     app2 = create_app(
         test_config=AppConfig(
             SQLALCHEMY_CONFIG={
-                "default": SQLAlchemyBindConfig(
-                    engine_url=f"sqlite:///{db_name}",
+                "default": SQLAlchemyAsyncBindConfig(
+                    engine_url=f"sqlite+aiosqlite:///{db_name}",
                     engine_options=dict(connect_args={"check_same_thread": False}),
                 ),
             },

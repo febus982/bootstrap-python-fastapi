@@ -1,10 +1,10 @@
 from dependency_injector.wiring import Provide, inject
-from sqlalchemy_bind_manager import SQLAlchemyRepository, SQLAlchemyBindManager
+from sqlalchemy_bind_manager import SQLAlchemyAsyncRepository, SQLAlchemyBindManager
 
 from domains.books._local import BookModel
 
 
-class BookRepository(SQLAlchemyRepository[BookModel]):
+class BookRepository(SQLAlchemyAsyncRepository[BookModel]):
     _model = BookModel
 
     @inject
