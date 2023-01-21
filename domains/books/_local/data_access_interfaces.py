@@ -1,5 +1,5 @@
-from collections.abc import AsyncIterable, Iterable
-from typing import Protocol, Union, Tuple
+from collections.abc import Iterable
+from typing import Protocol, Union, Tuple, List
 
 from sqlalchemy_bind_manager import SortDirection
 
@@ -14,5 +14,5 @@ class BookRepositoryInterface(Protocol):
         self,
         order_by: Union[None, Iterable[Union[str, Tuple[str, SortDirection]]]] = None,
         **search_params,
-    ) -> AsyncIterable[BookModel]:
+    ) -> List[BookModel]:
         ...

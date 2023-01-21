@@ -1425,7 +1425,7 @@ SQLAlchemy = {version = "~1.4.45", extras = ["asyncio", "mypy"]}
 type = "git"
 url = "https://github.com/febus982/sqlalchemy-bind-manager.git"
 reference = "main"
-resolved_reference = "087a7784f6cf2c7c076014120f04dcf7da176f31"
+resolved_reference = "ffd4f3853602c219732e6a3cf10c0cd1c009a3e4"
 
 [[package]]
 name = "sqlalchemy-stubs"
