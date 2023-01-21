@@ -1,8 +1,6 @@
-import pytest
 from httpx import AsyncClient
 
 
-@pytest.mark.anyio
 async def test_create_book(testapp):
     new_book_data = dict(
         title="test",
@@ -21,7 +19,6 @@ async def test_create_book(testapp):
     assert new_book_data.items() <= response.json()["book"].items()
 
 
-@pytest.mark.anyio
 async def test_create_book_v2(testapp):
     new_book_data = dict(
         title="test",

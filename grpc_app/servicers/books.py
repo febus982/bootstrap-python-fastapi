@@ -8,7 +8,7 @@ from domains.books.boundary_interfaces import BookServiceInterface
 
 class BooksServicer(books_grpc.BooksServicer):
     @inject
-    def ListBooks(
+    async def ListBooks(
         self,
         request: books_messages.ListBooksRequest,
         context: grpc.ServicerContext,
