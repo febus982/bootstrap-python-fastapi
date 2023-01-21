@@ -7,9 +7,16 @@ run:
 grpc:
 	poetry run python3 -m grpc_app
 
-test:
+test: mypy
 	poetry run pytest --cov
-	poetry run mypy
+
+mypy:
+	poetry run mypy http_app
+	poetry run mypy grpc_app
+	poetry run mypy domains
+	poetry run mypy tests
+	poetry run mypy config.py
+	poetry run mypy di_container.py
 
 migrate:
 	poetry run alembic upgrade heads

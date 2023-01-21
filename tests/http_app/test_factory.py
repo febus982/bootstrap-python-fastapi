@@ -2,7 +2,7 @@ from unittest.mock import patch
 from uuid import uuid4
 
 from sqlalchemy.orm import clear_mappers
-from sqlalchemy_bind_manager import SQLAlchemyBindConfig
+from sqlalchemy_bind_manager import SQLAlchemyAsyncBindConfig
 
 from config import AppConfig
 from http_app import create_app
@@ -20,8 +20,8 @@ def test_with_config_test() -> None:
     app2 = create_app(
         test_config=AppConfig(
             SQLALCHEMY_CONFIG={
-                "default": SQLAlchemyBindConfig(
-                    engine_url=f"sqlite:///{db_name}",
+                "default": SQLAlchemyAsyncBindConfig(
+                    engine_url=f"sqlite+aiosqlite:///{db_name}",
                     engine_options=dict(connect_args={"check_same_thread": False}),
                 ),
             },
@@ -29,12 +29,6 @@ def test_with_config_test() -> None:
         )
     )
 
-    # sa_manager = app2.di_container.SQLAlchemyBindManager()
-    # for k, v in sa_manager.get_binds().items():
-    #     v.registry_mapper.metadata.create_all(v.engine)
-
     # We don't need the storage to test the HTTP app
     with patch("storage.init_storage", return_value=None):
         assert app2.debug is True
-    # os.unlink(db_name)
-    # clear_mappers()

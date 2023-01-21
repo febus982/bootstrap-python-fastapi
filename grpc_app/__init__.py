@@ -2,7 +2,7 @@ import logging
 from concurrent import futures
 from typing import Optional
 
-import grpc
+from grpc.aio import server
 from dependency_injector.providers import Object
 
 from config import AppConfig, init_logger
@@ -20,16 +20,16 @@ def create_server(test_config: Optional[AppConfig] = None):
     )
     c.wire(packages=["grpc_app"])
     init_storage()
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    server.container = c  # type: ignore
+    s = server(futures.ThreadPoolExecutor(max_workers=10))
+    s.container = c  # type: ignore
     # Register service
-    add_BooksServicer_to_server(BooksServicer(), server)
-    server.add_insecure_port("[::]:50051")
-    return server
+    add_BooksServicer_to_server(BooksServicer(), s)
+    s.add_insecure_port("[::]:50051")
+    return s
 
 
-def main():  # pragma: no cover
-    server = create_server()
-    server.start()
+async def main():  # pragma: no cover
+    s = create_server()
+    await s.start()
+    await s.wait_for_termination()
     logging.info("GRPC started")
-    server.wait_for_termination()

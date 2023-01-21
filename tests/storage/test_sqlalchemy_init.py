@@ -2,7 +2,7 @@ import os
 from unittest.mock import patch, Mock
 from uuid import uuid4
 
-from sqlalchemy_bind_manager import SQLAlchemyBindManager, SQLAlchemyBindConfig
+from sqlalchemy_bind_manager import SQLAlchemyBindManager, SQLAlchemyAsyncBindConfig
 
 from storage.SQLAlchemy import TABLE_INIT_REGISTRY, init_tables
 
@@ -13,13 +13,13 @@ def test_init_tables_calls_only_supported_bind_initialisation(test_di_container)
 
     sa_manager = SQLAlchemyBindManager(
         config={
-            "default": SQLAlchemyBindConfig(
-                engine_url=f"sqlite:///{db1_path}",
+            "default": SQLAlchemyAsyncBindConfig(
+                engine_url=f"sqlite+aiosqlite:///{db1_path}",
                 engine_options=dict(connect_args={"check_same_thread": False}),
                 session_options=dict(expire_on_commit=False),
             ),
-            "not_existing": SQLAlchemyBindConfig(
-                engine_url=f"sqlite:///{db2_path}",
+            "not_existing": SQLAlchemyAsyncBindConfig(
+                engine_url=f"sqlite+aiosqlite:///{db2_path}",
                 engine_options=dict(connect_args={"check_same_thread": False}),
                 session_options=dict(expire_on_commit=False),
             ),
