@@ -5,8 +5,8 @@ from .dto import BookData, Book
 
 
 class BookServiceInterface(Protocol):
-    def create_book(self, book: BookData) -> Book:
+    async def create_book(self, book: BookData) -> Book:
         ...
 
-    def list_books(self) -> Iterable[Book]:
+    async def list_books(self) -> Iterable[Book]:
         ...

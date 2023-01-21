@@ -1,6 +1,6 @@
 from collections.abc import Iterator
 from random import randint
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, AsyncMock
 
 import pytest
 from dependency_injector.providers import Object
@@ -13,9 +13,9 @@ from domains.books.dto import Book
 @pytest.fixture
 def book_service() -> MagicMock:
     svc = MagicMock(autospec=BookServiceInterface)
-    svc.create_book.side_effect = lambda book: Book(
+    svc.create_book = AsyncMock(side_effect=lambda book: Book(
         book_id=randint(1, 1000), **book.dict()
-    )
+    ))
 
     return svc
 

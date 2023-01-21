@@ -33,7 +33,7 @@ async def create_book(
         Provide[BookServiceInterface.__name__]
     ),
 ) -> CreateBookResponse:
-    created_book = book_service.create_book(book=data)
+    created_book = await book_service.create_book(book=data)
     return CreateBookResponse(book=created_book)
 
 
@@ -48,5 +48,5 @@ async def create_book_v2(
         Provide[BookServiceInterface.__name__]
     ),
 ) -> CreateBookResponse:
-    created_book = book_service.create_book(book=data)
+    created_book = await book_service.create_book(book=data)
     return CreateBookResponse(book=created_book)

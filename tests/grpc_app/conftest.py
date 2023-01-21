@@ -1,5 +1,5 @@
 import os
-from collections.abc import Iterator
+from collections.abc import AsyncIterator
 from uuid import uuid4
 
 import pytest
@@ -12,7 +12,7 @@ from grpc_app import create_server
 
 
 @pytest.fixture(scope="function")
-def testserver() -> Iterator[Server]:
+async def testserver() -> AsyncIterator[Server]:
     test_db_path = f"./{uuid4()}.db"
     clear_mappers()
     test_config = AppConfig(

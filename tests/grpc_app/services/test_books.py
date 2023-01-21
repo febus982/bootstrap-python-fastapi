@@ -1,6 +1,4 @@
-from unittest.mock import MagicMock
-
-import pytest
+from unittest.mock import MagicMock, AsyncMock
 
 from domains.books.boundary_interfaces import BookServiceInterface
 from domains.books.dto import Book
@@ -11,7 +9,7 @@ from grpc_app.generated.books_pb2 import ListBooksRequest, ListBooksResponse
 async def test_grpc_server():
     servicer = BooksServicer()
 
-    book_service = MagicMock(autospec=BookServiceInterface)
+    book_service = AsyncMock(autospec=BookServiceInterface)
     book_service.list_books.return_value = [
         Book(
             book_id=123,
