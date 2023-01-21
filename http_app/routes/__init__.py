@@ -16,7 +16,7 @@ def init_unversioned_routes(app: FastAPI) -> None:
     app.include_router(hello_router)
 
     @app.get("/docs", response_class=HTMLResponse, include_in_schema=False)
-    def get_api_versions() -> HTMLResponse:
+    async def get_api_versions() -> HTMLResponse:
         """
         Swagger page for non-versioned routes.
         """
