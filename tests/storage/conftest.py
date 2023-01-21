@@ -15,7 +15,9 @@ async def test_di_container(test_config) -> AsyncIterator[Container]:
     test_db_path = f"./{uuid4()}.db"
     clear_mappers()
 
-    test_config.SQLALCHEMY_CONFIG["default"].engine_url = f"sqlite+aiosqlite:///{test_db_path}"
+    test_config.SQLALCHEMY_CONFIG[
+        "default"
+    ].engine_url = f"sqlite+aiosqlite:///{test_db_path}"
     di_container = Container(
         config=Object(test_config),
     )

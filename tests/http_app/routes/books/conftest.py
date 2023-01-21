@@ -13,9 +13,9 @@ from domains.books.dto import Book
 @pytest.fixture
 def book_service() -> MagicMock:
     svc = MagicMock(autospec=BookServiceInterface)
-    svc.create_book = AsyncMock(side_effect=lambda book: Book(
-        book_id=randint(1, 1000), **book.dict()
-    ))
+    svc.create_book = AsyncMock(
+        side_effect=lambda book: Book(book_id=randint(1, 1000), **book.dict())
+    )
 
     return svc
 
