@@ -29,12 +29,6 @@ def test_with_config_test() -> None:
         )
     )
 
-    # sa_manager = app2.di_container.SQLAlchemyBindManager()
-    # for k, v in sa_manager.get_binds().items():
-    #     v.registry_mapper.metadata.create_all(v.engine)
-
     # We don't need the storage to test the HTTP app
     with patch("storage.init_storage", return_value=None):
         assert app2.debug is True
-    # os.unlink(db_name)
-    # clear_mappers()
