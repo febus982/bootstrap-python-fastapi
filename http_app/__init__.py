@@ -1,9 +1,11 @@
 from typing import Union
 
 from dependency_injector.providers import Object
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi_versionizer import versionize
+from starlette.responses import JSONResponse
 from starlette_prometheus import PrometheusMiddleware, metrics
+from structlog import get_logger
 
 from config import AppConfig, init_logger
 from di_container import Container
@@ -18,6 +20,7 @@ def create_app(
     app_config = test_config or AppConfig()
     init_logger(app_config)
     app = FastAPI(debug=test_config is not None)
+    init_exception_handlers(app)
 
     # Initialise and wire DI container
     c = test_di_container or Container(
@@ -45,3 +48,18 @@ def create_app(
     init_unversioned_routes(app)
 
     return app
+
+
+def init_exception_handlers(app: FastAPI) -> None:
+    # This is a catch-all middleware for unhandled exceptions
+    # other Exception handlers should be initialised using
+    # the @app.exception_handler decorator
+    # https://fastapi.tiangolo.com/tutorial/handling-errors/#install-custom-exception-handlers
+    @app.middleware("http")
+    async def add_process_time_header(request: Request, call_next):
+        try:
+            return await call_next(request)
+        except Exception as e:
+            logger = get_logger(__name__)
+            logger.exception(e)
+            return JSONResponse({"error": "Internal server error"}, status_code=500)
