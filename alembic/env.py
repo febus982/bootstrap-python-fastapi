@@ -3,7 +3,7 @@ from logging.config import fileConfig
 
 from alembic import context
 
-from config import AppConfig
+from config import AlembicConfig
 from di_container import Container
 from storage.SQLAlchemy import init_tables
 
@@ -24,7 +24,7 @@ logger = logging.getLogger("alembic.env")
 # in the sample .ini file.
 # db_names = config.get_main_option("databases")
 
-di_container = Container(config=AppConfig())
+di_container = Container(config=AlembicConfig())
 sa_manager = di_container.SQLAlchemyBindManager()
 init_tables()
 
