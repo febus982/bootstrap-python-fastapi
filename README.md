@@ -12,7 +12,7 @@ concepts from [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08
 and [SOLID principles](https://en.wikipedia.org/wiki/SOLID).
 
 * The books domain is isolated behind an interface class, enforcing the [Interface Segregation principle](https://en.wikipedia.org/wiki/Interface_segregation_principle) 
-  and the [Inversion of Control principle](https://en.wikipedia.org/wiki/Inversion_of_control)
+  and the [Inversion of Control](https://en.wikipedia.org/wiki/Inversion_of_control) design pattern
 * The same principles are used for the BookRepository class
 * The application frameworks are decoupled from the domain logic
 * The storage layer is decoupled from the domain logic
