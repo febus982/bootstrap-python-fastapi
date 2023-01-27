@@ -136,8 +136,10 @@ async def run_migrations_online() -> None:
         for name, rec in engines.items():
             logger.info(f"Migrating database {name}")
             if isinstance(rec["engine"], AsyncEngine):
+
                 def migration_callable(*args, **kwargs):
                     return do_run_migration(*args, name=name, **kwargs)
+
                 await rec["connection"].run_sync(migration_callable)
             else:
                 do_run_migration(name, rec)
