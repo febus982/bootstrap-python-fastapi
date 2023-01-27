@@ -18,7 +18,7 @@ class AppConfig(BaseSettings):
                 connect_args={
                     "check_same_thread": False,
                 },
-                echo=True,
+                echo=False,
                 future=True,
             ),
         ),
