@@ -1530,7 +1530,7 @@ sqlcipher = ["sqlcipher3-binary"]
 
 [[package]]
 name = "sqlalchemy-bind-manager"
-version = "0.3.0"
+version = "0.4.0"
 description = ""
 category = "main"
 optional = false
@@ -1545,8 +1545,8 @@ SQLAlchemy = {version = "~2.0.0", extras = ["asyncio", "mypy"]}
 [package.source]
 type = "git"
 url = "https://github.com/febus982/sqlalchemy-bind-manager.git"
-reference = "sqalchemy_2"
-resolved_reference = "8552c8b9bafc3712efd86de8d8c72bb7e0a43633"
+reference = "main"
+resolved_reference = "f2c33877703945e442c8a993120136f12ac5804d"
 
 [[package]]
 name = "starlette"
@@ -1821,4 +1821,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.12"
-content-hash = "c0bc5219a52da8f5808a968f5825659aa96dd270f330588b4e618dc1c8b2be8d"
+content-hash = "a94dfcc197598d3f423b2afcf5cdfd960b965e9c267f0d76ed5cb53592fd029e"
