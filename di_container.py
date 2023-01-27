@@ -61,4 +61,7 @@ class Container(DeclarativeContainer):
 
     BookRepositoryInterface: ThreadSafeSingleton[
         BookRepositoryInterface
-    ] = ThreadSafeSingleton(BookRepository)
+    ] = ThreadSafeSingleton(
+        BookRepository,
+        bind=SQLAlchemyBindManager.provided.get_bind.call(),
+    )
