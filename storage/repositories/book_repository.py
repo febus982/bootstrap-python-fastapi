@@ -12,4 +12,4 @@ class BookRepository(SQLAlchemyAsyncRepository[BookModel]):
         self,
         sa_manager: SQLAlchemyBindManager = Provide[SQLAlchemyBindManager.__name__],
     ) -> None:
-        super().__init__(sa_manager)
+        super().__init__(sa_manager.get_bind())  # type: ignore
