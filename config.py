@@ -7,31 +7,20 @@ from pydantic import BaseSettings
 from sqlalchemy_bind_manager import SQLAlchemyAsyncBindConfig, SQLAlchemyBindConfig
 from structlog.typing import Processor
 
-TYPE_ENVIRONMENT = Literal['local', 'test', 'staging', 'production']
+TYPE_ENVIRONMENT = Literal["local", "test", "staging", "production"]
 
 
 class AppConfig(BaseSettings):
     SQLALCHEMY_CONFIG = {
         "default": SQLAlchemyAsyncBindConfig(
             engine_url=f"sqlite+aiosqlite:///{os.path.dirname(os.path.abspath(__file__))}/sqlite.db",
-            engine_options=dict(connect_args={"check_same_thread": False}, echo=True),
-        ),
-    }
-    ENVIRONMENT: TYPE_ENVIRONMENT = "local"
-
-
-class AlembicConfig(BaseSettings):
-    """
-    It's extremely complex coordinating transaction on multiple binds
-    when using Async engines. For the moment we stick using a custom config
-    with sync engines, waiting to get a better Alembic implementation.
-    E.g.
-    https://github.com/testdrivenio/fastapi-sqlmodel-alembic/blob/main/project/migrations/env.py
-    """
-    SQLALCHEMY_CONFIG = {
-        "default": SQLAlchemyBindConfig(
-            engine_url=f"sqlite:///{os.path.dirname(os.path.abspath(__file__))}/sqlite.db",
-            engine_options=dict(connect_args={"check_same_thread": False}, echo=True),
+            engine_options=dict(
+                connect_args={
+                    "check_same_thread": False,
+                },
+                echo=False,
+                future=True,
+            ),
         ),
     }
     ENVIRONMENT: TYPE_ENVIRONMENT = "local"
@@ -63,4 +52,3 @@ def init_logger(config: AppConfig):
         logger_factory=structlog.stdlib.LoggerFactory(),
         cache_logger_on_first_use=True,
     )
-
