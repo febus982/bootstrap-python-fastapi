@@ -26,26 +26,6 @@ class AppConfig(BaseSettings):
     ENVIRONMENT: TYPE_ENVIRONMENT = "local"
 
 
-class AlembicConfig(BaseSettings):
-    """
-    It's extremely complex coordinating transaction on multiple binds
-    when using Async engines. For the moment we stick using a custom config
-    with sync engines, waiting to get a better Alembic implementation.
-    E.g.
-    https://github.com/testdrivenio/fastapi-sqlmodel-alembic/blob/main/project/migrations/env.py
-    """
-
-    SQLALCHEMY_CONFIG = {
-        "default": SQLAlchemyBindConfig(
-            engine_url=f"sqlite:///{os.path.dirname(os.path.abspath(__file__))}/sqlite.db",
-            engine_options=dict(
-                connect_args={"check_same_thread": False}, echo=True, future=True
-            ),
-        ),
-    }
-    ENVIRONMENT: TYPE_ENVIRONMENT = "local"
-
-
 def init_logger(config: AppConfig):
 
     processors: List[Processor] = [

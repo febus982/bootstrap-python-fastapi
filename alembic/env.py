@@ -5,7 +5,7 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy.ext.asyncio import AsyncEngine
 
-from config import AlembicConfig, AppConfig
+from config import AppConfig
 from di_container import Container
 from storage.SQLAlchemy import init_tables
 
@@ -26,8 +26,7 @@ logger = logging.getLogger("alembic.env")
 # in the sample .ini file.
 # db_names = config.get_main_option("databases")
 
-app_config = AlembicConfig()
-# app_config = AppConfig()
+app_config = AppConfig()
 di_container = Container(config=app_config)
 sa_manager = di_container.SQLAlchemyBindManager()
 init_tables()
@@ -91,9 +90,9 @@ def run_migrations_offline() -> None:
                 context.run_migrations(engine_name=name)
 
 
-def do_run_migration(name, rec):
+def do_run_migration(conn, name):
     context.configure(
-        connection=rec["connection"],
+        connection=conn,
         upgrade_token=f"{name}_upgrades",
         downgrade_token=f"{name}_downgrades",
         target_metadata=target_metadata.get(name),
@@ -115,12 +114,6 @@ async def run_migrations_online() -> None:
     for name in db_names:
         engines[name] = {}
         engines[name]["engine"] = sa_manager.get_bind(name).engine
-        # engines[name]["engine"] = create_async_engine(
-        #     sa_manager.get_bind(name).engine.url,
-        #     # app_config.SQLALCHEMY_CONFIG[name].engine_url,
-        #     poolclass=pool.NullPool,
-        #     future=True,
-        # )
 
     for name, rec in engines.items():
         engine = rec["engine"]
@@ -143,7 +136,9 @@ async def run_migrations_online() -> None:
         for name, rec in engines.items():
             logger.info(f"Migrating database {name}")
             if isinstance(rec["engine"], AsyncEngine):
-                await rec["connection"].run_sync(do_run_migration(name, rec))
+                def migration_callable(*args, **kwargs):
+                    return do_run_migration(*args, name=name, **kwargs)
+                await rec["connection"].run_sync(migration_callable)
             else:
                 do_run_migration(name, rec)
 
