@@ -1,9 +1,11 @@
 import logging
+from asyncio import get_event_loop
 from logging.config import fileConfig
 
 from alembic import context
+from sqlalchemy.ext.asyncio import AsyncEngine
 
-from config import AlembicConfig
+from config import AlembicConfig, AppConfig
 from di_container import Container
 from storage.SQLAlchemy import init_tables
 
@@ -24,7 +26,9 @@ logger = logging.getLogger("alembic.env")
 # in the sample .ini file.
 # db_names = config.get_main_option("databases")
 
-di_container = Container(config=AlembicConfig())
+app_config = AlembicConfig()
+# app_config = AppConfig()
+di_container = Container(config=app_config)
 sa_manager = di_container.SQLAlchemyBindManager()
 init_tables()
 
@@ -69,12 +73,12 @@ def run_migrations_offline() -> None:
     engines = {}
     for name in db_names:
         engines[name] = {}
-        engines[name]["url"] = sa_manager.get_binds()[name].engine.url
+        engines[name]["url"] = sa_manager.get_bind(name).engine.url
 
     for name, rec in engines.items():
-        logger.info("Migrating database %s" % name)
-        file_ = "%s.sql" % name
-        logger.info("Writing output to %s" % file_)
+        logger.info(f"Migrating database {name}")
+        file_ = f"{name}.sql"
+        logger.info(f"Writing output to {file_}")
         with open(file_, "w") as buffer:
             context.configure(
                 url=rec["url"],
@@ -87,12 +91,21 @@ def run_migrations_offline() -> None:
                 context.run_migrations(engine_name=name)
 
 
-def run_migrations_online() -> None:
+def do_run_migration(name, rec):
+    context.configure(
+        connection=rec["connection"],
+        upgrade_token=f"{name}_upgrades",
+        downgrade_token=f"{name}_downgrades",
+        target_metadata=target_metadata.get(name),
+    )
+    context.run_migrations(engine_name=name)
+
+
+async def run_migrations_online() -> None:
     """Run migrations in 'online' mode.
 
     In this scenario we need to create an Engine
     and associate a connection with the context.
-
     """
 
     # for the direct-to-DB use case, start a transaction on all
@@ -101,44 +114,71 @@ def run_migrations_online() -> None:
     engines = {}
     for name in db_names:
         engines[name] = {}
-        engines[name]["engine"] = sa_manager.get_binds()[name].engine
+        engines[name]["engine"] = sa_manager.get_bind(name).engine
+        # engines[name]["engine"] = create_async_engine(
+        #     sa_manager.get_bind(name).engine.url,
+        #     # app_config.SQLALCHEMY_CONFIG[name].engine_url,
+        #     poolclass=pool.NullPool,
+        #     future=True,
+        # )
 
     for name, rec in engines.items():
         engine = rec["engine"]
-        rec["connection"] = conn = engine.connect()
+        if isinstance(engine, AsyncEngine):
+            rec["connection"] = conn = await engine.connect()
 
-        if USE_TWOPHASE:
-            rec["transaction"] = conn.begin_twophase()
+            if USE_TWOPHASE:
+                rec["transaction"] = await conn.begin_twophase()
+            else:
+                rec["transaction"] = await conn.begin()
         else:
-            rec["transaction"] = conn.begin()
+            rec["connection"] = conn = engine.connect()
+
+            if USE_TWOPHASE:
+                rec["transaction"] = conn.begin_twophase()
+            else:
+                rec["transaction"] = conn.begin()
 
     try:
         for name, rec in engines.items():
-            logger.info("Migrating database %s" % name)
-            context.configure(
-                connection=rec["connection"],
-                upgrade_token="%s_upgrades" % name,
-                downgrade_token="%s_downgrades" % name,
-                target_metadata=target_metadata.get(name),
-            )
-            context.run_migrations(engine_name=name)
+            logger.info(f"Migrating database {name}")
+            if isinstance(rec["engine"], AsyncEngine):
+                await rec["connection"].run_sync(do_run_migration(name, rec))
+            else:
+                do_run_migration(name, rec)
 
         if USE_TWOPHASE:
             for rec in engines.values():
-                rec["transaction"].prepare()
+                if isinstance(rec["engine"], AsyncEngine):
+                    await rec["transaction"].prepare()
+                else:
+                    rec["transaction"].prepare()
 
         for rec in engines.values():
-            rec["transaction"].commit()
+            if isinstance(rec["engine"], AsyncEngine):
+                await rec["transaction"].commit()
+            else:
+                rec["transaction"].commit()
     except:
         for rec in engines.values():
-            rec["transaction"].rollback()
+            if isinstance(rec["engine"], AsyncEngine):
+                await rec["transaction"].rollback()
+            else:
+                rec["transaction"].rollback()
         raise
     finally:
         for rec in engines.values():
-            rec["connection"].close()
+            if isinstance(rec["engine"], AsyncEngine):
+                await rec["connection"].close()
+            else:
+                rec["connection"].close()
 
 
 if context.is_offline_mode():
     run_migrations_offline()
 else:
-    run_migrations_online()
+    loop = get_event_loop()
+    if loop.is_running():
+        loop.create_task(run_migrations_online())
+    else:
+        loop.run_until_complete(run_migrations_online())
