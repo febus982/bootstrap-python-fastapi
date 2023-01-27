@@ -11,7 +11,7 @@ dependency-injector = { version = "~4.41.0", extras = ["pydantic"] }
 python = ">=3.9,<3.12"
 SQLAlchemy = { version = "~2.0.0", extras = ["asyncio", "mypy"] }
 rich = "^13.2.0"
-sqlalchemy-bind-manager = { git = "https://github.com/febus982/sqlalchemy-bind-manager.git", branch = "sqalchemy_2" }
+sqlalchemy-bind-manager = { git = "https://github.com/febus982/sqlalchemy-bind-manager.git", branch = "main" }
 structlog = "~22.3.0"
 aiosqlite = "^0.18.0"
 
