@@ -52,7 +52,7 @@ def init_logger(config: AppConfig):
     else:
         log_level = logging.DEBUG
         processors.append(structlog.stdlib.ProcessorFormatter.remove_processors_meta)
-        processors.append(structlog.processors.TimeStamper(fmt="iso", utc=True))
+        processors.append(structlog.processors.TimeStamper(fmt="%d-%m-%Y %H:%M:%S", utc=True))
         processors.append(structlog.dev.ConsoleRenderer(pad_event=30))
 
     structlog.stdlib.recreate_defaults()
