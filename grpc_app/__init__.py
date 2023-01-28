@@ -15,13 +15,13 @@ from storage import init_storage
 # TODO: Add asyncio support: https://stackoverflow.com/questions/38387443/how-to-implement-a-async-grpc-python-server
 def create_server(test_config: Optional[AppConfig] = None):
     init_logger(test_config or AppConfig())
-    c = Container(
-        config=Object(test_config or AppConfig()),
-    )
-    c.wire(packages=["grpc_app"])
+    if not test_config:
+        c = Container(
+            config=Object(test_config or AppConfig()),
+        )
+        c.wire(packages=["grpc_app"])
     init_storage()
     s = server(futures.ThreadPoolExecutor(max_workers=10))
-    s.container = c  # type: ignore
     # Register service
     add_BooksServicer_to_server(BooksServicer(), s)
     s.add_insecure_port("[::]:50051")
