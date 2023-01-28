@@ -1,6 +1,5 @@
 import logging
 from asyncio import get_event_loop
-from logging.config import fileConfig
 
 from alembic import context
 from sqlalchemy.ext.asyncio import AsyncEngine
@@ -13,13 +12,12 @@ USE_TWOPHASE = False
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
-config = context.config
+# config = context.config
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
-if config.config_file_name is not None:
-    fileConfig(config.config_file_name)
-logger = logging.getLogger("alembic.env")
+# if config.config_file_name is not None:
+#     fileConfig(config.config_file_name)
 
 # gather section names referring to different
 # databases.  These are named "engine1", "engine2"
@@ -28,13 +26,14 @@ logger = logging.getLogger("alembic.env")
 
 app_config = AppConfig()
 init_logger(app_config)
+logger = logging.getLogger("alembic.env")
 di_container = Container(config=app_config)
 sa_manager = di_container.SQLAlchemyBindManager()
 init_tables()
 
 target_metadata = sa_manager.get_bind_mappers_metadata()
 db_names = target_metadata.keys()
-config.set_main_option("databases", ",".join(db_names))
+# config.set_main_option("databases", ",".join(db_names))
 
 # add your model's MetaData objects here
 # for 'autogenerate' support.  These must be set
