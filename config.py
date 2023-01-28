@@ -24,6 +24,7 @@ class AppConfig(BaseSettings):
         ),
     }
     ENVIRONMENT: TYPE_ENVIRONMENT = "local"
+    DEBUG: bool = False
 
 
 def init_logger(config: AppConfig):
@@ -43,14 +44,13 @@ def init_logger(config: AppConfig):
         structlog.processors.StackInfoRenderer(),
     ]
 
+    log_level = logging.DEBUG if config.DEBUG else logging.INFO
     if config.ENVIRONMENT not in ["local", "test"]:
-        log_level = logging.INFO
         processors.append(structlog.stdlib.ProcessorFormatter.remove_processors_meta)
         processors.append(structlog.processors.TimeStamper(fmt="iso", utc=True))
         processors.append(structlog.processors.dict_tracebacks)
         processors.append(structlog.processors.JSONRenderer())
     else:
-        log_level = logging.DEBUG
         processors.append(structlog.stdlib.ProcessorFormatter.remove_processors_meta)
         processors.append(structlog.processors.TimeStamper(fmt="%d-%m-%Y %H:%M:%S", utc=True))
         processors.append(structlog.dev.ConsoleRenderer())

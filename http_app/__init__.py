@@ -18,7 +18,7 @@ def create_app(
 ) -> FastAPI:
     app_config = test_config or AppConfig()
     init_logger(app_config)
-    app = FastAPI(debug=test_config is not None)
+    app = FastAPI(debug=app_config.DEBUG)
     init_exception_handlers(app)
 
     # Initialise and wire DI container
