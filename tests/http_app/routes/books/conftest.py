@@ -1,9 +1,8 @@
 from collections.abc import Iterator
 from random import randint
-from unittest.mock import MagicMock, AsyncMock
+from unittest.mock import MagicMock, AsyncMock, patch
 
 import pytest
-from asynctest import patch
 from dependency_injector.providers import Object
 from fastapi import FastAPI
 
