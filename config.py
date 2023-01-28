@@ -76,6 +76,7 @@ def init_logger(config: AppConfig):
         processors=processors,
     ))
     stdlib_logger = logging.getLogger()
+    stdlib_logger.handlers.clear()
     stdlib_logger.addHandler(stdlib_handler)
     stdlib_logger.setLevel(log_level)
 
