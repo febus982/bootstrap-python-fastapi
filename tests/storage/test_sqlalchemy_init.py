@@ -4,6 +4,7 @@ from uuid import uuid4
 
 from sqlalchemy_bind_manager import SQLAlchemyBindManager, SQLAlchemyAsyncBindConfig
 
+from storage import init_storage
 from storage.SQLAlchemy import TABLE_INIT_REGISTRY, init_tables
 
 
@@ -50,3 +51,12 @@ def test_init_tables_calls_only_supported_bind_initialisation():
         os.unlink(db2_path)
     except FileNotFoundError:
         pass
+
+
+def test_init_storage_calls_sqlalchemy_init_tables():
+    with patch(
+        "storage.SQLAlchemy.init_tables", return_value=None
+    ) as mocked_init_tables:
+        init_storage()
+
+    mocked_init_tables.assert_called_once()

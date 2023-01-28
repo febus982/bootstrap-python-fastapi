@@ -14,11 +14,10 @@ from storage import init_storage
 
 # TODO: Add asyncio support: https://stackoverflow.com/questions/38387443/how-to-implement-a-async-grpc-python-server
 def create_server(test_config: Optional[AppConfig] = None):
-    init_logger(test_config or AppConfig())
+    app_config = test_config or AppConfig()
+    init_logger(app_config)
     if not test_config:
-        c = Container(
-            config=Object(test_config or AppConfig()),
-        )
+        c = Container(config=Object(app_config))
         c.wire(packages=["grpc_app"])
     init_storage()
     s = server(futures.ThreadPoolExecutor(max_workers=10))
