@@ -3,31 +3,28 @@ from collections.abc import AsyncIterator
 from uuid import uuid4
 
 import pytest
-from dependency_injector.providers import Object
 from sqlalchemy.orm import clear_mappers
+from sqlalchemy_bind_manager import SQLAlchemyBindManager, SQLAlchemyAsyncBindConfig
 
-from di_container import Container
-from storage import init_storage
+from storage.SQLAlchemy import init_tables
 
 
-@pytest.fixture(scope="function", autouse=True)
-async def test_di_container(test_config) -> AsyncIterator[Container]:
+@pytest.fixture(scope="function")
+async def test_sa_manager() -> AsyncIterator[SQLAlchemyBindManager]:
     test_db_path = f"./{uuid4()}.db"
     clear_mappers()
 
-    test_config.SQLALCHEMY_CONFIG[
-        "default"
-    ].engine_url = f"sqlite+aiosqlite:///{test_db_path}"
-    di_container = Container(
-        config=Object(test_config),
+    db_config = SQLAlchemyAsyncBindConfig(
+        engine_url=f"sqlite+aiosqlite:///{test_db_path}",
+        engine_options=dict(connect_args={"check_same_thread": False}),
     )
-    init_storage()
-    sa_manager = di_container.SQLAlchemyBindManager()
+    sa_manager = SQLAlchemyBindManager(config=db_config)
+    init_tables(sqlalchemy_manager=sa_manager)
     for k, v in sa_manager.get_binds().items():
         async with v.engine.begin() as conn:  # type: ignore
             await conn.run_sync(v.registry_mapper.metadata.create_all)
 
-    yield di_container
+    yield sa_manager
     try:
         os.unlink(test_db_path)
     except FileNotFoundError:

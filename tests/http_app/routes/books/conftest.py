@@ -1,13 +1,15 @@
 from collections.abc import Iterator
 from random import randint
-from unittest.mock import MagicMock, AsyncMock
+from unittest.mock import MagicMock, AsyncMock, patch
 
 import pytest
 from dependency_injector.providers import Object
+from fastapi import FastAPI
 
 from di_container import Container
 from domains.books.boundary_interfaces import BookServiceInterface
 from domains.books.dto import Book
+from http_app import create_app
 
 
 @pytest.fixture
@@ -21,7 +23,12 @@ def book_service() -> MagicMock:
 
 
 @pytest.fixture(scope="function")
-def test_container(test_config, book_service) -> Iterator[Container]:
-    c = Container(config=Object(test_config))
-    with c.BookServiceInterface.override(book_service):
-        yield c
+def testapp(test_config, book_service) -> Iterator[FastAPI]:
+    # We don't need the storage to test the HTTP app
+    with patch("http_app.init_storage", return_value=None):
+        c = Container(config=Object(test_config))
+        c.wire(packages=["http_app"])
+        with c.BookServiceInterface.override(book_service):
+            # yield c
+            app = create_app(test_config=test_config)
+            yield app

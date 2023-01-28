@@ -15,7 +15,6 @@ from storage import init_storage
 
 def create_app(
     test_config: Union[AppConfig, None] = None,
-    test_di_container: Union[Container, None] = None,
 ) -> FastAPI:
     app_config = test_config or AppConfig()
     init_logger(app_config)
@@ -23,10 +22,11 @@ def create_app(
     init_exception_handlers(app)
 
     # Initialise and wire DI container
-    c = test_di_container or Container(
-        config=Object(app_config),
-    )
-    c.wire(packages=["http_app"])
+    if not test_config:
+        c = Container(
+            config=Object(app_config),
+        )
+        c.wire(packages=["http_app"])
 
     init_storage()
 
