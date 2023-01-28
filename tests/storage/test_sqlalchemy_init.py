@@ -7,7 +7,7 @@ from sqlalchemy_bind_manager import SQLAlchemyBindManager, SQLAlchemyAsyncBindCo
 from storage.SQLAlchemy import TABLE_INIT_REGISTRY, init_tables
 
 
-def test_init_tables_calls_only_supported_bind_initialisation(test_di_container):
+def test_init_tables_calls_only_supported_bind_initialisation():
     db1_path = f"./{uuid4()}.db"
     db2_path = f"./{uuid4()}.db"
 
