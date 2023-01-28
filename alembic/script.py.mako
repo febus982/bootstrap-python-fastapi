@@ -20,11 +20,11 @@ depends_on = ${repr(depends_on)}
 
 
 def upgrade(engine_name: str) -> None:
-    globals()["upgrade_%s" % engine_name]()
+    globals()[f"upgrade_{engine_name}"]()
 
 
 def downgrade(engine_name: str) -> None:
-    globals()["downgrade_%s" % engine_name]()
+    globals()[f"downgrade_{engine_name}"]()
 
 <%
     db_names = config.get_main_option("databases")
@@ -36,10 +36,10 @@ def downgrade(engine_name: str) -> None:
 % for db_name in re.split(r',\s*', db_names):
 
 def upgrade_${db_name}() -> None:
-    ${context.get("%s_upgrades" % db_name, "pass")}
+    ${context.get(f"{db_name}_upgrades", "pass")}
 
 
 def downgrade_${db_name}() -> None:
-    ${context.get("%s_downgrades" % db_name, "pass")}
+    ${context.get(f"{db_name}_downgrades", "pass")}
 
 % endfor
