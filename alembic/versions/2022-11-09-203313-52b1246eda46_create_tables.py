@@ -16,11 +16,11 @@ depends_on = None
 
 
 def upgrade(engine_name: str) -> None:
-    globals()["upgrade_%s" % engine_name]()
+    globals()[f"upgrade_{engine_name}"]()
 
 
 def downgrade(engine_name: str) -> None:
-    globals()["downgrade_%s" % engine_name]()
+    globals()[f"downgrade_{engine_name}"]()
 
 
 def upgrade_default() -> None:
