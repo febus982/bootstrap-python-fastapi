@@ -14,12 +14,10 @@ async def test_sa_manager() -> AsyncIterator[SQLAlchemyBindManager]:
     test_db_path = f"./{uuid4()}.db"
     clear_mappers()
 
-    db_config = {
-        "default": SQLAlchemyAsyncBindConfig(
-            engine_url=f"sqlite+aiosqlite:///{test_db_path}",
-            engine_options=dict(connect_args={"check_same_thread": False}),
-        ),
-    }
+    db_config = SQLAlchemyAsyncBindConfig(
+        engine_url=f"sqlite+aiosqlite:///{test_db_path}",
+        engine_options=dict(connect_args={"check_same_thread": False}),
+    )
     sa_manager = SQLAlchemyBindManager(config=db_config)
     init_tables(sqlalchemy_manager=sa_manager)
     for k, v in sa_manager.get_binds().items():
