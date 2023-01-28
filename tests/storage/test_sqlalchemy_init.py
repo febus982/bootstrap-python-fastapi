@@ -36,7 +36,7 @@ def test_init_tables_calls_only_supported_bind_initialisation():
             "default": mock_db1_table_init,
             "other": mock_db2_table_init,
         },
-    ), patch("storage.SQLAlchemy.default_tables.init_tables", return_value=None):
+    ):
         init_tables(sqlalchemy_manager=sa_manager)
 
     mock_db1_table_init.assert_called_once()
