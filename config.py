@@ -77,3 +77,10 @@ def init_logger(config: AppConfig):
     stdlib_logger = logging.getLogger()
     stdlib_logger.addHandler(stdlib_handler)
     stdlib_logger.setLevel(log_level)
+
+    for _log in ["uvicorn", "uvicorn.error", "uvicorn.access"]:
+        # Clear the log handlers for uvicorn loggers, and enable propagation
+        # so the messages are caught by our root logger and formatted correctly
+        # by structlog. Initial messages from reloader startup are not caught.
+        logging.getLogger(_log).handlers.clear()
+        logging.getLogger(_log).propagate = True
