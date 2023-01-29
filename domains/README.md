@@ -31,14 +31,14 @@ Using a decorator to be applied to function:
 ```python
 def inject_book_repository(f):
     """
-    Decorator implementation for DI injection
+    Decorator implementation for Dependency Injection
     """
 
     @wraps(f)
     def wrapper(*args, **kwds):
         if "book_repository" not in kwds.keys():
             from storage.repositories.book_repository import BookRepository
-            kwds["book_repository"] = BookRepository()  # Here we might have to pass the SQLAlchemy manager
+            kwds["book_repository"] = BookRepository()  # Here we'll have to pass any required dependency for the repository
         elif not isinstance(kwds["book_repository"], BookRepositoryInterface):
             import warnings
             warnings.warn(
