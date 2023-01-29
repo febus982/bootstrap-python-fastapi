@@ -31,10 +31,8 @@ def create_app(
     init_storage()
 
     app.add_middleware(PrometheusMiddleware)
-    app.add_route("/metrics/", metrics)
 
     init_versioned_routes(app)
-
     versionize(
         app=app,
         prefix_format="/api/v{major}",
@@ -46,6 +44,7 @@ def create_app(
     Routes initalised after `versionize` are not versioned
     """
     init_unversioned_routes(app)
+    app.add_route("/metrics/", metrics)
 
     return app
 
