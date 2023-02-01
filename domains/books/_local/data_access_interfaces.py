@@ -1,5 +1,5 @@
-from collections.abc import Iterable
-from typing import Protocol, Union, Tuple, List
+from collections.abc import Iterable, Mapping
+from typing import Protocol, Union, Tuple, List, Any
 
 from sqlalchemy_bind_manager import SortDirection
 
@@ -12,7 +12,7 @@ class BookRepositoryInterface(Protocol):
 
     async def find(
         self,
+        search_params: Union[None, Mapping[str, Any]] = None,
         order_by: Union[None, Iterable[Union[str, Tuple[str, SortDirection]]]] = None,
-        **search_params,
     ) -> List[BookModel]:
         ...

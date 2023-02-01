@@ -18,6 +18,9 @@ mypy:
 	poetry run mypy config.py
 	poetry run mypy di_container.py
 
+update-deps:
+	poetry update --with http,grpc,dev
+
 migrate:
 	poetry run alembic upgrade heads
 
