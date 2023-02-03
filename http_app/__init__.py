@@ -55,7 +55,7 @@ def init_exception_handlers(app: FastAPI) -> None:
     # the @app.exception_handler decorator
     # https://fastapi.tiangolo.com/tutorial/handling-errors/#install-custom-exception-handlers
     @app.middleware("http")
-    async def add_process_time_header(request: Request, call_next):
+    async def add_exception_middleware(request: Request, call_next):
         try:
             return await call_next(request)
         except Exception as e:

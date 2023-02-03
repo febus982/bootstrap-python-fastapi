@@ -15,6 +15,11 @@ services:
       dockerfile: Dockerfile
       context: .
       target: http_app
+    environment:
+      OTEL_SERVICE_NAME: "bootstrap-fastapi"
+      OTEL_TRACES_EXPORTER: "console"
+      OTEL_METRICS_EXPORTER: "console"
+      OTEL_LOGS_EXPORTER: "none"
     ports:
       - '8001:8000'
     volumes:
@@ -34,11 +39,15 @@ services:
       dockerfile: Dockerfile
       context: .
       target: grpc_app
+    environment:
+      OTEL_SERVICE_NAME: "bootstrap-fastapi"
+      OTEL_TRACES_EXPORTER: "console"
+      OTEL_METRICS_EXPORTER: "console"
+      OTEL_LOGS_EXPORTER: "none"
     ports:
       - "50051:50051"
     volumes:
       - '.:/app'
-    command: ["make", "grpc"]
 
   test:
     build:

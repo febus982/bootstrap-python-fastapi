@@ -41,9 +41,9 @@ RUN poetry install --no-root --with grpc
 FROM base as base_app
 COPY pyproject.toml .
 COPY poetry.lock .
-COPY alembic .
-COPY domains .
-COPY storage .
+COPY alembic ./alembic
+COPY domains ./domains
+COPY storage ./storage
 COPY config.py .
 COPY di_container.py .
 COPY alembic.ini .
@@ -52,11 +52,11 @@ COPY Makefile .
 # Copy the http python package and requirements from relevant builder
 FROM base_app as http_app
 COPY --from=http_builder /poetryvenvs /poetryvenvs
-COPY http_app .
-CMD ["make", "run"]
+COPY http_app ./http_app
+CMD ["poetry", "run", "opentelemetry-instrument", "make", "run"]
 
 # Copy the grpc python package and requirements from relevant builder
 FROM base_app as grpc_app
 COPY --from=grpc_builder /poetryvenvs /poetryvenvs
-COPY grpc_app .
-CMD ["make", "grpc"]
+COPY grpc_app ./grpc_app
+CMD ["poetry", "run", "opentelemetry-instrument", "make", "grpc"]
