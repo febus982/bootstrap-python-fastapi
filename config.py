@@ -3,6 +3,7 @@ import os
 from typing import Literal, List
 
 import structlog
+from opentelemetry import trace
 from pydantic import BaseSettings
 from sqlalchemy_bind_manager import SQLAlchemyAsyncBindConfig
 from structlog.typing import Processor
@@ -42,6 +43,7 @@ def init_logger(config: AppConfig):
         structlog.stdlib.PositionalArgumentsFormatter(),
         structlog.processors.add_log_level,
         structlog.processors.StackInfoRenderer(),
+        add_logging_open_telemetry_spans,
     ]
 
     log_level = logging.DEBUG if config.DEBUG else logging.INFO
@@ -86,3 +88,21 @@ def init_logger(config: AppConfig):
         # by structlog. Initial messages from reloader startup are not caught.
         logging.getLogger(_log).handlers.clear()
         logging.getLogger(_log).propagate = True
+
+
+def add_logging_open_telemetry_spans(_, __, event_dict):
+    span = trace.get_current_span()
+    if not span.is_recording():
+        event_dict["span"] = None
+        return event_dict
+
+    ctx = span.get_span_context()
+    parent = getattr(span, "parent", None)
+
+    event_dict["span"] = {
+        "span_id": hex(ctx.span_id),
+        "trace_id": hex(ctx.trace_id),
+        "parent_span_id": None if not parent else hex(parent.span_id),
+    }
+
+    return event_dict
