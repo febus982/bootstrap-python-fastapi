@@ -59,3 +59,10 @@ services:
     volumes:
       - '.:/app'
     command: ["make", "test"]
+
+  ci-test:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: test
+    command: ["make", "test"]
