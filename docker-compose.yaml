@@ -20,6 +20,7 @@ services:
       OTEL_TRACES_EXPORTER: "console"
       OTEL_METRICS_EXPORTER: "console"
       OTEL_LOGS_EXPORTER: "none"
+    command: ["opentelemetry-instrument", "make", "run"]
     ports:
       - '8001:8000'
     volumes:
@@ -44,6 +45,7 @@ services:
       OTEL_TRACES_EXPORTER: "console"
       OTEL_METRICS_EXPORTER: "console"
       OTEL_LOGS_EXPORTER: "none"
+    command: ["opentelemetry-instrument", "make", "grpc"]
     ports:
       - "50051:50051"
     volumes:
