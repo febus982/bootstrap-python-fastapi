@@ -48,6 +48,7 @@ COPY config.py .
 COPY di_container.py .
 COPY alembic.ini .
 COPY Makefile .
+ENTRYPOINT ["poetry", "run"]
 
 # Copy the http python package and requirements from relevant builder
 FROM base_app as http_app
