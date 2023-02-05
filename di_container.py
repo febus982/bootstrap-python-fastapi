@@ -1,5 +1,5 @@
 from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
-from dependency_injector.providers import ThreadSafeSingleton, Dependency
+from dependency_injector.providers import ThreadSafeSingleton, Dependency, Factory
 from sqlalchemy_bind_manager import SQLAlchemyBindManager
 
 from config import AppConfig
@@ -55,13 +55,13 @@ class Container(DeclarativeContainer):
             service: MyInterface = Provide[MyInterface.__name__],
         )
     """
-    BookServiceInterface: ThreadSafeSingleton[
+    BookServiceInterface: Factory[
         BookServiceInterface
-    ] = ThreadSafeSingleton(LocalBookService)
+    ] = Factory(LocalBookService)
 
-    BookRepositoryInterface: ThreadSafeSingleton[
+    BookRepositoryInterface: Factory[
         BookRepositoryInterface
-    ] = ThreadSafeSingleton(
+    ] = Factory(
         BookRepository,
         bind=SQLAlchemyBindManager.provided.get_bind.call(),
     )
