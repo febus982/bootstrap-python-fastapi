@@ -4,7 +4,7 @@ from uuid import uuid4
 
 import pytest
 from sqlalchemy.orm import clear_mappers
-from sqlalchemy_bind_manager import SQLAlchemyBindManager, SQLAlchemyAsyncBindConfig
+from sqlalchemy_bind_manager import SQLAlchemyBindManager, SQLAlchemyAsyncConfig
 
 from storage.SQLAlchemy import init_tables
 
@@ -14,7 +14,7 @@ async def test_sa_manager() -> AsyncIterator[SQLAlchemyBindManager]:
     test_db_path = f"./{uuid4()}.db"
     clear_mappers()
 
-    db_config = SQLAlchemyAsyncBindConfig(
+    db_config = SQLAlchemyAsyncConfig(
         engine_url=f"sqlite+aiosqlite:///{test_db_path}",
         engine_options=dict(connect_args={"check_same_thread": False}),
     )

@@ -21,4 +21,4 @@ def init_tables(
     for name, bind in sqlalchemy_manager.get_binds().items():
         init_function = TABLE_INIT_REGISTRY.get(name)
         if init_function:
-            init_function(bind)
+            init_function(bind.registry_mapper)

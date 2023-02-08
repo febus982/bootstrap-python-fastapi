@@ -5,7 +5,7 @@ from typing import Literal, List
 import structlog
 from opentelemetry import trace
 from pydantic import BaseSettings
-from sqlalchemy_bind_manager import SQLAlchemyAsyncBindConfig
+from sqlalchemy_bind_manager import SQLAlchemyAsyncConfig
 from structlog.typing import Processor
 
 TYPE_ENVIRONMENT = Literal["local", "test", "staging", "production"]
@@ -13,7 +13,7 @@ TYPE_ENVIRONMENT = Literal["local", "test", "staging", "production"]
 
 class AppConfig(BaseSettings):
     SQLALCHEMY_CONFIG = {
-        "default": SQLAlchemyAsyncBindConfig(
+        "default": SQLAlchemyAsyncConfig(
             engine_url=f"sqlite+aiosqlite:///{os.path.dirname(os.path.abspath(__file__))}/sqlite.db",
             engine_options=dict(
                 connect_args={
