@@ -1,7 +1,4 @@
 from unittest.mock import patch
-from uuid import uuid4
-
-from sqlalchemy_bind_manager import SQLAlchemyAsyncBindConfig
 
 from config import AppConfig
 from http_app import create_app
