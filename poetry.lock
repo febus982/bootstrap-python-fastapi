@@ -1998,23 +1998,19 @@ sqlcipher = ["sqlcipher3-binary"]
 
 [[package]]
 name = "sqlalchemy-bind-manager"
-version = "0.6.0"
-description = ""
+version = "0.0.1"
+description = "A manager to easily handle multiple SQLAlchemy configurations"
 category = "main"
 optional = false
 python-versions = ">=3.8,<3.12"
-files = []
-develop = false
+files = [
+    {file = "sqlalchemy_bind_manager-0.0.1-py3-none-any.whl", hash = "sha256:ccaba9f1d4bf236bfcf1e17e630c77ffde587b6ac358a3e25f6d46e2328518c5"},
+    {file = "sqlalchemy_bind_manager-0.0.1.tar.gz", hash = "sha256:5accec3c29b63207c0f7e5e22b677ef8d9fda3681483555fe9fd33f79cd3274a"},
+]
 
 [package.dependencies]
-pydantic = "~1.10.2"
-SQLAlchemy = {version = "~2.0.0", extras = ["asyncio", "mypy"]}
-
-[package.source]
-type = "git"
-url = "https://github.com/febus982/sqlalchemy-bind-manager.git"
-reference = "main"
-resolved_reference = "06a8a94c3ea8986f3884ff611ddf9329383e05e5"
+pydantic = ">=1.10.2,<1.11.0"
+SQLAlchemy = {version = ">=2.0.0,<2.1.0", extras = ["asyncio", "mypy"]}
 
 [[package]]
 name = "starlette"
@@ -2380,4 +2376,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.12"
-content-hash = "1aaa2a518608589f304d006898c24493a331be68fb1a7b6a98234e8e1f7af25c"
+content-hash = "0aba67b034a438194aaecc96322d959acf1d7198dba812c28008d1f19bd298d8"

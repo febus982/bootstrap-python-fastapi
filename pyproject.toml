@@ -15,9 +15,9 @@ opentelemetry-exporter-otlp = "^1.15.0"
 opentelemetry-instrumentation-httpx = "^0.36b0"
 opentelemetry-instrumentation-sqlalchemy = "^0.36b0"
 python = ">=3.9,<3.12"
-SQLAlchemy = { version = "~2.0.0", extras = ["asyncio", "mypy"] }
 rich = "^13.2.0"
-sqlalchemy-bind-manager = { git = "https://github.com/febus982/sqlalchemy-bind-manager.git", branch = "main" }
+SQLAlchemy = { version = "~2.0.0", extras = ["asyncio", "mypy"] }
+sqlalchemy-bind-manager = "*"
 structlog = "~22.3.0"
 
 [tool.poetry.group.http]
