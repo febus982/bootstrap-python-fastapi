@@ -11,12 +11,7 @@ test: mypy
 	poetry run pytest --cov
 
 mypy:
-	poetry run mypy http_app
-	poetry run mypy grpc_app
-	poetry run mypy domains
-	poetry run mypy tests
-	poetry run mypy config.py
-	poetry run mypy di_container.py
+	poetry run mypy
 
 update-deps:
 	poetry update --with http,grpc,dev
