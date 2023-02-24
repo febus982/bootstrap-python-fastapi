@@ -66,3 +66,18 @@ addopts = "-n auto --cov-report=term-missing"
 testpaths = [
     "tests",
 ]
+
+[tool.mypy]
+files = [
+    "domains",
+    "grpc_app",
+    "http_app",
+    "storage",
+    "tests",
+    "di_container.py",
+    "config.py",
+]
+
+[[tool.mypy.overrides]]
+module = "grpc.aio.*"
+ignore_missing_imports = true
