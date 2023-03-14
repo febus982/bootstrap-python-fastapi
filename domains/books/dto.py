@@ -9,12 +9,6 @@ class BookData(BaseModel):
 
     class Config:
         orm_mode = True
-        schema_extra = {
-            "example": {
-                "title": "The Hitchhiker's Guide to the Galaxy",
-                "author_name": "Douglas Adams",
-            }
-        }
 
 
 class Book(BookData):
@@ -22,10 +16,3 @@ class Book(BookData):
 
     class Config:
         orm_mode = True
-        schema_extra = {
-            "example": {
-                "title": "The Hitchhiker's Guide to the Galaxy",
-                "author_name": "Douglas Adams",
-                "book_id": 123,
-            }
-        }
