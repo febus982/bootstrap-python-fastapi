@@ -12,6 +12,28 @@ router = APIRouter(prefix="/books")
 class CreateBookResponse(BaseModel):
     book: Book
 
+    class Config:
+        schema_extra = {
+            "example": {
+                "title": "The Hitchhiker's Guide to the Galaxy",
+                "author_name": "Douglas Adams",
+                "book_id": 123,
+            }
+        }
+
+
+class CreateBookRequest(BaseModel):
+    title: str
+    author_name: str
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "title": "The Hitchhiker's Guide to the Galaxy",
+                "author_name": "Douglas Adams",
+            }
+        }
+
 
 """
 The views defined here have the functionalities of two components:
@@ -25,28 +47,32 @@ The views defined here have the functionalities of two components:
 
 
 @api_version(1)
-@router.post("/", response_model=CreateBookResponse)
+@router.post("/")
 @inject
 async def create_book(
-    data: BookData,
+    data: CreateBookRequest,
     book_service: BookServiceInterface = Depends(
         Provide[BookServiceInterface.__name__]
     ),
 ) -> CreateBookResponse:
-    created_book = await book_service.create_book(book=data)
+    created_book = await book_service.create_book(
+        book=BookData(**data.dict())
+    )
     return CreateBookResponse(book=created_book)
 
 
 # Example v2 API with added parameter
 @api_version(2)
-@router.post("/", response_model=CreateBookResponse)
+@router.post("/")
 @inject
 async def create_book_v2(
-    data: BookData,
+    data: CreateBookRequest,
     some_optional_query_param: bool = False,
     book_service: BookServiceInterface = Depends(
         Provide[BookServiceInterface.__name__]
     ),
 ) -> CreateBookResponse:
-    created_book = await book_service.create_book(book=data)
+    created_book = await book_service.create_book(
+        book=BookData(**data.dict())
+    )
     return CreateBookResponse(book=created_book)
