@@ -54,7 +54,9 @@ def init_logger(config: AppConfig):
         processors.append(structlog.processors.JSONRenderer())
     else:
         processors.append(structlog.stdlib.ProcessorFormatter.remove_processors_meta)
-        processors.append(structlog.processors.TimeStamper(fmt="%d-%m-%Y %H:%M:%S", utc=True))
+        processors.append(
+            structlog.processors.TimeStamper(fmt="%d-%m-%Y %H:%M:%S", utc=True)
+        )
         processors.append(structlog.dev.ConsoleRenderer())
 
     structlog.stdlib.recreate_defaults()
@@ -74,9 +76,11 @@ def init_logger(config: AppConfig):
     )
     stdlib_handler = logging.StreamHandler()
     # Use structlog `ProcessorFormatter` to format all `logging` entries
-    stdlib_handler.setFormatter(structlog.stdlib.ProcessorFormatter(
-        processors=processors,
-    ))
+    stdlib_handler.setFormatter(
+        structlog.stdlib.ProcessorFormatter(
+            processors=processors,
+        )
+    )
     stdlib_logger = logging.getLogger()
     stdlib_logger.handlers.clear()
     stdlib_logger.addHandler(stdlib_handler)

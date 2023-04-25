@@ -15,10 +15,12 @@ class Container(DeclarativeContainer):
     """
 
     # Enable injection on the whole http_app package
-    wiring_config = WiringConfiguration(packages=[
-        "storage",
-        "domains",
-    ])
+    wiring_config = WiringConfiguration(
+        packages=[
+            "storage",
+            "domains",
+        ]
+    )
 
     """
     We could use the config provider but it would transform our nice typed
@@ -54,9 +56,7 @@ class Container(DeclarativeContainer):
         )
     """
 
-    BookRepositoryInterface: Factory[
-        BookRepositoryInterface
-    ] = Factory(
+    BookRepositoryInterface: Factory[BookRepositoryInterface] = Factory(
         BookRepository,
         bind=SQLAlchemyBindManager.provided.get_bind.call(),
     )
