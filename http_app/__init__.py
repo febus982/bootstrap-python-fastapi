@@ -21,12 +21,11 @@ def create_app(
     app = FastAPI(debug=app_config.DEBUG)
     init_exception_handlers(app)
 
-    # Initialise and wire DI container
+    # Initialise DI container
     if not test_config:
-        c = Container(
+        Container(
             config=Object(app_config),
         )
-        c.wire(packages=["http_app"])
 
     init_storage()
 

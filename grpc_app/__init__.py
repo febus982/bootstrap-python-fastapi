@@ -17,8 +17,7 @@ def create_server(test_config: Optional[AppConfig] = None):
     app_config = test_config or AppConfig()
     init_logger(app_config)
     if not test_config:
-        c = Container(config=Object(app_config))
-        c.wire(packages=["grpc_app"])
+        Container(config=Object(app_config))
     init_storage()
     s = server(futures.ThreadPoolExecutor(max_workers=10))
     # Register service

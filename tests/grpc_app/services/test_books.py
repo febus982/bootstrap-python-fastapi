@@ -1,15 +1,13 @@
-from unittest.mock import MagicMock, AsyncMock
+from unittest.mock import MagicMock, AsyncMock, patch
 
-from domains.books.boundary_interfaces import BookServiceInterface
 from domains.books.dto import Book
 from grpc_app import BooksServicer
 from grpc_app.generated.books_pb2 import ListBooksRequest, ListBooksResponse
 
 
 async def test_grpc_server():
-    servicer = BooksServicer()
 
-    book_service = AsyncMock(autospec=BookServiceInterface)
+    book_service = AsyncMock()
     book_service.list_books.return_value = [
         Book(
             book_id=123,
@@ -18,11 +16,13 @@ async def test_grpc_server():
         )
     ]
 
-    response = await servicer.ListBooks(
-        request=ListBooksRequest(),
-        context=MagicMock(),
-        book_service=book_service,
-    )
+    with patch("domains.books._local.LocalBookService.__new__", return_value=book_service):
+        servicer = BooksServicer()
+        response = await servicer.ListBooks(
+            request=ListBooksRequest(),
+            context=MagicMock(),
+        )
+
     assert isinstance(response, ListBooksResponse)
     # TODO: Find a better way to test GRPC output
     assert (

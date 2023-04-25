@@ -3,8 +3,6 @@ from dependency_injector.providers import ThreadSafeSingleton, Dependency, Facto
 from sqlalchemy_bind_manager import SQLAlchemyBindManager
 
 from config import AppConfig
-from domains.books.boundary_interfaces import BookServiceInterface
-from domains.books._local import LocalBookService
 from domains.books._local.data_access_interfaces import BookRepositoryInterface
 from storage.repositories.book_repository import BookRepository
 
@@ -55,9 +53,6 @@ class Container(DeclarativeContainer):
             service: MyInterface = Provide[MyInterface.__name__],
         )
     """
-    BookServiceInterface: Factory[
-        BookServiceInterface
-    ] = Factory(LocalBookService)
 
     BookRepositoryInterface: Factory[
         BookRepositoryInterface
