@@ -28,18 +28,11 @@ jobs:
     - name: Check typing
       run: |
         mypy
-    - name: Lint with black
+    - name: Check code style with black
       run: |
         black --check http_app grpc_app domains storage tests alembic .
-    - name: Check imports
-      run: |
-        isort . --check
-    - name: Lint with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude grpc_app/generated
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --exclude grpc_app/generated
+    - name: Lint with ruff
+      uses: chartboost/ruff-action@v1
     - name: Test & publish code coverage
       uses: paambaati/codeclimate-action@v3.2.0
       if: env.CC_TEST_REPORTER_ID != null
