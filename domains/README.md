@@ -1,27 +1,17 @@
 # Domain subpackages
 
 Each subpackage in `domains` exposes only interface classes and the
-relevant Data transfer objects. The concrete implementation for the
-interfaces is in the nested modules. E.g.:
+relevant Data transfer objects. The domain logic implementation is
+in the nested modules but should not be directly accessed. E.g.:
 
 * `domains.books` contains the boundary interfaces
-* `domains.books._local` contains the concrete implementation
-
-In the example `domains.books._local` imports `domains.books`,
-never the opposite, applying in this way the Interface
-Segregation Principle.
-
-The wiring between the boundary interfaces and concrete classes
-is taken care by the DI container. Code needing the service
-need only declare the interface class from `domains.books` as
-a parameter in a function and the DI container will take care of
-passing the concrete class.
+* other nested modules like `domains.books._dto` contains the concrete implementation
 
 ## Alternate approaches to Interface Segregation
 
-The application uses an IoC container, however it is possible to 
-achieve interface segregation without using a Dependency Injection
-container.
+The domain logic uses an IoC container to access the storage implementation,
+however it is possible to achieve interface segregation without
+using a Dependency Injection container.
 
 These are some examples (note the local imports to avoid exposing the
 imported classes).
