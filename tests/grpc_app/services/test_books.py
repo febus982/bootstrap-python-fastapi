@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock, AsyncMock, patch
 
-from domains.books.dto import Book
+from domains.books import Book
 from grpc_app import BooksServicer
 from grpc_app.generated.books_pb2 import ListBooksRequest, ListBooksResponse
 
@@ -16,7 +16,7 @@ async def test_grpc_server():
         )
     ]
 
-    with patch("domains.books._local.LocalBookService.__new__", return_value=book_service):
+    with patch("domains.books._service.BookService.__new__", return_value=book_service):
         servicer = BooksServicer()
         response = await servicer.ListBooks(
             request=ListBooksRequest(),

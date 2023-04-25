@@ -5,19 +5,18 @@ from unittest.mock import MagicMock, AsyncMock, patch
 import pytest
 from fastapi import FastAPI
 
-from domains.books._local import LocalBookService
-from domains.books.dto import Book
+from domains.books import BookService, Book
 from http_app import create_app
 
 
 @pytest.fixture
 def book_service() -> MagicMock:
-    svc = MagicMock(autospec=LocalBookService)
+    svc = MagicMock(autospec=BookService)
     svc.create_book = AsyncMock(
         side_effect=lambda book: Book(book_id=randint(1, 1000), **book.dict())
     )
 
-    with patch("domains.books._local.LocalBookService.__new__", return_value=svc):
+    with patch("domains.books._service.BookService.__new__", return_value=svc):
         yield svc
 
 

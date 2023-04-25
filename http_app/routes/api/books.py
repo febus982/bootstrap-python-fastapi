@@ -2,8 +2,7 @@ from fastapi import APIRouter
 from fastapi_versionizer import api_version
 from pydantic import BaseModel
 
-from domains.books._local import LocalBookService
-from domains.books.dto import BookData, Book
+from domains.books import BookService, BookData, Book
 
 router = APIRouter(prefix="/books")
 
@@ -50,7 +49,7 @@ The views defined here have the functionalities of two components:
 async def create_book(
     data: CreateBookRequest,
 ) -> CreateBookResponse:
-    book_service = LocalBookService()
+    book_service = BookService()
     created_book = await book_service.create_book(book=BookData(**data.dict()))
     return CreateBookResponse(book=created_book)
 
@@ -62,6 +61,6 @@ async def create_book_v2(
     data: CreateBookRequest,
     some_optional_query_param: bool = False,
 ) -> CreateBookResponse:
-    book_service = LocalBookService()
+    book_service = BookService()
     created_book = await book_service.create_book(book=BookData(**data.dict()))
     return CreateBookResponse(book=created_book)

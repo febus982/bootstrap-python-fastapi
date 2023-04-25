@@ -3,7 +3,7 @@ from dependency_injector.providers import ThreadSafeSingleton, Dependency, Facto
 from sqlalchemy_bind_manager import SQLAlchemyBindManager
 
 from config import AppConfig
-from domains.books._local.data_access_interfaces import BookRepositoryInterface
+from domains.books._data_access_interfaces import BookRepositoryInterface
 from storage.repositories.book_repository import BookRepository
 
 

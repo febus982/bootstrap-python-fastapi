@@ -4,7 +4,7 @@ from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy.orm import registry
 
-from domains.books._local.models import BookModel
+from domains.books._models import BookModel
 
 
 def init_tables(registry_mapper: registry):
