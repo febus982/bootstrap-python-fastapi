@@ -55,6 +55,7 @@ pytest = "~7.2.0"
 pytest-cov = "^4.0.0"
 pytest-factoryboy = "~2.5.0"
 pytest-xdist = "^3.0.2"
+isort = "^5.12.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -81,3 +82,6 @@ files = [
 [[tool.mypy.overrides]]
 module = "grpc.aio.*"
 ignore_missing_imports = true
+
+[tool.isort]
+profile = "black"
