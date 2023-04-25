@@ -2,8 +2,8 @@ import logging
 from concurrent import futures
 from typing import Optional
 
-from grpc.aio import server
 from dependency_injector.providers import Object
+from grpc.aio import server
 
 from config import AppConfig, init_logger
 from di_container import Container

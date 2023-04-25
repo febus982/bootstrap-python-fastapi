@@ -1,8 +1,8 @@
 import os
-from unittest.mock import patch, Mock
+from unittest.mock import Mock, patch
 from uuid import uuid4
 
-from sqlalchemy_bind_manager import SQLAlchemyBindManager, SQLAlchemyAsyncConfig
+from sqlalchemy_bind_manager import SQLAlchemyAsyncConfig, SQLAlchemyBindManager
 
 from storage import init_storage
 from storage.SQLAlchemy import TABLE_INIT_REGISTRY, init_tables

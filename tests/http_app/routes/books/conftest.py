@@ -1,11 +1,11 @@
 from collections.abc import Iterator
 from random import randint
-from unittest.mock import MagicMock, AsyncMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi import FastAPI
 
-from domains.books import BookService, Book
+from domains.books import Book, BookService
 from http_app import create_app
 
 

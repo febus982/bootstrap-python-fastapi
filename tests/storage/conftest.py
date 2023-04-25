@@ -4,7 +4,7 @@ from uuid import uuid4
 
 import pytest
 from sqlalchemy.orm import clear_mappers
-from sqlalchemy_bind_manager import SQLAlchemyBindManager, SQLAlchemyAsyncConfig
+from sqlalchemy_bind_manager import SQLAlchemyAsyncConfig, SQLAlchemyBindManager
 
 from storage.SQLAlchemy import init_tables
 

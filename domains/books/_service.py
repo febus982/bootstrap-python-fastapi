@@ -1,10 +1,9 @@
 from collections.abc import Iterable
 
-from dependency_injector.wiring import inject, Provide
-
-from ._dto import Book, BookData
+from dependency_injector.wiring import Provide, inject
 
 from ._data_access_interfaces import BookRepositoryInterface
+from ._dto import Book, BookData
 from ._models import BookModel
 
 

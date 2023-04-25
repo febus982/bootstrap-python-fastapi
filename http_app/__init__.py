@@ -9,7 +9,7 @@ from structlog import get_logger
 
 from config import AppConfig, init_logger
 from di_container import Container
-from http_app.routes import init_versioned_routes, init_unversioned_routes
+from http_app.routes import init_unversioned_routes, init_versioned_routes
 from storage import init_storage
 
 

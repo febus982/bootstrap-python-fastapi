@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, AsyncMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 from domains.books import Book
 from grpc_app import BooksServicer

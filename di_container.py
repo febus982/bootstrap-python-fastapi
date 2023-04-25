@@ -1,5 +1,5 @@
 from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
-from dependency_injector.providers import ThreadSafeSingleton, Dependency, Factory
+from dependency_injector.providers import Dependency, Factory, ThreadSafeSingleton
 from sqlalchemy_bind_manager import SQLAlchemyBindManager
 
 from config import AppConfig

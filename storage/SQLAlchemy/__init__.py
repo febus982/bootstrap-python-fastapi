@@ -1,6 +1,6 @@
 from typing import Callable, Dict
 
-from dependency_injector.wiring import inject, Provide
+from dependency_injector.wiring import Provide, inject
 from sqlalchemy_bind_manager import SQLAlchemyBindManager
 
 from . import default_tables

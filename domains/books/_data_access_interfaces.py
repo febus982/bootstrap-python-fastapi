@@ -1,5 +1,5 @@
 from collections.abc import Iterable, Mapping
-from typing import Protocol, Union, Tuple, List, Any
+from typing import Any, List, Protocol, Tuple, Union
 
 from sqlalchemy_bind_manager import SortDirection
 

@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Literal, List
+from typing import List, Literal
 
 import structlog
 from opentelemetry import trace
