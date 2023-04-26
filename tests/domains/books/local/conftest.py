@@ -1,8 +1,8 @@
-from unittest.mock import MagicMock, AsyncMock
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from domains.books._local import BookRepositoryInterface
+from domains.books._data_access_interfaces import BookRepositoryInterface
 
 
 @pytest.fixture

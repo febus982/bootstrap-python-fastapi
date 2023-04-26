@@ -1,14 +1,13 @@
 from collections.abc import Iterable
 
-from dependency_injector.wiring import inject, Provide
+from dependency_injector.wiring import Provide, inject
 
-from domains.books.dto import Book, BookData
+from ._data_access_interfaces import BookRepositoryInterface
+from ._dto import Book, BookData
+from ._models import BookModel
 
-from .data_access_interfaces import BookRepositoryInterface
-from .models import BookModel
 
-
-class LocalBookService:
+class BookService:
     book_repository: BookRepositoryInterface
 
     @inject

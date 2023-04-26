@@ -1,6 +1,6 @@
 from sqlalchemy_bind_manager import SQLAlchemyAsyncRepository
 
-from domains.books._local import BookModel
+from domains.books._models import BookModel
 
 
 class BookRepository(SQLAlchemyAsyncRepository[BookModel]):

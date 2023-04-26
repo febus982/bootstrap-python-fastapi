@@ -13,12 +13,9 @@ package grpc_app {
 package domains #DDDDDD {
     package books {
         class Book
-        protocol BookServiceInterface
-        package local {
-            class LocalBookService
-            protocol BookRepositoryInterface
-            class BookModel
-        }
+        class BookService
+        protocol BookRepositoryInterface
+        class BookModel
     }
 }
 
@@ -29,18 +26,17 @@ package storage #DDDDDD {
 }
 
 'links framework - domains
-routes --> BookServiceInterface
+routes --> BookService
 routes --> Book
-services --> BookServiceInterface
+services --> BookService
 services --> Book
 
 'links internal to books domain
-LocalBookService -u-|> BookServiceInterface: implements >
-BookServiceInterface -l-> Book
-LocalBookService --> BookModel
-LocalBookService --> BookRepositoryInterface
+BookService -l-> Book
+BookService --> BookModel
+BookService --> BookRepositoryInterface
 BookRepositoryInterface -l-> BookModel
 
 'links domains - storage
-BookRepository ---d-|> BookRepositoryInterface: implements >
+BookRepository --d-|> BookRepositoryInterface: implements >
 @enduml

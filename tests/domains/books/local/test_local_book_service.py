@@ -1,11 +1,11 @@
 from unittest.mock import AsyncMock
 
-from domains.books.dto import Book
-from domains.books._local import LocalBookService, BookModel
+from domains.books import Book, BookService
+from domains.books._models import BookModel
 
 
 async def test_create_book(book_repository):
-    service = LocalBookService(book_repository=book_repository)
+    service = BookService(book_repository=book_repository)
     book = Book(
         title="test",
         author_name="other",
@@ -16,7 +16,7 @@ async def test_create_book(book_repository):
 
 
 async def test_list_books(book_repository):
-    service = LocalBookService(book_repository=book_repository)
+    service = BookService(book_repository=book_repository)
     book = BookModel(
         book_id=2,
         title="test",

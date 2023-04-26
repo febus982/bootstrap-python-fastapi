@@ -1,10 +1,8 @@
-from dependency_injector.wiring import inject, Provide
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from fastapi_versionizer import api_version
 from pydantic import BaseModel
 
-from domains.books.boundary_interfaces import BookServiceInterface
-from domains.books.dto import BookData, Book
+from domains.books import Book, BookData, BookService
 
 router = APIRouter(prefix="/books")
 
@@ -48,13 +46,10 @@ The views defined here have the functionalities of two components:
 
 @api_version(1)
 @router.post("/")
-@inject
 async def create_book(
     data: CreateBookRequest,
-    book_service: BookServiceInterface = Depends(
-        Provide[BookServiceInterface.__name__]
-    ),
 ) -> CreateBookResponse:
+    book_service = BookService()
     created_book = await book_service.create_book(book=BookData(**data.dict()))
     return CreateBookResponse(book=created_book)
 
@@ -62,13 +57,10 @@ async def create_book(
 # Example v2 API with added parameter
 @api_version(2)
 @router.post("/")
-@inject
 async def create_book_v2(
     data: CreateBookRequest,
     some_optional_query_param: bool = False,
-    book_service: BookServiceInterface = Depends(
-        Provide[BookServiceInterface.__name__]
-    ),
 ) -> CreateBookResponse:
+    book_service = BookService()
     created_book = await book_service.create_book(book=BookData(**data.dict()))
     return CreateBookResponse(book=created_book)

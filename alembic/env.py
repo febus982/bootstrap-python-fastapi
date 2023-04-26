@@ -1,9 +1,9 @@
 import logging
 from asyncio import get_event_loop
 
-from alembic import context
 from sqlalchemy.ext.asyncio import AsyncEngine
 
+from alembic import context
 from config import AppConfig, init_logger
 from di_container import Container
 from storage.SQLAlchemy import init_tables
@@ -24,6 +24,7 @@ config = context.config
 # in the sample .ini file.
 # db_names = config.get_main_option("databases")
 
+# TODO: Something better organised than this
 app_config = AppConfig()
 init_logger(app_config)
 logger = logging.getLogger("alembic.env")

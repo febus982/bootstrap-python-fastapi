@@ -6,19 +6,19 @@ authors = ["Federico Busetti <729029+febus982@users.noreply.github.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-aiosqlite = "^0.18.0"
+aiosqlite = ">=0.18.0"
 alembic = "~1.10.2"
 dependency-injector = { version = "~4.41.0", extras = ["pydantic"] }
-httpx = "~0.23.0"
-opentelemetry-distro = "^0.37b0"
-opentelemetry-exporter-otlp = "^1.15.0"
-opentelemetry-instrumentation-httpx = "^0.37b0"
-opentelemetry-instrumentation-sqlalchemy = "^0.37b0"
+httpx = ">=0.23.0"
+opentelemetry-distro = "^0.38b0"
+opentelemetry-exporter-otlp = "^1.17.0"
+opentelemetry-instrumentation-httpx = "^0.38b0"
+opentelemetry-instrumentation-sqlalchemy = "^0.38b0"
 python = ">=3.9,<3.12"
 rich = "^13.2.0"
 SQLAlchemy = { version = "~2.0.0", extras = ["asyncio", "mypy"] }
 sqlalchemy-bind-manager = "*"
-structlog = "~22.3.0"
+structlog = "~23.1.0"
 
 [tool.poetry.group.http]
 optional = true
@@ -27,7 +27,7 @@ optional = true
 fastapi = "~0.94.0"
 fastapi-versionizer = "~0.1.2"
 jinja2 = "~3.1.2"
-opentelemetry-instrumentation-fastapi = "^0.37b0"
+opentelemetry-instrumentation-fastapi = "^0.38b0"
 starlette-prometheus = "~0.9.0"
 uvicorn = { version = "~0.20.0", extras = ["standard"] }
 
@@ -39,7 +39,7 @@ grpcio = "~1.51.1"
 grpcio-tools = "~1.51.1"
 grpc-stubs = "~1.24.11"
 mypy-protobuf = "^3.4.0"
-opentelemetry-instrumentation-grpc = "^0.37b0"
+opentelemetry-instrumentation-grpc = "^0.38b0"
 
 [tool.poetry.group.dev]
 optional = true
@@ -48,13 +48,13 @@ optional = true
 asynctest = "^0.13.0"
 coverage = "~6.5.0"
 black = "~22.10.0"
-flake8 = "~5.0.4"
 mypy = "~0.990"
 mypy-protobuf = "~3.4.0"
 pytest = "~7.2.0"
 pytest-cov = "^4.0.0"
 pytest-factoryboy = "~2.5.0"
 pytest-xdist = "^3.0.2"
+ruff = "^0.0.263"
 
 [build-system]
 requires = ["poetry-core"]
@@ -81,3 +81,12 @@ files = [
 [[tool.mypy.overrides]]
 module = "grpc.aio.*"
 ignore_missing_imports = true
+
+[tool.ruff]
+select = ["E", "F", "I"]
+exclude = [
+    "grpc_app/generated",
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]

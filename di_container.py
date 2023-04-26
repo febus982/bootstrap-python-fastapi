@@ -1,11 +1,9 @@
 from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
-from dependency_injector.providers import ThreadSafeSingleton, Dependency, Factory
+from dependency_injector.providers import Dependency, Factory, ThreadSafeSingleton
 from sqlalchemy_bind_manager import SQLAlchemyBindManager
 
 from config import AppConfig
-from domains.books.boundary_interfaces import BookServiceInterface
-from domains.books._local import LocalBookService
-from domains.books._local.data_access_interfaces import BookRepositoryInterface
+from domains.books._data_access_interfaces import BookRepositoryInterface
 from storage.repositories.book_repository import BookRepository
 
 
@@ -16,11 +14,12 @@ class Container(DeclarativeContainer):
     Docs: https://python-dependency-injector.ets-labs.org/
     """
 
-    # Enable injection on the whole http_app package
-    wiring_config = WiringConfiguration(packages=[
-        "storage",
-        "domains",
-    ])
+    wiring_config = WiringConfiguration(
+        packages=[
+            "storage",
+            "domains",
+        ]
+    )
 
     """
     We could use the config provider but it would transform our nice typed
@@ -55,13 +54,8 @@ class Container(DeclarativeContainer):
             service: MyInterface = Provide[MyInterface.__name__],
         )
     """
-    BookServiceInterface: Factory[
-        BookServiceInterface
-    ] = Factory(LocalBookService)
 
-    BookRepositoryInterface: Factory[
-        BookRepositoryInterface
-    ] = Factory(
+    BookRepositoryInterface: Factory[BookRepositoryInterface] = Factory(
         BookRepository,
         bind=SQLAlchemyBindManager.provided.get_bind.call(),
     )
