@@ -1,14 +1,13 @@
 from typing import Union
 
-from dependency_injector.providers import Object
 from fastapi import FastAPI, Request
 from fastapi_versionizer import versionize
 from starlette.responses import JSONResponse
 from starlette_prometheus import PrometheusMiddleware, metrics
 from structlog import get_logger
 
-from config import AppConfig, init_logger
-from di_container import Container
+from config import AppConfig
+from domains import init_domains
 from http_app.routes import init_unversioned_routes, init_versioned_routes
 from storage import init_storage
 
@@ -17,15 +16,9 @@ def create_app(
     test_config: Union[AppConfig, None] = None,
 ) -> FastAPI:
     app_config = test_config or AppConfig()
-    init_logger(app_config)
+    init_domains(app_config)
     app = FastAPI(debug=app_config.DEBUG)
     init_exception_handlers(app)
-
-    # Initialise DI container
-    if not test_config:
-        Container(
-            config=Object(app_config),
-        )
 
     init_storage()
 

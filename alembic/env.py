@@ -24,6 +24,7 @@ config = context.config
 # in the sample .ini file.
 # db_names = config.get_main_option("databases")
 
+# TODO: Something better organised than this
 app_config = AppConfig()
 init_logger(app_config)
 logger = logging.getLogger("alembic.env")

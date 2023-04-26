@@ -14,7 +14,6 @@ class Container(DeclarativeContainer):
     Docs: https://python-dependency-injector.ets-labs.org/
     """
 
-    # Enable injection on the whole http_app package
     wiring_config = WiringConfiguration(
         packages=[
             "storage",
