@@ -21,6 +21,8 @@ migrate:
 
 format:
 	poetry run black http_app grpc_app domains storage tests alembic .
+
+lint:
 	poetry run ruff . --fix
 
 # There are issues on how python imports are generated when using nested
