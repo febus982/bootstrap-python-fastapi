@@ -12,14 +12,13 @@ This is an example implementation of microservice applying
 concepts from [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 and [SOLID principles](https://en.wikipedia.org/wiki/SOLID).
 
-* The books domain is isolated behind an interface class, enforcing the [Interface Segregation principle](https://en.wikipedia.org/wiki/Interface_segregation_principle) 
+* The repository classes are isolated behind interfaces, enforcing the [Interface Segregation principle](https://en.wikipedia.org/wiki/Interface_segregation_principle) 
   and the [Inversion of Control](https://en.wikipedia.org/wiki/Inversion_of_control) design pattern
-* The same principles are used for the BookRepository class
 * The application frameworks are decoupled from the domain logic
 * The storage layer is decoupled from the domain logic
 
 In this way our components are loosely coupled and the application logic
-(the domains package) is completely independent of from the chosen framework
+(the domains package) is completely independent of the chosen framework
 and the persistence layer.
 
 ## HTTP API Docs
