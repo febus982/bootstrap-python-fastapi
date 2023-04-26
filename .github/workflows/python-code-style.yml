@@ -1,7 +1,7 @@
-# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+ # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-name: Python code quality
+name: Python code style
 
 on:
   push:
@@ -25,13 +25,6 @@ jobs:
         python -m pip install poetry
         poetry config virtualenvs.create false
         poetry install --no-root --with http,grpc,dev
-    - name: Test & publish code coverage
-      uses: paambaati/codeclimate-action@v3.2.0
-      if: env.CC_TEST_REPORTER_ID != null
-      env:
-        CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_REPORTER_ID }}
-      with:
-        coverageCommand: pytest --cov --cov-report lcov
-        coverageLocations: |
-          ${{github.workspace}}/coverage.lcov:lcov
-        debug: true
+    - name: Check code style with black
+      run: |
+        black --check http_app grpc_app domains storage tests alembic .
