@@ -1,3 +1,4 @@
+from fastapi import status
 from httpx import AsyncClient
 
 
@@ -11,7 +12,7 @@ async def test_create_book(testapp):
             "/api/v1/books/",
             json=new_book_data,
         )
-    assert response.status_code == 200
+    assert response.status_code == status.HTTP_201_CREATED
     """
     Check new_book_data is a subset of response.json()["book"]
     (response.json()["book"] contains also the generated primary key)
@@ -29,7 +30,7 @@ async def test_create_book_v2(testapp):
             "/api/v2/books/",
             json=new_book_data,
         )
-    assert response.status_code == 200
+    assert response.status_code == status.HTTP_201_CREATED
     """
     Check new_book_data is a subset of response.json()["book"]
     (response.json()["book"] contains also the generated primary key)

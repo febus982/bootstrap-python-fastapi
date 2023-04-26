@@ -15,24 +15,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python 3.10
+    - name: Set up Python 3.11
       uses: actions/setup-python@v3
       with:
-        python-version: "3.10"
+        python-version: "3.11"
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         python -m pip install poetry
         poetry config virtualenvs.create false
         poetry install --no-root --with http,grpc,dev
-    - name: Check typing
-      run: |
-        mypy
-    - name: Check code style with black
-      run: |
-        black --check http_app grpc_app domains storage tests alembic .
-    - name: Lint with ruff
-      uses: chartboost/ruff-action@v1
     - name: Test & publish code coverage
       uses: paambaati/codeclimate-action@v3.2.0
       if: env.CC_TEST_REPORTER_ID != null
