@@ -20,7 +20,7 @@ def create_server(test_config: Optional[AppConfig] = None):
     s = server(futures.ThreadPoolExecutor(max_workers=10))
     # Register service
     add_BooksServicer_to_server(BooksServicer(), s)
-    s.add_insecure_port("[::]:50051")
+    s.add_insecure_port("0.0.0.0:9999")
     return s
 
 
