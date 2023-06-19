@@ -47,7 +47,7 @@ services:
       OTEL_LOGS_EXPORTER: "none"
     command: ["opentelemetry-instrument", "make", "grpc"]
     ports:
-      - "50051:50051"
+      - "9999:9999"
     volumes:
       - '.:/app'
 

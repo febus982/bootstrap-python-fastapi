@@ -10,10 +10,10 @@ aiosqlite = ">=0.18.0"
 alembic = "~1.10.2"
 dependency-injector = { version = "~4.41.0", extras = ["pydantic"] }
 httpx = ">=0.23.0"
-opentelemetry-distro = "^0.38b0"
-opentelemetry-exporter-otlp = "^1.17.0"
-opentelemetry-instrumentation-httpx = "^0.38b0"
-opentelemetry-instrumentation-sqlalchemy = "^0.38b0"
+opentelemetry-distro = { version = "*", extras = ["otlp"] }
+opentelemetry-instrumentation = "*"
+opentelemetry-instrumentation-httpx = "*"
+opentelemetry-instrumentation-sqlalchemy = "*"
 python = ">=3.9,<3.12"
 rich = "^13.2.0"
 SQLAlchemy = { version = "~2.0.0", extras = ["asyncio", "mypy"] }
@@ -27,7 +27,7 @@ optional = true
 fastapi = "~0.94.0"
 fastapi-versionizer = "~0.1.2"
 jinja2 = "~3.1.2"
-opentelemetry-instrumentation-fastapi = "^0.38b0"
+opentelemetry-instrumentation-fastapi = "*"
 starlette-prometheus = "~0.9.0"
 uvicorn = { version = "~0.20.0", extras = ["standard"] }
 
@@ -39,7 +39,7 @@ grpcio = "~1.51.1"
 grpcio-tools = "~1.51.1"
 grpc-stubs = "~1.24.11"
 mypy-protobuf = "^3.4.0"
-opentelemetry-instrumentation-grpc = "^0.38b0"
+opentelemetry-instrumentation-grpc = "*"
 
 [tool.poetry.group.dev]
 optional = true
