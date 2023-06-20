@@ -77,6 +77,7 @@ files = [
     "di_container.py",
     "config.py",
 ]
+plugins = "pydantic.mypy"
 
 [[tool.mypy.overrides]]
 module = "grpc.aio.*"

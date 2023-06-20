@@ -27,4 +27,4 @@ jobs:
         poetry install --no-root --with http,grpc,dev
     - name: Check code style with black
       run: |
-        black --check http_app grpc_app domains storage tests alembic .
+        make format

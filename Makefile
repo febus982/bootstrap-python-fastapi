@@ -7,10 +7,16 @@ run:
 grpc:
 	poetry run python3 -m grpc_app
 
-test: mypy
-	poetry run pytest --cov
+test:
+	poetry run pytest -n auto --cov
 
-mypy:
+ci-test:
+	poetry run pytest
+
+ci-coverage:
+	poetry run pytest --cov --cov-report lcov
+
+typing:
 	poetry run mypy
 
 update-deps:
@@ -20,9 +26,15 @@ migrate:
 	poetry run alembic upgrade heads
 
 format:
+	poetry run black --check http_app grpc_app domains storage tests alembic .
+
+format-fix:
 	poetry run black http_app grpc_app domains storage tests alembic .
 
 lint:
+	poetry run ruff .
+
+lint-fix:
 	poetry run ruff . --fix
 
 # There are issues on how python imports are generated when using nested
@@ -41,3 +53,6 @@ generate-proto:
 	--grpc_python_out=. \
 	grpc_app/proto/*.proto
 	git add ./grpc_app/generated
+
+fix:  format-fix lint-fix
+check: typing test format lint
