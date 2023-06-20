@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 aiosqlite = ">=0.18.0"
-alembic = "~1.10.2"
+alembic = "~1.11.1"
 dependency-injector = { version = "~4.41.0", extras = ["pydantic"] }
 httpx = ">=0.23.0"
 opentelemetry-distro = { version = "*", extras = ["otlp"] }
