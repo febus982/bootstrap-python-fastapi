@@ -13,6 +13,7 @@ USE_TWOPHASE = False
 def init_container(app_config: AppConfig):
     # Workaround to avoid circular import
     from di_container import Container
+
     return Container(config=app_config)
 
 
