@@ -27,7 +27,7 @@ jobs:
         poetry install --no-root --with http,grpc,dev
     - name: Test with pytest
       run: |
-        pytest
+        make ci-test
     - name: Check typing
       run: |
-        mypy
+        make typing

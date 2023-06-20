@@ -26,4 +26,4 @@ jobs:
         poetry config virtualenvs.create false
         poetry install --no-root --with http,grpc,dev
     - name: Lint with ruff
-      uses: chartboost/ruff-action@v1
+      run: make lint

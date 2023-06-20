@@ -5,10 +5,17 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 
 from alembic import context
 from config import AppConfig, init_logger
-from di_container import Container
 from storage.SQLAlchemy import init_tables
 
 USE_TWOPHASE = False
+
+
+def init_container(app_config: AppConfig):
+    # Workaround to avoid circular import
+    from di_container import Container
+
+    return Container(config=app_config)
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -28,7 +35,7 @@ config = context.config
 app_config = AppConfig()
 init_logger(app_config)
 logger = logging.getLogger("alembic.env")
-di_container = Container(config=app_config)
+di_container = init_container(app_config)
 sa_manager = di_container.SQLAlchemyBindManager()
 init_tables()
 
