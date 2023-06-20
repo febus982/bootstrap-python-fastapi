@@ -1,5 +1,5 @@
 from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
-from dependency_injector.providers import Dependency, Factory, ThreadSafeSingleton
+from dependency_injector.providers import Dependency, Factory, Singleton
 from sqlalchemy_bind_manager import SQLAlchemyBindManager
 
 from config import AppConfig
@@ -33,7 +33,7 @@ class Container(DeclarativeContainer):
     These are classes we want the container to manage the life cycle for
     (e.g. Singletons), we map them using their class name directly.
     """
-    SQLAlchemyBindManager = ThreadSafeSingleton(
+    SQLAlchemyBindManager = Singleton(
         SQLAlchemyBindManager,
         config=config.provided.SQLALCHEMY_CONFIG,
     )
