@@ -53,5 +53,5 @@ def init_exception_handlers(app: FastAPI) -> None:
             return await call_next(request)
         except Exception as e:
             logger = get_logger(__name__)
-            logger.exception(e)
+            await logger.aexception(e)
             return JSONResponse({"error": "Internal server error"}, status_code=500)
