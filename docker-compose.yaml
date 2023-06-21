@@ -1,5 +1,7 @@
 version: '3.8'
 services:
+  # We don't use `make` or `poetry` for long running processes,
+  # to make sure they run as pid 1 and receive SIGTERM signal
   dev:
     build:
       dockerfile: Dockerfile
@@ -7,7 +9,15 @@ services:
       target: http_app
     ports:
       - '8000:8000'
-    command: ["make", "dev"]
+    command:
+      - "uvicorn"
+      - "http_app:create_app"
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8000"
+      - "--factory"
+      - "--reload"
     volumes:
       - '.:/app'
   http:
@@ -20,20 +30,10 @@ services:
       OTEL_TRACES_EXPORTER: "console"
       OTEL_METRICS_EXPORTER: "console"
       OTEL_LOGS_EXPORTER: "none"
-    command: ["opentelemetry-instrument", "make", "run"]
     ports:
       - '8001:8000'
     volumes:
       - './sqlite.db:/app/sqlite.db'
-
-  generate-proto:
-    build:
-      dockerfile: Dockerfile
-      context: .
-      target: grpc_builder
-    volumes:
-      - '.:/app'
-    command: ["make", "generate-proto"]
 
   grpc:
     build:
@@ -45,11 +45,22 @@ services:
       OTEL_TRACES_EXPORTER: "console"
       OTEL_METRICS_EXPORTER: "console"
       OTEL_LOGS_EXPORTER: "none"
-    command: ["opentelemetry-instrument", "make", "grpc"]
     ports:
       - "9999:9999"
     volumes:
       - '.:/app'
+
+  # Starting from here there are only single-run commands, we can use `make` here
+  generate-proto:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: grpc_builder
+    volumes:
+      - '.:/app'
+    command:
+      - "make"
+      - "generate-proto"
 
   test:
     build:
@@ -58,11 +69,15 @@ services:
       target: test
     volumes:
       - '.:/app'
-    command: ["make", "test"]
+    command:
+      - "make"
+      - "test"
 
   ci-test:
     build:
       dockerfile: Dockerfile
       context: .
       target: test
-    command: ["make", "test"]
+    command:
+      - "make"
+      - "ci-test"

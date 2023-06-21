@@ -54,10 +54,10 @@ ENTRYPOINT ["poetry", "run"]
 FROM base_app as http_app
 COPY --from=http_builder /poetryvenvs /poetryvenvs
 COPY http_app ./http_app
-CMD ["make", "run"]
+CMD exec opentelemetry-instrument uvicorn http_app:create_app --host 0.0.0.0 --port 8000 --factory
 
 # Copy the grpc python package and requirements from relevant builder
 FROM base_app as grpc_app
 COPY --from=grpc_builder /poetryvenvs /poetryvenvs
 COPY grpc_app ./grpc_app
-CMD ["make", "grpc"]
+CMD exec opentelemetry-instrument python3 -m grpc_app

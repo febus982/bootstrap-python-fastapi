@@ -1,4 +1,5 @@
 import logging
+import os
 from concurrent import futures
 from typing import Optional
 
@@ -20,12 +21,14 @@ def create_server(test_config: Optional[AppConfig] = None):
     s = server(futures.ThreadPoolExecutor(max_workers=10))
     # Register service
     add_BooksServicer_to_server(BooksServicer(), s)
-    s.add_insecure_port("0.0.0.0:9999")
+    address = "0.0.0.0:9999"
+    logging.info(f"[{os.getpid()}] Listening on {address}")
+    s.add_insecure_port(address)
     return s
 
 
 async def main():  # pragma: no cover
     s = create_server()
     await s.start()
-    await s.wait_for_termination()
     logging.info("GRPC started")
+    await s.wait_for_termination()
