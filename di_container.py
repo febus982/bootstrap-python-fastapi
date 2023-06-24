@@ -1,10 +1,11 @@
 from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
 from dependency_injector.providers import Dependency, Factory, Singleton
 from sqlalchemy_bind_manager import SQLAlchemyBindManager
+from sqlalchemy_bind_manager._repository import SQLAlchemyAsyncRepository
 
 from config import AppConfig
 from domains.books._data_access_interfaces import BookRepositoryInterface
-from storage.repositories.book_repository import BookRepository
+from domains.books._models import BookModel
 
 
 class Container(DeclarativeContainer):
@@ -56,6 +57,7 @@ class Container(DeclarativeContainer):
     """
 
     BookRepositoryInterface: Factory[BookRepositoryInterface] = Factory(
-        BookRepository,
+        SQLAlchemyAsyncRepository,
         bind=SQLAlchemyBindManager.provided.get_bind.call(),
+        model_class=BookModel,
     )
