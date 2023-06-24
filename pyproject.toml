@@ -91,3 +91,20 @@ exclude = [
 
 [tool.ruff.per-file-ignores]
 "__init__.py" = ["F401"]
+
+[tool.black]
+files = '''
+(
+  http_app
+  grpc_app
+  domains
+  storage
+  tests
+  alembic
+)
+'''
+extend-exclude = '''
+(
+  /grpc_app/generated
+)
+'''
