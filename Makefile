@@ -26,10 +26,10 @@ migrate:
 	poetry run alembic upgrade heads
 
 format:
-	poetry run black --check http_app grpc_app domains storage tests alembic .
+	poetry run black --check .
 
 format-fix:
-	poetry run black http_app grpc_app domains storage tests alembic .
+	poetry run black .
 
 lint:
 	poetry run ruff .

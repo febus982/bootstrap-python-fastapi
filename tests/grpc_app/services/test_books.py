@@ -6,7 +6,6 @@ from grpc_app.generated.books_pb2 import ListBooksRequest, ListBooksResponse
 
 
 async def test_grpc_server():
-
     book_service = AsyncMock()
     book_service.list_books.return_value = [
         Book(

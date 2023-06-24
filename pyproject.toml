@@ -45,16 +45,16 @@ opentelemetry-instrumentation-grpc = "*"
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-asynctest = "^0.13.0"
-coverage = "~6.5.0"
-black = "~22.10.0"
-mypy = "~0.990"
-mypy-protobuf = "~3.4.0"
-pytest = "~7.2.0"
-pytest-cov = "^4.0.0"
-pytest-factoryboy = "~2.5.0"
-pytest-xdist = "^3.0.2"
-ruff = "^0.0.263"
+asynctest = "*"
+coverage = "*"
+black = "*"
+mypy = "*"
+mypy-protobuf = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-factoryboy = "*"
+pytest-xdist = "*"
+ruff = "*"
 
 [build-system]
 requires = ["poetry-core"]
@@ -91,3 +91,20 @@ exclude = [
 
 [tool.ruff.per-file-ignores]
 "__init__.py" = ["F401"]
+
+[tool.black]
+files = '''
+(
+  http_app
+  grpc_app
+  domains
+  storage
+  tests
+  alembic
+)
+'''
+extend-exclude = '''
+(
+  /grpc_app/generated
+)
+'''
