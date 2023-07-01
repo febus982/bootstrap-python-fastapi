@@ -1,3 +1,8 @@
+containers:
+	# To build shared container layers only once we build a single container before the other ones
+	docker compose build dev
+	docker compose build
+
 dev:
 	poetry run uvicorn http_app:create_app --host 0.0.0.0 --port 8000 --factory --reload
 
