@@ -5,10 +5,11 @@ description = ""
 authors = ["Federico Busetti <729029+febus982@users.noreply.github.com>"]
 readme = "README.md"
 
+# https://python-poetry.org/docs/dependency-specification
 [tool.poetry.dependencies]
 aiosqlite = ">=0.18.0"
-alembic = "~1.11.1"
-dependency-injector = { version = "~4.41.0", extras = ["pydantic"] }
+alembic = "^1.11.1"
+dependency-injector = { version = "^4.41.0", extras = ["pydantic"] }
 httpx = ">=0.23.0"
 opentelemetry-distro = { version = "*", extras = ["otlp"] }
 opentelemetry-instrumentation = "*"
@@ -16,28 +17,28 @@ opentelemetry-instrumentation-httpx = "*"
 opentelemetry-instrumentation-sqlalchemy = "*"
 python = ">=3.9,<3.12"
 rich = "^13.2.0"
-SQLAlchemy = { version = "~2.0.0", extras = ["asyncio", "mypy"] }
+SQLAlchemy = { version = "^2.0.0", extras = ["asyncio", "mypy"] }
 sqlalchemy-bind-manager = "*"
-structlog = "~23.1.0"
+structlog = "^23.1.0"
 
 [tool.poetry.group.http]
 optional = true
 
 [tool.poetry.group.http.dependencies]
-fastapi = "~0.94.0"
-fastapi-versionizer = "~0.1.2"
-jinja2 = "~3.1.2"
+fastapi = "^0.99.0"
+fastapi-versionizer = "^0.1.2"
+jinja2 = "^3.1.2"
 opentelemetry-instrumentation-fastapi = "*"
-starlette-prometheus = "~0.9.0"
-uvicorn = { version = "~0.20.0", extras = ["standard"] }
+starlette-prometheus = "^0.9.0"
+uvicorn = { version = "^0.22.0", extras = ["standard"] }
 
 [tool.poetry.group.grpc]
 optional = true
 
 [tool.poetry.group.grpc.dependencies]
-grpcio = "~1.51.1"
-grpcio-tools = "~1.51.1"
-grpc-stubs = "~1.24.11"
+grpcio = "^1.51.1"
+grpcio-tools = "^1.51.1"
+grpc-stubs = "^1.24.11"
 mypy-protobuf = "^3.4.0"
 opentelemetry-instrumentation-grpc = "*"
 
