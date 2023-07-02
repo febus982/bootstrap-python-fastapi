@@ -21,7 +21,7 @@ package domains #DDDDDD {
 
 package storage #DDDDDD {
     package Repositories {
-        class BookRepository
+        class SQLAlchemyRepository
     }
 }
 
@@ -38,5 +38,5 @@ BookService --> BookRepositoryInterface
 BookRepositoryInterface -l-> BookModel
 
 'links domains - storage
-BookRepository --d-|> BookRepositoryInterface: implements >
+SQLAlchemyRepository --d-|> BookRepositoryInterface: implements >
 @enduml
