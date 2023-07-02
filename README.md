@@ -56,6 +56,10 @@ Packages are ordered from the highest level to the lowest one.
 
 ![](architecture.png)
 
+## Data flow and layers responsibilities
+
+![](flow.png)
+
 ## How to run
 
 Using Docker:
