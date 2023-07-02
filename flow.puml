@@ -1,0 +1,59 @@
+@startuml
+actor       User
+participant "Frontend App" as Frontend
+participant HTTP_API [
+    =HTTP Server
+    =and Framework
+    ----
+    =Entrypoint:
+    ""Route function""
+    ""HTTP Request object""
+    ----
+    =Responsibilities:
+    ""AuthN/AuthZ""
+    ""Input validation""
+    ""Domain logic invocation""
+]
+participant Domain [
+    =Domains
+    ----
+    =Entrypoint:
+    ""Service class""
+    ""DTO objects""
+    ----
+    =Responsibilities:
+    ""Domain logic implementation""
+    ""(Works using models but uses""
+    ""DTOs as input/output interface)""
+]
+participant Storage [
+    =Storage
+    ----
+    =Entrypoint:
+    ""Repository class""
+    ""model objects""
+    ----
+    =Responsibilities:
+    ""Models persistence logic""
+]
+database    Database
+
+User -> Frontend : Browser interaction
+activate Frontend
+Frontend -> HTTP_API: HTTP Request\n  (using fetch api, AXIOS, etc)
+activate HTTP_API
+HTTP_API -> Domain: Calls methods in service class
+activate Domain
+Domain -> Storage: Calls methods in repository class
+activate Storage
+Storage <-> Database: Read and write models
+Domain <- Storage: Return models
+deactivate Storage
+HTTP_API <- Domain: Return DTOs
+deactivate Domain
+Frontend <- HTTP_API: Return HTTP Response
+deactivate HTTP_API
+User <- Frontend : Render page/component
+deactivate Frontend
+
+@enduml
