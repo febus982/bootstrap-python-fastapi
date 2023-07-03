@@ -23,7 +23,7 @@ async def create_server(test_config: Optional[AppConfig] = None):
     add_BooksServicer_to_server(BooksServicer(), s)
     address = "0.0.0.0:9999"
     logger = get_logger()
-    logger.ainfo(f"[{os.getpid()}] Listening on {address}")
+    await logger.ainfo(f"[{os.getpid()}] Listening on {address}")
     s.add_insecure_port(address)
     return s
 
