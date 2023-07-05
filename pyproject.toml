@@ -30,7 +30,8 @@ fastapi-versionizer = "^0.1.2"
 jinja2 = "^3.1.2"
 opentelemetry-instrumentation-fastapi = "*"
 starlette-prometheus = "^0.9.0"
-uvicorn = { version = "^0.22.0", extras = ["standard"] }
+strawberry-graphql = { version = "^0.193.0", extras = ["debug-server", "fastapi"] }
+uvicorn = { version = "^0.21.0", extras = ["standard"] }
 
 [tool.poetry.group.grpc]
 optional = true
@@ -56,6 +57,7 @@ pytest-cov = "*"
 pytest-factoryboy = "*"
 pytest-xdist = "*"
 ruff = "*"
+strawberry-graphql = { version = "*", extras = ["debug-server", "fastapi"] }
 
 [build-system]
 requires = ["poetry-core"]

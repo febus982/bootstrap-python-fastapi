@@ -15,6 +15,15 @@ def book_service() -> Iterator[MagicMock]:
     svc.create_book = AsyncMock(
         side_effect=lambda book: Book(book_id=randint(1, 1000), **book.dict())
     )
+    svc.list_books = AsyncMock(
+        return_value=[
+            Book(
+                book_id=123,
+                title="The Shining",
+                author_name="Stephen King",
+            )
+        ]
+    )
 
     with patch("domains.books._service.BookService.__new__", return_value=svc):
         yield svc
