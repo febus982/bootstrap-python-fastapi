@@ -80,7 +80,7 @@ files = [
     "di_container.py",
     "config.py",
 ]
-plugins = "pydantic.mypy"
+plugins = "pydantic.mypy,strawberry.ext.mypy_plugin"
 
 [[tool.mypy.overrides]]
 module = "grpc.aio.*"
