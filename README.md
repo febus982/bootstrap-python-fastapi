@@ -82,3 +82,20 @@ Locally:
 * `make generate-proto`: Generates grpcio python stubs from `.proto` files in `grpc_app/proto` directory
 * `make check`: Run tests, code style and lint checks
 * `make fix`: Run tests, code style and lint checks with automatic fixes (where possible)
+
+## Multistage dockerfile configuration
+
+Python docker image tend to become large after installing the application requirements
+(the slim base is ~150 MB uncompressed), therefore it's important to spend efforts
+to minimise the image size, even if it produces a slightly more complex multistage
+Dockerfile.
+
+The following setup makes sure the production image will keep to a minimal size ("only" 390MB):
+ * 150MB base image
+ * 165MB python installed dependencies
+ * 73MB poetry + updated pip
+
+Using the following pipeline the "test" image is instead ~850MB, more than 400MB that would
+end up as a cost in traffic on each image pull.
+
+![](docker-container.png)
