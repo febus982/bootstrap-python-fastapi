@@ -1,7 +1,10 @@
 containers:
+	# Use local UID to avoid files permission issues when mounting directories
+	# We could do this at runtime, by specifying the user, but it's easier doing it
+	# at build time, so no special commands will be necessary at runtime
+	docker compose build --build-arg UID=`id -u` dev
 	# To build shared container layers only once we build a single container before the other ones
-	docker compose build dev
-	docker compose build
+	docker compose build --build-arg UID=`id -u`
 
 dev:
 	poetry run uvicorn http_app:create_app --host 0.0.0.0 --port 8000 --factory --reload
