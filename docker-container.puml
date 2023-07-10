@@ -1,0 +1,76 @@
+@startuml
+usecase base [
+    =Base
+    ----
+    ""Contains system runtime ""
+    ""libraries necessary to run""
+    ""all the applications""
+    ""(e.g. libmysql)""
+]
+usecase base_builder [
+    =Base Builder
+    ----
+    ""Contains system libraries""
+    ""necessary to build python""
+    ""dependencies""
+    ""(e.g. gcc, library headers)""
+]
+usecase test [
+    =Test
+    ----
+    ""Fat image containing everything""
+    ""necessary to run and test""
+    ""all the applications""
+]
+usecase base_app [
+    =Base app
+    ----
+    ""Copies shared application logic""
+    ""independent from the used framework""
+    ""(domains, storage, etc.)""
+]
+
+rectangle HTTP {
+    usecase http_builder [
+        =Http builder
+        ----
+        ""Builds HTTP dependencies""
+    ]
+    usecase http_app [
+        =Http app
+        ----
+        ""Copies HTTP framework""
+        ""shared logic""
+        ""and dependencies""
+        "" to run the application""
+    ]
+}
+rectangle GRPC {
+    usecase grpc_builder [
+        =GRPC builder
+        ----
+        ""Builds GRPC dependencies""
+    ]
+    usecase grpc_app [
+        =GRPC app
+        ----
+        ""Copies HTTP framework""
+        ""shared logic""
+        ""and dependencies""
+        "" to run the application""
+    ]
+}
+
+base ==r=> base_builder
+base ==l=> base_app
+
+base_builder ===> http_builder
+http_builder ===> http_app
+base_app ===> http_app
+
+base_builder ===> grpc_builder
+grpc_builder ===> grpc_app
+base_app ===> grpc_app
+
+base_builder ==r=> test
+@enduml
