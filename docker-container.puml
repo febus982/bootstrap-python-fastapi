@@ -15,8 +15,8 @@ usecase base_builder [
     ""dependencies""
     ""(e.g. gcc, library headers)""
 ]
-usecase test [
-    =Test
+usecase dev [
+    =Dev
     ----
     ""Fat image containing everything""
     ""necessary to run and test""
@@ -32,12 +32,12 @@ usecase base_app [
 
 rectangle HTTP {
     usecase http_builder [
-        =Http builder
+        =HTTP builder
         ----
         ""Builds HTTP dependencies""
     ]
     usecase http_app [
-        =Http app
+        =HTTP app
         ----
         ""Copies HTTP framework""
         ""shared logic""
@@ -54,7 +54,7 @@ rectangle GRPC {
     usecase grpc_app [
         =GRPC app
         ----
-        ""Copies HTTP framework""
+        ""Copies GRPC framework""
         ""shared logic""
         ""and dependencies""
         "" to run the application""
@@ -72,5 +72,5 @@ base_builder ===> grpc_builder
 grpc_builder ===> grpc_app
 base_app ===> grpc_app
 
-base_builder ==r=> test
+base_builder ==r=> dev
 @enduml
