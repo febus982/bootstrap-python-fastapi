@@ -20,6 +20,10 @@ RUN apt-get update \
 RUN pip install --no-cache-dir -U pip
 RUN pip install --no-cache-dir -U poetry
 
+# We run everything by poetry run from now on, so that PATH will be handled
+# for binaries installed in virtual environments
+ENTRYPOINT ["poetry", "run"]
+
 FROM base as base_builder
 # Install build system requirements (gcc, library headers, etc.)
 # for compiled Python requirements like psycopg2
@@ -37,9 +41,12 @@ COPY --chown=nonroot:nonroot pyproject.toml .
 COPY --chown=nonroot:nonroot poetry.lock .
 
 # Test image, contains all files and dependencies
-FROM base_builder as test
+FROM base_builder as dev
 RUN poetry install --with http,grpc,dev
 COPY --chown=nonroot:nonroot . .
+# Note that opentelemetry doesn't play well together with uvicorn reloader
+# when signals are propagated, we disable it in dev image default CMD
+CMD ["uvicorn", "http_app:create_app", "--host", "0.0.0.0", "--port", "8000", "--factory", "--reload"]
 
 # Installs requirements to run production http application
 FROM base_builder as http_builder
@@ -62,20 +69,17 @@ COPY --chown=nonroot:nonroot config.py .
 COPY --chown=nonroot:nonroot di_container.py .
 COPY --chown=nonroot:nonroot alembic.ini .
 COPY --chown=nonroot:nonroot Makefile .
-ENTRYPOINT ["poetry", "run"]
 
 # Copy the http python package and requirements from relevant builder
 FROM base_app as http_app
 COPY --from=http_builder /poetryvenvs /poetryvenvs
 COPY --chown=nonroot:nonroot http_app ./http_app
-# opentelemetry-instrument will spawn a subprocess, therefore we use exec
-# to make sure the app runs on PID 1 and receives correctly system signals
-CMD opentelemetry-instrument uvicorn http_app:create_app --host 0.0.0.0 --port 8000 --factory
+# Run CMD using array syntax, so it's uses `exec` and runs as PID1
+CMD ["opentelemetry-instrument", "uvicorn", "http_app:create_app", "--host", "0.0.0.0", "--port", "8000", "--factory"]
 
 # Copy the grpc python package and requirements from relevant builder
 FROM base_app as grpc_app
 COPY --from=grpc_builder /poetryvenvs /poetryvenvs
 COPY --chown=nonroot:nonroot grpc_app ./grpc_app
-# opentelemetry-instrument will spawn a subprocess, therefore we use exec
-# to make sure the app runs on PID 1 and receives correctly system signals
-CMD exec opentelemetry-instrument python3 -m grpc_app
+# Run CMD using array syntax, so it's uses `exec` and runs as PID1
+CMD ["opentelemetry-instrument", "python3", "-m", "grpc_app"]
