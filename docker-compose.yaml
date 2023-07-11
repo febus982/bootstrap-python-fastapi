@@ -1,23 +1,12 @@
 version: '3.8'
 services:
-  # We don't use `make` or `poetry` for long running processes,
-  # to make sure they run as pid 1 and receive SIGTERM signal
   dev:
     build:
       dockerfile: Dockerfile
       context: .
-      target: http_app
+      target: dev
     ports:
       - '8000:8000'
-    command:
-      - "uvicorn"
-      - "http_app:create_app"
-      - "--host"
-      - "0.0.0.0"
-      - "--port"
-      - "8000"
-      - "--factory"
-      - "--reload"
     volumes:
       - '.:/app'
   http:
@@ -66,7 +55,7 @@ services:
     build:
       dockerfile: Dockerfile
       context: .
-      target: test
+      target: dev
     volumes:
       - '.:/app'
     command:
@@ -77,7 +66,7 @@ services:
     build:
       dockerfile: Dockerfile
       context: .
-      target: test
+      target: dev
     command:
       - "make"
       - "ci-test"
