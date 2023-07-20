@@ -21,16 +21,18 @@ In this way our components are loosely coupled and the application logic
 (the domains package) is completely independent of the chosen framework
 and the persistence layer.
 
-## HTTP API Docs
+## HTTP API Docs and versioning
 
-This application uses [fastapi-versionizer](https://github.com/alexschimpf/fastapi-versionizer)
-to provide easy API schema version management.
+API documentation is provided by [FastAPI](https://fastapi.tiangolo.com/features/)
+on `/docs` and `/redoc` paths using OpenAPI format.
 
-There are 3 different API documentation paths:
+I believe that versioning an API at resource level provides a much more
+flexible approach than versioning the whole API.
 
-* `/api/v1/docs` and `/api/v1/redoc`: v1 OpenAPI schema
-* `/api/v2/docs` and `/api/v2/redoc`: v2 OpenAPI schema
-* `/docs` : non-versioned routes OpenAPI schema (e.g. health check endpoint)
+The example `books` domain provides 2 endpoints to demonstrate this approach
+
+* `/api/books/v1` (POST)
+* `/api/books/v2` (POST)
 
 ## Package layers
 
