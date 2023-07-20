@@ -12,7 +12,7 @@ async def test_sa_manager() -> AsyncIterator[SQLAlchemyBindManager]:
     clear_mappers()
 
     db_config = SQLAlchemyAsyncConfig(
-        engine_url=f"sqlite+aiosqlite://",
+        engine_url="sqlite+aiosqlite://",
         engine_options=dict(connect_args={"check_same_thread": False}),
     )
     sa_manager = SQLAlchemyBindManager(config=db_config)
