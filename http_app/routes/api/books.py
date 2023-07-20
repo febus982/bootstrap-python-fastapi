@@ -1,10 +1,10 @@
 from fastapi import APIRouter, status
-from fastapi_versionizer import api_version
 from pydantic import BaseModel
 
 from domains.books import Book, BookData, BookService
 
-router = APIRouter(prefix="/books")
+router_v1 = APIRouter(prefix="/books/v1")
+router_v2 = APIRouter(prefix="/books/v2")
 
 
 class CreateBookResponse(BaseModel):
@@ -44,8 +44,7 @@ The views defined here have the functionalities of two components:
 """
 
 
-@api_version(1)
-@router.post("/", status_code=status.HTTP_201_CREATED)
+@router_v1.post("/", status_code=status.HTTP_201_CREATED)
 async def create_book(
     data: CreateBookRequest,
 ) -> CreateBookResponse:
@@ -54,9 +53,7 @@ async def create_book(
     return CreateBookResponse(book=created_book)
 
 
-# Example v2 API with added parameter
-@api_version(2)
-@router.post("/", status_code=status.HTTP_201_CREATED)
+@router_v2.post("/", status_code=status.HTTP_201_CREATED)
 async def create_book_v2(
     data: CreateBookRequest,
     some_optional_query_param: bool = False,

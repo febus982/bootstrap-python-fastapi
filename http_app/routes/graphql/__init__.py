@@ -5,4 +5,4 @@ from .query import Query
 
 schema = Schema(query=Query)
 
-graphql_app: GraphQLRouter = GraphQLRouter(schema)
+router: GraphQLRouter = GraphQLRouter(schema)
