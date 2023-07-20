@@ -1,6 +1,4 @@
-import os
 from collections.abc import AsyncIterator
-from uuid import uuid4
 
 import pytest
 from sqlalchemy.orm import clear_mappers
@@ -11,11 +9,10 @@ from storage.SQLAlchemy import init_tables
 
 @pytest.fixture(scope="function")
 async def test_sa_manager() -> AsyncIterator[SQLAlchemyBindManager]:
-    test_db_path = f"./{uuid4()}.db"
     clear_mappers()
 
     db_config = SQLAlchemyAsyncConfig(
-        engine_url=f"sqlite+aiosqlite:///{test_db_path}",
+        engine_url=f"sqlite+aiosqlite://",
         engine_options=dict(connect_args={"check_same_thread": False}),
     )
     sa_manager = SQLAlchemyBindManager(config=db_config)
@@ -25,8 +22,4 @@ async def test_sa_manager() -> AsyncIterator[SQLAlchemyBindManager]:
             await conn.run_sync(v.registry_mapper.metadata.create_all)
 
     yield sa_manager
-    try:
-        os.unlink(test_db_path)
-    except FileNotFoundError:
-        pass
     clear_mappers()
