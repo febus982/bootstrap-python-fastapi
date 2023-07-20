@@ -1,14 +1,13 @@
 from typing import Union
 
 from fastapi import FastAPI, Request
-from fastapi_versionizer import versionize
 from starlette.responses import JSONResponse
 from starlette_prometheus import PrometheusMiddleware, metrics
 from structlog import get_logger
 
 from config import AppConfig, init_logger
 from domains import init_domains
-from http_app.routes import init_unversioned_routes, init_versioned_routes
+from http_app.routes import init_routes
 from storage import init_storage
 
 
@@ -23,20 +22,9 @@ def create_app(
 
     init_storage()
 
+    init_routes(app)
+
     app.add_middleware(PrometheusMiddleware)
-
-    init_versioned_routes(app)
-    versionize(
-        app=app,
-        prefix_format="/api/v{major}",
-        docs_url="/docs",
-        redoc_url="/redoc",
-    )
-
-    """
-    Routes initalised after `versionize` are not versioned
-    """
-    init_unversioned_routes(app)
     app.add_route("/metrics/", metrics)
 
     return app

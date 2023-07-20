@@ -1,4 +1,5 @@
-FROM python:3.11-slim as base
+ARG PYTHON_VERSION=3.11
+FROM python:$PYTHON_VERSION-slim as base
 ARG UID=2000
 ARG GID=2000
 RUN addgroup --gid $GID nonroot && \
