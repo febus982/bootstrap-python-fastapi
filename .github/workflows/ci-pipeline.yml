@@ -58,7 +58,7 @@ jobs:
 
       # Build and push Docker image with Buildx
       # https://github.com/docker/build-push-action
-      - name: Build and push test image
+      - name: Build test image
         id: build-test
         uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
         with:
@@ -85,10 +85,12 @@ jobs:
           # generate Docker tags based on the following events/attributes
           tags: |
             type=sha
+            type=raw,value={{branch}}-latest
+            type=raw,value={{branch}}-{{date 'YYYYMMDDHHmmss'}}
 
       # Build and push Docker image with Buildx
       # https://github.com/docker/build-push-action
-      - name: Build and push Docker image
+      - name: Build and push production image
         id: build-and-push
         uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
         with:
