@@ -7,36 +7,44 @@ package http_app {
 }
 
 package grpc_app {
-    package services #DDDDDD
+    package servicers #DDDDDD
 }
 
 package domains #DDDDDD {
     package books {
         class Book
         class BookService
-        protocol BookRepositoryInterface
-        class BookModel
+
+        package entities {
+            class BookModel
+        }
+
+        package data_access_interface {
+            protocol BookRepositoryInterface
+            protocol BookEventGatewayInterface
+        }
     }
 }
 
-package storage #DDDDDD {
-    package Repositories {
-        class SQLAlchemyRepository
-    }
+package gateways #DDDDDD {
+    class SQLAlchemyRepository
+    class NullEventGateway
 }
+
 
 'links framework - domains
 routes --> BookService
 routes --> Book
-services --> BookService
-services --> Book
+servicers --> BookService
+servicers --> Book
 
 'links internal to books domain
 BookService -l-> Book
-BookService --> BookModel
-BookService --> BookRepositoryInterface
-BookRepositoryInterface -l-> BookModel
+BookService --> entities
+BookService -r-> data_access_interface
+data_access_interface --> entities
 
-'links domains - storage
-SQLAlchemyRepository --d-|> BookRepositoryInterface: implements >
+'links domains - gateways
+gateways --|> data_access_interface: implements >
+
 @enduml

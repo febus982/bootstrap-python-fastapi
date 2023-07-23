@@ -1,12 +1,12 @@
 from unittest.mock import AsyncMock, MagicMock
 
 from domains.books import dto, service
+from domains.books._data_access_interfaces import BookEventGatewayInterface
 from domains.books.entities.models import BookModel
-from gateways.event import EventGatewayInterface
 
 
 async def test_create_book(book_repository):
-    event_gateway = MagicMock(spec=EventGatewayInterface)
+    event_gateway = MagicMock(spec=BookEventGatewayInterface)
     book_service = service.BookService(
         book_repository=book_repository,
         event_gateway=event_gateway,
@@ -24,7 +24,7 @@ async def test_create_book(book_repository):
 
 
 async def test_list_books(book_repository):
-    event_gateway = MagicMock(spec=EventGatewayInterface)
+    event_gateway = MagicMock(spec=BookEventGatewayInterface)
     book_service = service.BookService(
         book_repository=book_repository,
         event_gateway=event_gateway,
