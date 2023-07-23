@@ -1,24 +1,28 @@
+from unittest.mock import patch
+
 from httpx import AsyncClient
 
 
-async def test_event_schemas_returns_data_if_present_in_registry(testapp):
-    async with AsyncClient(app=testapp, base_url="http://test") as ac:
-        """
-        It's too complex mocking the global _EVENT_REGISTRY because
-        of the FastAPI lifecycle. For now we're happy to verify
-        it's correct when using one of the existing events.
-        """
-        response = await ac.get("/events/dataschemas/book.created.v1")
+async def test_event_schema_returns_data_if_present_in_registry(testapp):
+    with patch(
+        "http_app.routes.events._event_registry", return_value={"test_event": "test"}
+    ):
+        async with AsyncClient(app=testapp, base_url="http://test") as ac:
+            response = await ac.get("/events/dataschemas/test_event")
     assert response.status_code == 200
 
 
-async def test_event_schemas_returns_422_when_not_present_in_registry(testapp):
+async def test_event_schema_returns_404_when_not_present_in_registry(testapp):
     async with AsyncClient(app=testapp, base_url="http://test") as ac:
-        """
-        It's too complex mocking the global _EVENT_REGISTRY because
-        of the FastAPI lifecycle. For now we're happy to verify
-        it fails on an inexisting event, hoping there won't ever
-        be an `inexisting` event.
-        """
         response = await ac.get("/events/dataschemas/inexisting")
-    assert response.status_code == 422
+    assert response.status_code == 404
+
+
+async def test_event_schema_list_returns_data_from_registry(testapp):
+    with patch(
+        "http_app.routes.events._event_registry", return_value={"test_event": "test"}
+    ):
+        async with AsyncClient(app=testapp, base_url="http://test") as ac:
+            response = await ac.get("/events/dataschemas")
+    assert response.status_code == 200
+    assert response.json() == ["test_event"]
