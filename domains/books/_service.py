@@ -3,13 +3,16 @@ from collections.abc import Iterable
 from anyio import to_thread
 from dependency_injector.wiring import Provide, inject
 
+from gateways.event import EventGatewayInterface
 from ._data_access_interfaces import BookRepositoryInterface
 from ._dto import Book, BookData
+from ._events import BookCreatedV1
 from ._models import BookModel
 
 
 class BookService:
     book_repository: BookRepositoryInterface
+    event_gateway: EventGatewayInterface
 
     @inject
     def __init__(
@@ -17,9 +20,13 @@ class BookService:
         book_repository: BookRepositoryInterface = Provide[
             BookRepositoryInterface.__name__
         ],
+        event_gateway: EventGatewayInterface = Provide[
+            EventGatewayInterface.__name__
+        ],
     ) -> None:
         super().__init__()
         self.book_repository = book_repository
+        self.event_gateway = event_gateway
 
     async def create_book(self, book: BookData) -> Book:
         # Example of CPU intensive task, run in a different thread
@@ -29,7 +36,9 @@ class BookService:
             some_cpu_intensive_blocking_task, book.dict()
         )
         book_model = BookModel(**book_data_altered)
-        return Book.from_orm(await self.book_repository.save(book_model))
+        book = Book.from_orm(await self.book_repository.save(book_model))
+        await self.event_gateway.emit(BookCreatedV1(book))
+        return book
 
     async def list_books(self) -> Iterable[Book]:
         books = await self.book_repository.find()

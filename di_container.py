@@ -6,6 +6,7 @@ from sqlalchemy_bind_manager._repository import SQLAlchemyAsyncRepository
 from config import AppConfig
 from domains.books._data_access_interfaces import BookRepositoryInterface
 from domains.books._models import BookModel
+from gateways.event import EventGatewayInterface, NullEventGateway
 
 
 class Container(DeclarativeContainer):
@@ -61,3 +62,4 @@ class Container(DeclarativeContainer):
         bind=SQLAlchemyBindManager.provided.get_bind.call(),
         model_class=BookModel,
     )
+    EventGatewayInterface: Factory[EventGatewayInterface] = Factory(NullEventGateway)
