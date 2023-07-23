@@ -6,7 +6,7 @@ from dependency_injector.wiring import Provide, inject
 from gateways.event import EventGatewayInterface
 from ._data_access_interfaces import BookRepositoryInterface
 from ._dto import Book, BookData
-from ._events import BookCreatedV1
+from .events import BookCreatedV1
 from ._models import BookModel
 
 

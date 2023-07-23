@@ -13,8 +13,8 @@ class BookCreatedV1(pydantic.CloudEvent):
             # url to GET endpoint (not implemented in this example)
             source="this.service.tld/books",
 
-            # url to data schema, perhaps produced using `Book.schema_json()` ?
-            dataschema="this.service.tld/events/schemas/books",
+            # url to data schema
+            dataschema="this.service.tld/events/dataschema/book.created.v1",
         )
         if attributes:
             _attrs.update(attributes)
