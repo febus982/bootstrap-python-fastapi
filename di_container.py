@@ -5,7 +5,7 @@ from sqlalchemy_bind_manager._repository import SQLAlchemyAsyncRepository
 
 from config import AppConfig
 from domains.books._data_access_interfaces import BookRepositoryInterface
-from domains.books._models import BookModel
+from domains.books.entities.models import BookModel
 from gateways.event import EventGatewayInterface, NullEventGateway
 
 

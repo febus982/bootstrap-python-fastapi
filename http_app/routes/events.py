@@ -1,12 +1,12 @@
 from fastapi import APIRouter
 from enum import StrEnum
 
-from domains.books import Book
+from domains.books import dto
 
 router = APIRouter(prefix="/events")
 
 _EVENT_REGISTRY: dict = {
-    "book.created.v1": Book.schema()
+    "book.created.v1": dto.Book.schema()
 }
 
 _EVENT_ENUM = StrEnum('_EVENT_ENUM', list(_EVENT_REGISTRY.keys()))

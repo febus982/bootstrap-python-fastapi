@@ -3,7 +3,7 @@ from typing import Any, List, Protocol, Tuple, Union
 
 from sqlalchemy_bind_manager.repository import SortDirection
 
-from ._models import BookModel
+from .entities.models import BookModel
 
 
 class BookRepositoryInterface(Protocol):

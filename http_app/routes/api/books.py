@@ -1,14 +1,14 @@
 from fastapi import APIRouter, status
 from pydantic import BaseModel
 
-from domains.books import Book, BookData, BookService
+from domains.books import dto, service
 
 router_v1 = APIRouter(prefix="/books/v1")
 router_v2 = APIRouter(prefix="/books/v2")
 
 
 class CreateBookResponse(BaseModel):
-    book: Book
+    book: dto.Book
 
     class Config:
         schema_extra = {
@@ -48,8 +48,8 @@ The views defined here have the functionalities of two components:
 async def create_book(
     data: CreateBookRequest,
 ) -> CreateBookResponse:
-    book_service = BookService()
-    created_book = await book_service.create_book(book=BookData(**data.dict()))
+    book_service = service.BookService()
+    created_book = await book_service.create_book(book=dto.BookData(**data.dict()))
     return CreateBookResponse(book=created_book)
 
 
@@ -58,6 +58,6 @@ async def create_book_v2(
     data: CreateBookRequest,
     some_optional_query_param: bool = False,
 ) -> CreateBookResponse:
-    book_service = BookService()
-    created_book = await book_service.create_book(book=BookData(**data.dict()))
+    book_service = service.BookService()
+    created_book = await book_service.create_book(book=dto.BookData(**data.dict()))
     return CreateBookResponse(book=created_book)

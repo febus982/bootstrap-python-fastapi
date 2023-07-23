@@ -1,7 +1,7 @@
-from domains.books import Book, BookService
+from domains.books import dto, service
 
 
 async def list_books():
-    book_service = BookService()
+    book_service = service.BookService()
     books = await book_service.list_books()
-    return [Book(**x.dict()) for x in books]
+    return [dto.Book(**x.dict()) for x in books]

@@ -5,9 +5,9 @@ from dependency_injector.wiring import Provide, inject
 
 from gateways.event import EventGatewayInterface
 from ._data_access_interfaces import BookRepositoryInterface
-from ._dto import Book, BookData
-from .events import BookCreatedV1
-from ._models import BookModel
+from .dto import Book, BookData
+from domains.books.entities.events import BookCreatedV1
+from .entities.models import BookModel
 
 
 class BookService:
