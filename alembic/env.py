@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 
 from alembic import context
 from config import AppConfig, init_logger
-from storage.SQLAlchemy import init_tables
+from gateways.storage.SQLAlchemy import init_tables
 
 USE_TWOPHASE = False
 

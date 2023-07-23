@@ -18,7 +18,7 @@ class Container(DeclarativeContainer):
 
     wiring_config = WiringConfiguration(
         packages=[
-            "storage",
+            "gateways",
             "domains",
         ]
     )

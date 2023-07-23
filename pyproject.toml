@@ -76,7 +76,7 @@ files = [
     "domains",
     "grpc_app",
     "http_app",
-    "storage",
+    "gateways",
     "tests",
     "di_container.py",
     "config.py",
@@ -102,7 +102,7 @@ files = '''
   http_app
   grpc_app
   domains
-  storage
+  gateways
   tests
   alembic
 )

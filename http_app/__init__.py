@@ -7,8 +7,8 @@ from structlog import get_logger
 
 from config import AppConfig, init_logger
 from domains import init_domains
+from gateways.storage import init_storage
 from http_app.routes import init_routes
-from storage import init_storage
 
 
 def create_app(

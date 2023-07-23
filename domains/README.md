@@ -27,8 +27,9 @@ def inject_book_repository(f):
     @wraps(f)
     def wrapper(*args, **kwds):
         if "book_repository" not in kwds.keys():
-            from storage.repositories.book_repository import BookRepository
-            kwds["book_repository"] = BookRepository()  # Here we'll have to pass any required dependency for the repository
+            from gateways.storage import BookRepository
+            kwds[
+                "book_repository"] = BookRepository()  # Here we'll have to pass any required dependency for the repository
         elif not isinstance(kwds["book_repository"], BookRepositoryInterface):
             import warnings
             warnings.warn(
@@ -52,6 +53,6 @@ def book_repository_factory(sa_manager: SQLAlchemyBindManager) -> BookRepository
     Returns:
         The book repository.
     """
-    from storage.repositories.book_repository import BookRepository
+    from gateways.storage import BookRepository
     return BookRepository(sa_manager=sa_manager)
 ```
