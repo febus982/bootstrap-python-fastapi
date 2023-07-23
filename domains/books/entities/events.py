@@ -1,13 +1,20 @@
-import typing
+from pydantic import BaseModel
 
-from domains.books.dto import Book
-from cloudevents import pydantic
+from cloudevents.pydantic import CloudEvent
+from . import models
 
 
-class BookCreatedV1(pydantic.CloudEvent):
+class BookCreatedV1Data(BaseModel):
+    book_id: int
+    title: str
+    author_name: str
 
-    def __init__(self, data: Book, attributes: typing.Optional[typing.Dict[str, typing.Any]] = None,
-                 **kwargs):
+    class Config:
+        orm_mode = True
+
+
+class BookCreatedV1(CloudEvent):
+    def __init__(self, model: models.BookModel):
         _attrs = dict(
             type="book.created.v1",
 
@@ -17,6 +24,5 @@ class BookCreatedV1(pydantic.CloudEvent):
             # url to data schema
             dataschema="this.service.tld/events/dataschema/book.created.v1",
         )
-        if attributes:
-            _attrs.update(attributes)
-        super().__init__(_attrs, data.dict(), **kwargs)
+
+        super().__init__(attributes=_attrs, data=BookCreatedV1Data.from_orm(model))

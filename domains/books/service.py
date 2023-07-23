@@ -37,7 +37,7 @@ class BookService:
         )
         book_model = BookModel(**book_data_altered)
         book = Book.from_orm(await self.book_repository.save(book_model))
-        await self.event_gateway.emit(BookCreatedV1(book))
+        await self.event_gateway.emit(BookCreatedV1(book_model))
         return book
 
     async def list_books(self) -> Iterable[Book]:

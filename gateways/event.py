@@ -12,4 +12,4 @@ class EventGatewayInterface(Protocol):
 class NullEventGateway:
     async def emit(self, event: CloudEvent) -> None:
         logger = get_logger()
-        await logger.ainfo("Event emitted", cloudevent=event)
+        await logger.ainfo("Event emitted", cloudevent=event.dict())

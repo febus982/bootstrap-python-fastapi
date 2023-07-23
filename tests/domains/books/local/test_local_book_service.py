@@ -16,7 +16,9 @@ async def test_create_book(book_repository):
         author_name="other",
     )
     returned_book = await book_service.create_book(book)
-    assert book == returned_book
+    assert book.title == returned_book.title
+    assert book.author_name == returned_book.author_name
+    assert returned_book.book_id is not None
     event_gateway.emit.assert_called_once()
     book_repository.save.assert_called_once()
 
