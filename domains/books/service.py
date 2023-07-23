@@ -3,10 +3,11 @@ from collections.abc import Iterable
 from anyio import to_thread
 from dependency_injector.wiring import Provide, inject
 
+from domains.books.entities.events import BookCreatedV1
 from gateways.event import EventGatewayInterface
+
 from ._data_access_interfaces import BookRepositoryInterface
 from .dto import Book, BookData
-from domains.books.entities.events import BookCreatedV1
 from .entities.models import BookModel
 
 
@@ -20,9 +21,7 @@ class BookService:
         book_repository: BookRepositoryInterface = Provide[
             BookRepositoryInterface.__name__
         ],
-        event_gateway: EventGatewayInterface = Provide[
-            EventGatewayInterface.__name__
-        ],
+        event_gateway: EventGatewayInterface = Provide[EventGatewayInterface.__name__],
     ) -> None:
         super().__init__()
         self.book_repository = book_repository

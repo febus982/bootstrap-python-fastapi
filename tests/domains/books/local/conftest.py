@@ -10,6 +10,7 @@ def book_repository() -> MagicMock:
     def _save_book(x):
         x.book_id = 123
         return x
+
     repo = MagicMock(spec=BookRepositoryInterface)
     repo.save = AsyncMock(side_effect=_save_book)
 
