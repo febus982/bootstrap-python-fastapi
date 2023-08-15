@@ -20,16 +20,17 @@ rich = "^13.2.0"
 SQLAlchemy = { version = "^2.0.0", extras = ["asyncio", "mypy"] }
 sqlalchemy-bind-manager = "*"
 structlog = "^23.1.0"
+pydantic-settings = "^2.0.3"
 
 [tool.poetry.group.http]
 optional = true
 
 [tool.poetry.group.http.dependencies]
-fastapi = "^0.99.0"
+fastapi = ">=0.99.0"
 jinja2 = "^3.1.2"
 opentelemetry-instrumentation-fastapi = "*"
 starlette-prometheus = "^0.9.0"
-strawberry-graphql = { version = "^0.193.0", extras = ["debug-server", "fastapi"] }
+strawberry-graphql = { version = ">=0.204.0", extras = ["debug-server"] }
 uvicorn = { version = "^0.21.0", extras = ["standard"] }
 
 [tool.poetry.group.grpc]

@@ -1,10 +1,12 @@
 import logging
 import os
-from typing import List, Literal
+from typing import Dict, List, Literal
 
 import structlog
 from opentelemetry import trace
-from pydantic import BaseSettings
+
+# TODO: update this to use the new V2 pydantic-settings
+from pydantic.v1 import BaseSettings
 from sqlalchemy_bind_manager import SQLAlchemyAsyncConfig
 from structlog.typing import Processor
 
@@ -12,8 +14,8 @@ TYPE_ENVIRONMENT = Literal["local", "test", "staging", "production"]
 
 
 class AppConfig(BaseSettings):
-    SQLALCHEMY_CONFIG = {
-        "default": SQLAlchemyAsyncConfig(
+    SQLALCHEMY_CONFIG: Dict[str, SQLAlchemyAsyncConfig] = dict(
+        default=SQLAlchemyAsyncConfig(
             engine_url=f"sqlite+aiosqlite:///{os.path.dirname(os.path.abspath(__file__))}/sqlite.db",
             engine_options=dict(
                 connect_args={
@@ -23,7 +25,7 @@ class AppConfig(BaseSettings):
                 future=True,
             ),
         ),
-    }
+    )
     ENVIRONMENT: TYPE_ENVIRONMENT = "local"
     DEBUG: bool = False
 
