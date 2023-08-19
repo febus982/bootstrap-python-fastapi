@@ -4,9 +4,7 @@ from typing import Dict, List, Literal
 
 import structlog
 from opentelemetry import trace
-
-# TODO: update this to use the new V2 pydantic-settings
-from pydantic.v1 import BaseSettings
+from pydantic_settings import BaseSettings
 from sqlalchemy_bind_manager import SQLAlchemyAsyncConfig
 from structlog.typing import Processor
 
