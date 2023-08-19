@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from domains.books import Book, BookData, BookService
 
@@ -9,28 +9,29 @@ router_v2 = APIRouter(prefix="/books/v2")
 
 class CreateBookResponse(BaseModel):
     book: Book
-
-    class Config:
-        schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "title": "The Hitchhiker's Guide to the Galaxy",
                 "author_name": "Douglas Adams",
                 "book_id": 123,
             }
         }
+    )
 
 
 class CreateBookRequest(BaseModel):
     title: str
     author_name: str
 
-    class Config:
-        schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "title": "The Hitchhiker's Guide to the Galaxy",
                 "author_name": "Douglas Adams",
             }
         }
+    )
 
 
 """
@@ -49,7 +50,9 @@ async def create_book(
     data: CreateBookRequest,
 ) -> CreateBookResponse:
     book_service = BookService()
-    created_book = await book_service.create_book(book=BookData(**data.dict()))
+    created_book = await book_service.create_book(
+        book=BookData.model_validate(data, from_attributes=True)
+    )
     return CreateBookResponse(book=created_book)
 
 
@@ -59,5 +62,7 @@ async def create_book_v2(
     some_optional_query_param: bool = False,
 ) -> CreateBookResponse:
     book_service = BookService()
-    created_book = await book_service.create_book(book=BookData(**data.dict()))
+    created_book = await book_service.create_book(
+        book=BookData.model_validate(data, from_attributes=True)
+    )
     return CreateBookResponse(book=created_book)
