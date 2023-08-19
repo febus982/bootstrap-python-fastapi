@@ -14,6 +14,7 @@ class BooksServicer(books_grpc.BooksServicer):
         book_service = service.BookService()
         return books_messages.ListBooksResponse(
             books=[
-                books_messages.Book(**x.dict()) for x in await book_service.list_books()
+                books_messages.Book(**x.model_dump())
+                for x in await book_service.list_books()
             ]
         )

@@ -13,7 +13,7 @@ from http_app import create_app
 def book_service() -> Iterator[MagicMock]:
     svc = MagicMock(autospec=service.BookService)
     svc.create_book = AsyncMock(
-        side_effect=lambda book: dto.Book(book_id=randint(1, 1000), **book.dict())
+        side_effect=lambda book: dto.Book(book_id=randint(1, 1000), **book.model_dump())
     )
     svc.list_books = AsyncMock(
         return_value=[

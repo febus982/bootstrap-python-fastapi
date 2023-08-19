@@ -33,16 +33,18 @@ class BookService:
         # Using processes could be better, but it would bring technical complexity
         # https://anyio.readthedocs.io/en/3.x/subprocesses.html#running-functions-in-worker-processes
         book_data_altered = await to_thread.run_sync(
-            some_cpu_intensive_blocking_task, book.dict()
+            some_cpu_intensive_blocking_task, book.model_dump()
         )
         book_model = BookModel(**book_data_altered)
-        book = Book.from_orm(await self.book_repository.save(book_model))
+        book = Book.model_validate(
+            await self.book_repository.save(book_model), from_attributes=True
+        )
         await self.event_gateway.emit(BookCreatedV1(book_model))
         return book
 
     async def list_books(self) -> Iterable[Book]:
         books = await self.book_repository.find()
-        return [Book.from_orm(x) for x in books]
+        return [Book.model_validate(x, from_attributes=True) for x in books]
 
 
 def some_cpu_intensive_blocking_task(book: dict) -> dict:

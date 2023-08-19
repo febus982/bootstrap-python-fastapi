@@ -38,5 +38,5 @@ async def test_list_books(book_repository):
     book_repository.find = AsyncMock(return_value=[book])
 
     returned_books = await book_service.list_books()
-    assert [dto.Book.from_orm(book)] == returned_books
+    assert [dto.Book.model_validate(book, from_attributes=True)] == returned_books
     book_repository.find.assert_called_once()

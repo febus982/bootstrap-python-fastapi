@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 router = APIRouter()
 
@@ -7,14 +7,15 @@ router = APIRouter()
 class PingResponse(BaseModel):
     ping: str
 
-    class Config:
-        schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "ping": "pong!",
             }
         }
+    )
 
 
-@router.get("/ping", response_model=PingResponse)
+@router.get("/ping")
 async def ping() -> PingResponse:
     return PingResponse(ping="pong!")
