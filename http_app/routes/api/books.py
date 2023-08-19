@@ -11,7 +11,7 @@ class CreateBookResponse(BaseModel):
     book: Book
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "title": "The Hitchhiker's Guide to the Galaxy",
                 "author_name": "Douglas Adams",
@@ -25,7 +25,7 @@ class CreateBookRequest(BaseModel):
     author_name: str
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "title": "The Hitchhiker's Guide to the Galaxy",
                 "author_name": "Douglas Adams",
