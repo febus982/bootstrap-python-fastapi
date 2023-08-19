@@ -49,7 +49,9 @@ async def create_book(
     data: CreateBookRequest,
 ) -> CreateBookResponse:
     book_service = BookService()
-    created_book = await book_service.create_book(book=BookData(**data.dict()))
+    created_book = await book_service.create_book(
+        book=BookData.model_validate(data, from_attributes=True)
+    )
     return CreateBookResponse(book=created_book)
 
 
@@ -59,5 +61,7 @@ async def create_book_v2(
     some_optional_query_param: bool = False,
 ) -> CreateBookResponse:
     book_service = BookService()
-    created_book = await book_service.create_book(book=BookData(**data.dict()))
+    created_book = await book_service.create_book(
+        book=BookData.model_validate(data, from_attributes=True)
+    )
     return CreateBookResponse(book=created_book)

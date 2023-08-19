@@ -26,7 +26,7 @@ class BookService:
         # Using processes could be better, but it would bring technical complexity
         # https://anyio.readthedocs.io/en/3.x/subprocesses.html#running-functions-in-worker-processes
         book_data_altered = await to_thread.run_sync(
-            some_cpu_intensive_blocking_task, book.dict()
+            some_cpu_intensive_blocking_task, book.model_dump()
         )
         book_model = BookModel(**book_data_altered)
         return Book.model_validate(
