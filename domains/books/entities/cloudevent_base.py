@@ -11,8 +11,11 @@ def type_field(default: typing.Union[str, None] = None) -> typing.Any:
     Helper function to generate the CloudEvent `type` field,
     optionally with a default value.
 
-    :param default: The default value of the field
-    :return:
+    Args:
+        default: The default value of the field
+
+    Returns:
+        The pydantic field object
     """
     field = pydantic.Field(
         title="Event Type",
@@ -33,8 +36,11 @@ def source_field(default: typing.Union[str, None] = None) -> typing.Any:
     Helper function to generate the CloudEvent `source` field,
     optionally with a default value.
 
-    :param default: The default value of the field
-    :return:
+    Args:
+        default: The default value of the field
+
+    Returns:
+        The pydantic field object
     """
     field = pydantic.Field(
         title="Event Source",
@@ -71,9 +77,12 @@ def dataschema_field(
     Helper function to generate the CloudEvent `dataschema` field,
     pointing to the event schema url.
 
-    :param base_url: The base URL for event dataschema
-    :param event_name: The event_name value of the field
-    :return:
+    Args:
+        base_url: The base URL for event dataschema
+        event_name: The event_name value of the field
+
+    Returns:
+        The pydantic field object
     """
     content = f"{base_url}/{event_name or 'some_event'}"
     schema = pydantic.Field(
@@ -114,8 +123,11 @@ def subject_field(default: typing.Union[str, None] = None) -> typing.Any:
     Helper function to generate the CloudEvent `subject` field,
     optionally with a default value.
 
-    :param default: The default value of the field
-    :return:
+    Args:
+        default: The default value of the field
+
+    Returns:
+        The pydantic field object
     """
     field = pydantic.Field(
         title="Event Subject",
