@@ -1,9 +1,9 @@
 from collections.abc import Iterable, Mapping
 from typing import Any, List, Protocol, Tuple, Union
 
-from cloudevents.pydantic import CloudEvent
 from sqlalchemy_bind_manager.repository import SortDirection
 
+from .entities.cloudevent_base import BaseEvent
 from .entities.models import BookModel
 
 
@@ -20,5 +20,5 @@ class BookRepositoryInterface(Protocol):
 
 
 class BookEventGatewayInterface(Protocol):
-    async def emit(self, event: CloudEvent) -> None:
+    async def emit(self, event: BaseEvent) -> None:
         ...

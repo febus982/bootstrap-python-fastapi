@@ -34,7 +34,6 @@ opentelemetry-instrumentation-fastapi = "*"
 starlette-prometheus = "^0.9.0"
 strawberry-graphql = { version = ">=0.204.0", extras = ["debug-server"] }
 uvicorn = { version = "^0.21.0", extras = ["standard"] }
-fastapi-cloudevents = "^1.1.0"
 
 [tool.poetry.group.grpc]
 optional = true

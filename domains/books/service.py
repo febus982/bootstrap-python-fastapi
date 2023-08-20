@@ -3,7 +3,7 @@ from collections.abc import Iterable
 from anyio import to_thread
 from dependency_injector.wiring import Provide, inject
 
-from domains.books.entities.events import BookCreatedV1
+from domains.books.entities.events import BookCreatedV1, BookCreatedV1Data
 
 from ._data_access_interfaces import BookEventGatewayInterface, BookRepositoryInterface
 from .dto import Book, BookData
@@ -39,7 +39,15 @@ class BookService:
         book = Book.model_validate(
             await self.book_repository.save(book_model), from_attributes=True
         )
-        await self.event_gateway.emit(BookCreatedV1(book_model))
+        await self.event_gateway.emit(
+            BookCreatedV1(
+                data=BookCreatedV1Data(
+                    book_id=book_model.book_id,
+                    title=book_model.title,
+                    author_name=book_model.author_name,
+                )
+            )
+        )
         return book
 
     async def list_books(self) -> Iterable[Book]:
