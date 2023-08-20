@@ -174,7 +174,9 @@ class BaseEvent(pydantic.BaseModel, abc.ABC):
     )
     type: str = type_field()
     dataschema: str = dataschema_field("this.service.url.here")
-    datacontenttype: str = datacontenttype_field()
+    datacontenttype: typing.Literal["application/json"] = datacontenttype_field(
+        "application/json"
+    )
     subject: typing.Optional[str] = subject_field()
     data: typing.Optional[pydantic.BaseModel] = None
     id: str = pydantic.Field(
