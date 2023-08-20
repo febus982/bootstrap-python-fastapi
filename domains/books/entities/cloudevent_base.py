@@ -143,6 +143,14 @@ def subject_field(default: typing.Union[str, None] = None) -> typing.Any:
 
 class BaseEvent(pydantic.BaseModel, abc.ABC):
     """
+    This is the implementation of a CloudEvent using pydantic. It is not
+    using CloudEvents sdk base class on purpose, to avoid incompatibilities
+    with pydantic V2 (the __iter__ method).
+
+    This means that in order to use this event we'll manually create the
+    relevant CloudEvent object (e.g. from `cloudevents.http`) and use it
+    as we need.
+
     Could this be improved if created dynamically?
     Perhaps we can pick up dynamic information
     from the application config or inject data like the event type?.
