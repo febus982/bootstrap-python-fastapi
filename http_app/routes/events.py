@@ -40,7 +40,11 @@ def _event_schema_examples() -> dict[str, dict[str, Any]]:
     }
 
 
-@router.get("/dataschemas/{event}")
+@router.get(
+    "/dataschemas/{event}",
+    description="Returns the schema for a supported event",
+    responses={404: {"model": str}},
+)
 async def event_schema(event: str):
     event_model = _event_registry().get(event)
     if event_model:
@@ -49,7 +53,14 @@ async def event_schema(event: str):
         raise HTTPException(status_code=404, detail="Schema not found")
 
 
-@router.get("/dataschemas")
+@router.get(
+    "/dataschemas",
+    description="""
+    Provides the list of supported event types. Each event schema can be retrieved
+    from the `/dataschemas/{type}` endpoint. The event schema for `book.created.v1`
+    is `/dataschemas/book.created.v1`
+    """,
+)
 async def event_schema_list() -> List[str]:
     return list(_event_registry().keys())
 
@@ -66,6 +77,11 @@ async def event_schema_list() -> List[str]:
         },
     },
     status_code=204,
+    description="""
+    Entrypoint for CloudEvent processing, it supports only single events.
+    The list of supported CloudEvents and their schema can be retrieved
+    from the /events/dataschemas endpoint.
+    """,
 )
 async def submit_event(
     event_data: _EVENTS_UNION_TYPE = Body(
