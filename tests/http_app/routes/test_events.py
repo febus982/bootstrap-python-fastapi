@@ -41,7 +41,7 @@ async def test_event_returns_204(testapp):
     )
     async with AsyncClient(app=testapp, base_url="http://test") as ac:
         response = await ac.post(
-            "/events/",
+            "/events",
             headers={"content-type": "application/cloudevents+json; charset=UTF-8"},
             content=fake_event.model_dump_json(),
         )
@@ -55,7 +55,7 @@ async def test_malformed_event_returns_422(testapp):
     fake_event.dataschema = None
     async with AsyncClient(app=testapp, base_url="http://test") as ac:
         response = await ac.post(
-            "/events/",
+            "/events",
             headers={"content-type": "application/cloudevents+json; charset=UTF-8"},
             content=fake_event.model_dump_json(),
         )
@@ -68,7 +68,7 @@ async def test_wrong_content_type_returns_422(testapp):
     )
     async with AsyncClient(app=testapp, base_url="http://test") as ac:
         response = await ac.post(
-            "/events/",
+            "/events",
             headers={"content-type": "application/json"},
             content=fake_event.model_dump_json(),
         )

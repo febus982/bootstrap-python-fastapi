@@ -66,7 +66,7 @@ async def event_schema_list() -> List[str]:
 
 
 @router.post(
-    "/",
+    "",
     openapi_extra={
         "requestBody": {
             "content": {
