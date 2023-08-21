@@ -3,11 +3,11 @@ from collections.abc import Iterable
 from anyio import to_thread
 from dependency_injector.wiring import Provide, inject
 
-from domains.books.entities.events import BookCreatedV1, BookCreatedV1Data
+from domains.books.events import BookCreatedV1, BookCreatedV1Data
+from domains.books.models import BookModel
 
 from ._data_access_interfaces import BookEventGatewayInterface, BookRepositoryInterface
 from .dto import Book, BookData
-from .entities.models import BookModel
 
 
 class BookService:

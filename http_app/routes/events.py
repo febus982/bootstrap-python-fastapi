@@ -4,7 +4,7 @@ from typing import Any, Dict, List
 from fastapi import APIRouter, Body, Header, HTTPException
 from pydantic import BaseModel
 
-from domains.books.entities.events import BookCreatedV1
+from domains.books.events import BookCreatedV1
 
 router = APIRouter(prefix="/events")
 

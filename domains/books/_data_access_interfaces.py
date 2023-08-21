@@ -3,8 +3,8 @@ from typing import Any, List, Protocol, Tuple, Union
 
 from sqlalchemy_bind_manager.repository import SortDirection
 
-from .entities.cloudevent_base import BaseEvent
-from .entities.models import BookModel
+from domains.books.models import BookModel
+from domains.cloudevent_base import BaseEvent
 
 
 class BookRepositoryInterface(Protocol):

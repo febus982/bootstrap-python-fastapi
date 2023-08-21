@@ -8,7 +8,7 @@ from domains.books._data_access_interfaces import (
     BookEventGatewayInterface,
     BookRepositoryInterface,
 )
-from domains.books.entities.models import BookModel
+from domains.books.models import BookModel
 from gateways.event import NullEventGateway
 
 

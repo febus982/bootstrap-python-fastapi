@@ -2,7 +2,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 from domains.books import dto, service
 from domains.books._data_access_interfaces import BookEventGatewayInterface
-from domains.books.entities.models import BookModel
+from domains.books.models import BookModel
 
 
 async def test_create_book(book_repository):
