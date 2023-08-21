@@ -28,7 +28,7 @@ class AppConfig(BaseSettings):
     DEBUG: bool = False
 
 
-def init_logger(config: AppConfig):
+def init_logger(config: AppConfig) -> None:
     """
     Configure structlog and stdlib logging with shared handler and formatter.
 
@@ -43,7 +43,7 @@ def init_logger(config: AppConfig):
         structlog.stdlib.PositionalArgumentsFormatter(),
         structlog.processors.add_log_level,
         structlog.processors.StackInfoRenderer(),
-        add_logging_open_telemetry_spans,
+        _add_logging_open_telemetry_spans,
     ]
 
     log_level = logging.DEBUG if config.DEBUG else logging.INFO
@@ -94,7 +94,7 @@ def init_logger(config: AppConfig):
         logging.getLogger(_log).propagate = True
 
 
-def add_logging_open_telemetry_spans(_, __, event_dict):
+def _add_logging_open_telemetry_spans(_, __, event_dict):
     span = trace.get_current_span()
     if not span.is_recording():
         event_dict["span"] = None
