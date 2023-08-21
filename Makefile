@@ -9,6 +9,9 @@ containers:
 dev:
 	poetry run uvicorn http_app:create_app --host 0.0.0.0 --port 8000 --factory --reload
 
+otel:
+	OTEL_SERVICE_NAME=bootstrap-fastapi OTEL_TRACES_EXPORTER=none OTEL_METRICS_EXPORTER=none OTEL_LOGS_EXPORTER=none poetry run opentelemetry-instrument uvicorn http_app:create_app --host 0.0.0.0 --port 8000 --factory
+
 run:
 	poetry run uvicorn http_app:create_app --host 0.0.0.0 --port 8000 --factory
 

@@ -1,6 +1,7 @@
 from typing import Union
 
 from fastapi import FastAPI, Request
+from opentelemetry.instrumentation.asgi import OpenTelemetryMiddleware
 from starlette.responses import JSONResponse
 from starlette_prometheus import PrometheusMiddleware, metrics
 from structlog import get_logger
@@ -24,8 +25,19 @@ def create_app(
 
     init_routes(app)
 
+    """
+    OpenTelemetry prometheus exporter does not work together with automatic
+    instrumentation, for now we keep the prometheus middleware even if
+    having 2 different middlewares will add overhead.
+    """
     app.add_middleware(PrometheusMiddleware)
     app.add_route("/metrics/", metrics)
+
+    """
+    OpenTelemetry middleware has to be the last one to make sure the
+    tracing data handling is the outermost logic
+    """
+    app.add_middleware(OpenTelemetryMiddleware)
 
     return app
 
