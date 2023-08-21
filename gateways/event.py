@@ -10,6 +10,5 @@ class NullEventGateway:
         logger = get_logger()
         await logger.ainfo(
             "Event emitted",
-            attributes=event.get_attributes(),
-            data=event.data.model_dump() if event.data else None,
+            cloudevent=event.model_dump(),
         )

@@ -229,6 +229,3 @@ class BaseEvent(pydantic.BaseModel, abc.ABC):
         "datacontenttype",
         "dataschema",
     )
-
-    def get_attributes(self) -> typing.Dict[str, typing.Any]:
-        return {key: getattr(self, key, None) for key in self._ce_valid_attrs}
