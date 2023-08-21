@@ -4,7 +4,7 @@ import pytest
 from sqlalchemy.orm import clear_mappers
 from sqlalchemy_bind_manager import SQLAlchemyAsyncConfig, SQLAlchemyBindManager
 
-from storage.SQLAlchemy import init_tables
+from gateways.storage.SQLAlchemy import init_tables
 
 
 @pytest.fixture(scope="function")

@@ -1,6 +1,6 @@
 from sqlalchemy_bind_manager._repository import SQLAlchemyAsyncRepository
 
-from domains.books._models import BookModel
+from domains.books.models import BookModel
 
 
 # This test is to ensure the book table is initialised correctly

@@ -4,8 +4,12 @@ from sqlalchemy_bind_manager import SQLAlchemyBindManager
 from sqlalchemy_bind_manager._repository import SQLAlchemyAsyncRepository
 
 from config import AppConfig
-from domains.books._data_access_interfaces import BookRepositoryInterface
-from domains.books._models import BookModel
+from domains.books._data_access_interfaces import (
+    BookEventGatewayInterface,
+    BookRepositoryInterface,
+)
+from domains.books.models import BookModel
+from gateways.event import NullEventGateway
 
 
 class Container(DeclarativeContainer):
@@ -17,7 +21,7 @@ class Container(DeclarativeContainer):
 
     wiring_config = WiringConfiguration(
         packages=[
-            "storage",
+            "gateways",
             "domains",
         ]
     )
@@ -60,4 +64,7 @@ class Container(DeclarativeContainer):
         SQLAlchemyAsyncRepository,
         bind=SQLAlchemyBindManager.provided.get_bind.call(),
         model_class=BookModel,
+    )
+    BookEventGatewayInterface: Factory[BookEventGatewayInterface] = Factory(
+        NullEventGateway
     )

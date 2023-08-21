@@ -7,9 +7,9 @@ from structlog import get_logger
 
 from config import AppConfig, init_logger
 from domains import init_domains
+from gateways.storage import init_storage
 from grpc_app.generated.books_pb2_grpc import add_BooksServicer_to_server
 from grpc_app.servicers.books import BooksServicer
-from storage import init_storage
 
 
 # TODO: Add asyncio support: https://stackoverflow.com/questions/38387443/how-to-implement-a-async-grpc-python-server

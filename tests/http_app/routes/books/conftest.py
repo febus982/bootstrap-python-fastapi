@@ -5,19 +5,19 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from fastapi import FastAPI
 
-from domains.books import Book, BookService
+from domains.books import dto, service
 from http_app import create_app
 
 
 @pytest.fixture
 def book_service() -> Iterator[MagicMock]:
-    svc = MagicMock(autospec=BookService)
+    svc = MagicMock(autospec=service.BookService)
     svc.create_book = AsyncMock(
-        side_effect=lambda book: Book(book_id=randint(1, 1000), **book.model_dump())
+        side_effect=lambda book: dto.Book(book_id=randint(1, 1000), **book.model_dump())
     )
     svc.list_books = AsyncMock(
         return_value=[
-            Book(
+            dto.Book(
                 book_id=123,
                 title="The Shining",
                 author_name="Stephen King",
@@ -25,7 +25,7 @@ def book_service() -> Iterator[MagicMock]:
         ]
     )
 
-    with patch("domains.books._service.BookService.__new__", return_value=svc):
+    with patch("domains.books.service.BookService.__new__", return_value=svc):
         yield svc
 
 

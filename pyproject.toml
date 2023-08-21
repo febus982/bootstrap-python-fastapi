@@ -22,6 +22,7 @@ rich = "^13.2.0"
 SQLAlchemy = { version = "^2.0.0", extras = ["asyncio", "mypy"] }
 sqlalchemy-bind-manager = "*"
 structlog = "^23.1.0"
+cloudevents = "^1.9.0"
 
 [tool.poetry.group.http]
 optional = true
@@ -76,7 +77,7 @@ files = [
     "domains",
     "grpc_app",
     "http_app",
-    "storage",
+    "gateways",
     "tests",
     "di_container.py",
     "config.py",
@@ -102,7 +103,7 @@ files = '''
   http_app
   grpc_app
   domains
-  storage
+  gateways
   tests
   alembic
 )

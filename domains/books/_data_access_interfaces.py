@@ -3,7 +3,8 @@ from typing import Any, List, Protocol, Tuple, Union
 
 from sqlalchemy_bind_manager.repository import SortDirection
 
-from ._models import BookModel
+from domains.books.models import BookModel
+from domains.cloudevent_base import BaseEvent
 
 
 class BookRepositoryInterface(Protocol):
@@ -15,4 +16,9 @@ class BookRepositoryInterface(Protocol):
         search_params: Union[None, Mapping[str, Any]] = None,
         order_by: Union[None, Iterable[Union[str, Tuple[str, SortDirection]]]] = None,
     ) -> List[BookModel]:
+        ...
+
+
+class BookEventGatewayInterface(Protocol):
+    async def emit(self, event: BaseEvent) -> None:
         ...

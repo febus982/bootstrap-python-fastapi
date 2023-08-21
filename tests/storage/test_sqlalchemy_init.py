@@ -4,8 +4,8 @@ from uuid import uuid4
 
 from sqlalchemy_bind_manager import SQLAlchemyAsyncConfig, SQLAlchemyBindManager
 
-from storage import init_storage
-from storage.SQLAlchemy import TABLE_INIT_REGISTRY, init_tables
+from gateways.storage import init_storage
+from gateways.storage.SQLAlchemy import TABLE_INIT_REGISTRY, init_tables
 
 
 def test_init_tables_calls_only_supported_bind_initialisation():
@@ -55,7 +55,7 @@ def test_init_tables_calls_only_supported_bind_initialisation():
 
 def test_init_storage_calls_sqlalchemy_init_tables():
     with patch(
-        "storage.SQLAlchemy.init_tables", return_value=None
+        "gateways.storage.SQLAlchemy.init_tables", return_value=None
     ) as mocked_init_tables:
         init_storage()
 

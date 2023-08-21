@@ -1,22 +1,34 @@
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, MagicMock
 
-from domains.books import Book, BookService
-from domains.books._models import BookModel
+from domains.books import dto, service
+from domains.books._data_access_interfaces import BookEventGatewayInterface
+from domains.books.models import BookModel
 
 
 async def test_create_book(book_repository):
-    service = BookService(book_repository=book_repository)
-    book = Book(
+    event_gateway = MagicMock(spec=BookEventGatewayInterface)
+    book_service = service.BookService(
+        book_repository=book_repository,
+        event_gateway=event_gateway,
+    )
+    book = dto.Book(
         title="test",
         author_name="other",
     )
-    returned_book = await service.create_book(book)
-    assert book == returned_book
+    returned_book = await book_service.create_book(book)
+    assert book.title == returned_book.title
+    assert book.author_name == returned_book.author_name
+    assert returned_book.book_id is not None
+    event_gateway.emit.assert_called_once()
     book_repository.save.assert_called_once()
 
 
 async def test_list_books(book_repository):
-    service = BookService(book_repository=book_repository)
+    event_gateway = MagicMock(spec=BookEventGatewayInterface)
+    book_service = service.BookService(
+        book_repository=book_repository,
+        event_gateway=event_gateway,
+    )
     book = BookModel(
         book_id=2,
         title="test",
@@ -25,6 +37,6 @@ async def test_list_books(book_repository):
 
     book_repository.find = AsyncMock(return_value=[book])
 
-    returned_books = await service.list_books()
-    assert [Book.model_validate(book, from_attributes=True)] == returned_books
+    returned_books = await book_service.list_books()
+    assert [dto.Book.model_validate(book, from_attributes=True)] == returned_books
     book_repository.find.assert_called_once()

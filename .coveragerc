@@ -1,6 +1,6 @@
 [run]
 branch = True
-source = http_app, grpc_app, domains, storage
+source = http_app, grpc_app, domains, gateways
 omit = grpc_app/generated/*
 concurrency = multiprocessing
 parallel = true
