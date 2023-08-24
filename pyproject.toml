@@ -9,6 +9,8 @@ readme = "README.md"
 [tool.poetry.dependencies]
 aiosqlite = ">=0.18.0"
 alembic = "^1.11.1"
+celery =  { version = "^5.3.1", extras = ["redis"] }
+cloudevents = "^1.9.0"
 dependency-injector = { version = "^4.41.0", extras = ["pydantic"] }
 httpx = ">=0.23.0"
 opentelemetry-distro = { version = "*", extras = ["otlp"] }
@@ -22,7 +24,6 @@ rich = "^13.2.0"
 SQLAlchemy = { version = "^2.0.0", extras = ["asyncio", "mypy"] }
 sqlalchemy-bind-manager = "*"
 structlog = "^23.1.0"
-cloudevents = "^1.9.0"
 
 [tool.poetry.group.http]
 optional = true
