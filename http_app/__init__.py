@@ -7,7 +7,7 @@ from starlette_prometheus import PrometheusMiddleware, metrics
 from structlog import get_logger
 
 from config import AppConfig, init_logger
-from domains import init_domains
+from domains import init_celery, init_domains
 from gateways.storage import init_storage
 from http_app.routes import init_routes
 
@@ -22,7 +22,7 @@ def create_app(
     init_exception_handlers(app)
 
     init_storage()
-
+    init_celery(app_config)
     init_routes(app)
 
     """
