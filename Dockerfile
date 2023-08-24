@@ -43,11 +43,15 @@ COPY --chown=nonroot:nonroot poetry.lock .
 
 # Test image, contains all files and dependencies
 FROM base_builder as dev
-RUN poetry install --with http,grpc,dev
+RUN poetry install --with http,grpc,dev,celery
 COPY --chown=nonroot:nonroot . .
 # Note that opentelemetry doesn't play well together with uvicorn reloader
 # when signals are propagated, we disable it in dev image default CMD
 CMD ["uvicorn", "http_app:create_app", "--host", "0.0.0.0", "--port", "8000", "--factory", "--reload"]
+
+# Installs requirements to run production celery application
+FROM base_builder as celery_builder
+RUN poetry install --no-root --with celery
 
 # Installs requirements to run production http application
 FROM base_builder as http_builder
@@ -84,3 +88,10 @@ COPY --from=grpc_builder /poetryvenvs /poetryvenvs
 COPY --chown=nonroot:nonroot grpc_app ./grpc_app
 # Run CMD using array syntax, so it's uses `exec` and runs as PID1
 CMD ["opentelemetry-instrument", "python3", "-m", "grpc_app"]
+
+# Copy the grpc python package and requirements from relevant builder
+FROM base_app as celery_app
+COPY --from=celery_builder /poetryvenvs /poetryvenvs
+COPY --chown=nonroot:nonroot celery_worker ./celery_worker
+# Run CMD using array syntax, so it's uses `exec` and runs as PID1
+CMD ["opentelemetry-instrument", "celery", "-A", "celery_worker:app", "worker", "--events"]

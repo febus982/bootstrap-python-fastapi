@@ -7,7 +7,7 @@ services:
     build:
       dockerfile: Dockerfile
       context: .
-      target: dev
+      target: celery_app
     environment:
       OTEL_SERVICE_NAME: "bootstrap-fastapi"
       OTEL_TRACES_EXPORTER: "none"
