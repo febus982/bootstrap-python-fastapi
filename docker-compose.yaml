@@ -8,11 +8,17 @@ services:
       dockerfile: Dockerfile
       context: .
       target: dev
+    environment:
+      OTEL_SERVICE_NAME: "bootstrap-fastapi"
+      OTEL_TRACES_EXPORTER: "none"
+      OTEL_METRICS_EXPORTER: "none"
+      OTEL_LOGS_EXPORTER: "none"
     volumes:
       - '.:/app'
     depends_on:
       - redis
     command:
+      - opentelemetry-instrument
       - celery
       - -A
       - celery_worker:app
