@@ -15,6 +15,8 @@ TYPE_ENVIRONMENT = Literal["local", "test", "staging", "production"]
 class CeleryConfig(BaseModel):
     # https://docs.celeryq.dev/en/stable/userguide/configuration.html#configuration
 
+    timezone: str = "UTC"
+
     # Broker config
     broker_url: str = "redis://redis:6379/0"
     broker_connection_retry_on_startup: bool = True
@@ -28,6 +30,14 @@ class CeleryConfig(BaseModel):
 
     # We want to use the default python logger configured using structlog
     worker_hijack_root_logger: bool = False
+
+    beat_schedule: dict = {
+        "recurrent_example": {
+            "task": "domains.books.tasks.book_created",
+            "schedule": 5.0,
+            "args": ("a-random-book-id",),
+        },
+    }
 
 
 class AppConfig(BaseSettings):

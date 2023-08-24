@@ -17,6 +17,8 @@ services:
       - -A
       - celery_worker:app
       - worker
+      - --beat
+      - --events
       - -l
       - INFO
 
