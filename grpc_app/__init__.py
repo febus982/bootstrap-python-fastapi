@@ -6,7 +6,7 @@ from grpc.aio import server
 from structlog import get_logger
 
 from config import AppConfig, init_logger
-from domains import init_domains, init_celery
+from domains import init_celery, init_domains
 from gateways.storage import init_storage
 from grpc_app.generated.books_pb2_grpc import add_BooksServicer_to_server
 from grpc_app.servicers.books import BooksServicer
