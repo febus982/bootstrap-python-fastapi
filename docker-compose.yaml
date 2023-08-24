@@ -1,5 +1,25 @@
 version: '3.8'
 services:
+  redis:
+    image: redis
+
+  celery_worker:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: dev
+    volumes:
+      - '.:/app'
+    depends_on:
+      - redis
+    command:
+      - celery
+      - -A
+      - celery_worker:app
+      - worker
+      - -l
+      - INFO
+
   dev:
     build:
       dockerfile: Dockerfile
@@ -9,6 +29,10 @@ services:
       - '8000:8000'
     volumes:
       - '.:/app'
+    depends_on:
+      - redis
+      - celery_worker
+
   http:
     build:
       dockerfile: Dockerfile

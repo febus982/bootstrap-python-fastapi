@@ -26,9 +26,12 @@ class CeleryConfig(BaseModel):
     # Enable to ignore the results by default and not produce tombstones
     task_ignore_result: bool = False
 
+    # We want to use the default python logger configured using structlog
+    worker_hijack_root_logger: bool = False
+
 
 class AppConfig(BaseSettings):
-    model_config = SettingsConfigDict(env_nested_delimiter='__')
+    model_config = SettingsConfigDict(env_nested_delimiter="__")
 
     CELERY: CeleryConfig = CeleryConfig()
     DEBUG: bool = False
