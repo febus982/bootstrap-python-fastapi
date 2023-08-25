@@ -32,5 +32,5 @@ def book_service() -> Iterator[MagicMock]:
 @pytest.fixture(scope="function")
 def testapp(test_config, book_service) -> Iterator[FastAPI]:
     # We don't need the storage to test the HTTP app
-    with patch("http_app.init_storage", return_value=None):
+    with patch("common.bootstrap.init_storage", return_value=None):
         yield create_app(test_config=test_config)

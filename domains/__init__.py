@@ -1,8 +1,8 @@
 from celery import Celery
 from dependency_injector.providers import Object
 
-from config import AppConfig
-from di_container import Container
+from common.config import AppConfig
+from common.di_container import Container
 
 
 def init_domains(config: AppConfig):

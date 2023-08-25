@@ -82,8 +82,7 @@ files = [
     "http_app",
     "gateways",
     "tests",
-    "di_container.py",
-    "config.py",
+    "common",
 ]
 plugins = "pydantic.mypy,strawberry.ext.mypy_plugin"
 
@@ -114,6 +113,7 @@ files = '''
   gateways
   tests
   alembic
+  common
 )
 '''
 extend-exclude = '''

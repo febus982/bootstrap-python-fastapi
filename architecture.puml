@@ -17,6 +17,11 @@ package domains #DDDDDD {
 
         package entities {
             class BookModel
+            class BookEvent
+        }
+
+        package tasks {
+            class BookTask
         }
 
         package data_access_interface {
@@ -41,6 +46,7 @@ servicers --> Book
 'links internal to books domain
 BookService -l-> Book
 BookService --> entities
+BookService --> tasks
 BookService -r-> data_access_interface
 data_access_interface --> entities
 

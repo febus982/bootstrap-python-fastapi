@@ -4,17 +4,10 @@ from asyncio import get_event_loop
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from alembic import context
-from config import AppConfig, init_logger
-from gateways.storage.SQLAlchemy import init_tables
+from common.bootstrap import application_init
+from common.config import AppConfig
 
 USE_TWOPHASE = False
-
-
-def init_container(app_config: AppConfig):
-    # Workaround to avoid circular import
-    from di_container import Container
-
-    return Container(config=app_config)
 
 
 # this is the Alembic Config object, which provides
@@ -31,13 +24,9 @@ config = context.config
 # in the sample .ini file.
 # db_names = config.get_main_option("databases")
 
-# TODO: Something better organised than this
-app_config = AppConfig()
-init_logger(app_config)
+di_container = application_init(AppConfig()).di_container
 logger = logging.getLogger("alembic.env")
-di_container = init_container(app_config)
 sa_manager = di_container.SQLAlchemyBindManager()
-init_tables()
 
 target_metadata = sa_manager.get_bind_mappers_metadata()
 db_names = target_metadata.keys()

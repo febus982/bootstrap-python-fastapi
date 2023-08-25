@@ -70,8 +70,7 @@ COPY --chown=nonroot:nonroot poetry.lock .
 COPY --chown=nonroot:nonroot alembic ./alembic
 COPY --chown=nonroot:nonroot domains ./domains
 COPY --chown=nonroot:nonroot gateways ./gateways
-COPY --chown=nonroot:nonroot config.py .
-COPY --chown=nonroot:nonroot di_container.py .
+COPY --chown=nonroot:nonroot common ./common
 COPY --chown=nonroot:nonroot alembic.ini .
 COPY --chown=nonroot:nonroot Makefile .
 
