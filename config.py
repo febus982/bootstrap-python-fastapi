@@ -47,6 +47,7 @@ class CeleryConfig(BaseModel):
 class AppConfig(BaseSettings):
     model_config = SettingsConfigDict(env_nested_delimiter="__")
 
+    APP_NAME: str = "bootstrap"
     CELERY: CeleryConfig = CeleryConfig()
     DEBUG: bool = False
     ENVIRONMENT: TYPE_ENVIRONMENT = "local"

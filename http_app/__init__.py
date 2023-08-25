@@ -18,7 +18,10 @@ def create_app(
     app_config = test_config or AppConfig()
     init_logger(app_config)
     init_domains(app_config)
-    app = FastAPI(debug=app_config.DEBUG)
+    app = FastAPI(
+        debug=app_config.DEBUG,
+        title=app_config.APP_NAME,
+    )
     init_exception_handlers(app)
 
     init_storage()
