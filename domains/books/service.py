@@ -2,6 +2,7 @@ from collections.abc import Iterable
 
 from anyio import to_thread
 from dependency_injector.wiring import Provide, inject
+from structlog import get_logger
 
 from domains.books.events import BookCreatedV1, BookCreatedV1Data
 from domains.books.models import BookModel
@@ -53,6 +54,12 @@ class BookService:
     async def list_books(self) -> Iterable[Book]:
         books = await self.book_repository.find()
         return [Book.model_validate(x, from_attributes=True) for x in books]
+
+    async def book_created_event_handler(self, book_id) -> None:  # pragma: no cover
+        # This is just an example placeholder,
+        # there's nothing to test.
+        logger = get_logger()
+        await logger.ainfo(f"Processed book crated event for id `{book_id}`")
 
 
 def some_cpu_intensive_blocking_task(book: dict) -> dict:

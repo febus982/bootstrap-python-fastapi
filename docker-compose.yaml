@@ -1,24 +1,82 @@
 version: '3.8'
 services:
+
+  jaeger:
+    image: jaegertracing/all-in-one
+    ports:
+      - "16686:16686"
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib
+    depends_on:
+      - jaeger
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
+
+  redis:
+    image: redis
+
+  celery-worker:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: celery_app
+    environment:
+      OTEL_SERVICE_NAME: "bootstrap-fastapi-worker"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
+    volumes:
+      - '.:/app'
+    depends_on:
+      - redis
+      - otel-collector
+    command:
+      - opentelemetry-instrument
+      - celery
+      - -A
+      - celery_worker:app
+      - worker
+      - --beat
+      - -l
+      - INFO
+
   dev:
     build:
       dockerfile: Dockerfile
       context: .
       target: dev
+    environment:
+      OTEL_SERVICE_NAME: "bootstrap-fastapi-dev"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
     ports:
       - '8000:8000'
     volumes:
       - '.:/app'
+    depends_on:
+      - redis
+      - celery-worker
+    command:
+      - opentelemetry-instrument
+      - uvicorn
+      - http_app:create_app
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - --factory
+      - --reload
+
   http:
     build:
       dockerfile: Dockerfile
       context: .
       target: http_app
+    depends_on:
+      - redis
+      - celery-worker
+      - otel-collector
     environment:
-      OTEL_SERVICE_NAME: "bootstrap-fastapi"
-      OTEL_TRACES_EXPORTER: "console"
-      OTEL_METRICS_EXPORTER: "console"
-      OTEL_LOGS_EXPORTER: "none"
+      OTEL_SERVICE_NAME: "bootstrap-fastapi-http"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
     ports:
       - '8001:8000'
     volumes:
@@ -29,11 +87,13 @@ services:
       dockerfile: Dockerfile
       context: .
       target: grpc_app
+    depends_on:
+      - redis
+      - celery-worker
+      - otel-collector
     environment:
-      OTEL_SERVICE_NAME: "bootstrap-fastapi"
-      OTEL_TRACES_EXPORTER: "console"
-      OTEL_METRICS_EXPORTER: "console"
-      OTEL_LOGS_EXPORTER: "none"
+      OTEL_SERVICE_NAME: "bootstrap-fastapi-grpc"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
     ports:
       - "9999:9999"
     volumes:

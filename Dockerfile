@@ -49,6 +49,10 @@ COPY --chown=nonroot:nonroot . .
 # when signals are propagated, we disable it in dev image default CMD
 CMD ["uvicorn", "http_app:create_app", "--host", "0.0.0.0", "--port", "8000", "--factory", "--reload"]
 
+# Installs requirements to run production celery application
+FROM base_builder as celery_builder
+RUN poetry install --no-root
+
 # Installs requirements to run production http application
 FROM base_builder as http_builder
 RUN poetry install --no-root --with http
@@ -66,8 +70,7 @@ COPY --chown=nonroot:nonroot poetry.lock .
 COPY --chown=nonroot:nonroot alembic ./alembic
 COPY --chown=nonroot:nonroot domains ./domains
 COPY --chown=nonroot:nonroot gateways ./gateways
-COPY --chown=nonroot:nonroot config.py .
-COPY --chown=nonroot:nonroot di_container.py .
+COPY --chown=nonroot:nonroot common ./common
 COPY --chown=nonroot:nonroot alembic.ini .
 COPY --chown=nonroot:nonroot Makefile .
 
@@ -84,3 +87,10 @@ COPY --from=grpc_builder /poetryvenvs /poetryvenvs
 COPY --chown=nonroot:nonroot grpc_app ./grpc_app
 # Run CMD using array syntax, so it's uses `exec` and runs as PID1
 CMD ["opentelemetry-instrument", "python3", "-m", "grpc_app"]
+
+# Copy the celery python package and requirements from relevant builder
+FROM base_app as celery_app
+COPY --from=celery_builder /poetryvenvs /poetryvenvs
+COPY --chown=nonroot:nonroot celery_worker ./celery_worker
+# Run CMD using array syntax, so it's uses `exec` and runs as PID1
+CMD ["opentelemetry-instrument", "celery", "-A", "celery_worker:app", "worker", "-l", "INFO"]

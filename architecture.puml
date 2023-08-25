@@ -2,11 +2,13 @@
 allowmixing
 skinparam componentStyle uml1
 
-package http_app {
+package celery_worker {}
+
+package http_app #fff {
     package routes #DDDDDD
 }
 
-package grpc_app {
+package grpc_app #fff {
     package servicers #DDDDDD
 }
 
@@ -17,6 +19,11 @@ package domains #DDDDDD {
 
         package entities {
             class BookModel
+            class BookEvent
+        }
+
+        package tasks {
+            class BookTask
         }
 
         package data_access_interface {
@@ -37,6 +44,9 @@ routes --> BookService
 routes --> Book
 servicers --> BookService
 servicers --> Book
+celery_worker ---> tasks
+tasks <-u-> BookService
+tasks -u-> Book
 
 'links internal to books domain
 BookService -l-> Book

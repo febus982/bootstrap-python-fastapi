@@ -3,7 +3,7 @@ from unittest.mock import patch
 from httpx import AsyncClient
 
 from domains.books.events import BookCreatedV1
-from domains.cloudevent_base import BaseEvent
+from domains.common.cloudevent_base import BaseEvent
 
 
 class FakeEvent(BaseEvent):

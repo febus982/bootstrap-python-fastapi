@@ -5,19 +5,14 @@ from typing import Optional
 from grpc.aio import server
 from structlog import get_logger
 
-from config import AppConfig, init_logger
-from domains import init_domains
-from gateways.storage import init_storage
+from common.bootstrap import application_init
+from common.config import AppConfig
 from grpc_app.generated.books_pb2_grpc import add_BooksServicer_to_server
 from grpc_app.servicers.books import BooksServicer
 
 
-# TODO: Add asyncio support: https://stackoverflow.com/questions/38387443/how-to-implement-a-async-grpc-python-server
 async def create_server(test_config: Optional[AppConfig] = None):
-    app_config = test_config or AppConfig()
-    init_logger(app_config)
-    init_domains(app_config)
-    init_storage()
+    application_init(test_config or AppConfig())
     s = server(futures.ThreadPoolExecutor(max_workers=10))
     # Register service
     add_BooksServicer_to_server(BooksServicer(), s)

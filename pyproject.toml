@@ -9,10 +9,14 @@ readme = "README.md"
 [tool.poetry.dependencies]
 aiosqlite = ">=0.18.0"
 alembic = "^1.11.1"
+asgiref = "^3.7.2"
+celery =  { version = "^5.3.1", extras = ["redis"] }
+cloudevents = "^1.9.0"
 dependency-injector = { version = "^4.41.0", extras = ["pydantic"] }
 httpx = ">=0.23.0"
 opentelemetry-distro = { version = "*", extras = ["otlp"] }
 opentelemetry-instrumentation = "*"
+opentelemetry-instrumentation-celery = "*"
 opentelemetry-instrumentation-httpx = "*"
 opentelemetry-instrumentation-sqlalchemy = "*"
 pydantic = "^2.2.1"
@@ -22,7 +26,6 @@ rich = "^13.2.0"
 SQLAlchemy = { version = "^2.0.0", extras = ["asyncio", "mypy"] }
 sqlalchemy-bind-manager = "*"
 structlog = "^23.1.0"
-cloudevents = "^1.9.0"
 
 [tool.poetry.group.http]
 optional = true
@@ -79,13 +82,17 @@ files = [
     "http_app",
     "gateways",
     "tests",
-    "di_container.py",
-    "config.py",
+    "common",
 ]
 plugins = "pydantic.mypy,strawberry.ext.mypy_plugin"
 
+# We can remove celery by installing `celery-types` but needs
+# at least python 3.10. For now we maintain the override.
 [[tool.mypy.overrides]]
-module = "grpc.aio.*"
+module = [
+    "grpc.aio.*",
+    "celery.*"
+]
 ignore_missing_imports = true
 
 [tool.ruff]
@@ -106,6 +113,7 @@ files = '''
   gateways
   tests
   alembic
+  common
 )
 '''
 extend-exclude = '''

@@ -3,7 +3,7 @@ from dependency_injector.providers import Dependency, Factory, Singleton
 from sqlalchemy_bind_manager import SQLAlchemyBindManager
 from sqlalchemy_bind_manager._repository import SQLAlchemyAsyncRepository
 
-from config import AppConfig
+from common.config import AppConfig
 from domains.books._data_access_interfaces import (
     BookEventGatewayInterface,
     BookRepositoryInterface,

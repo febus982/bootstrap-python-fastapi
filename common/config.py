@@ -4,14 +4,53 @@ from typing import Dict, List, Literal
 
 import structlog
 from opentelemetry import trace
-from pydantic_settings import BaseSettings
+from pydantic import BaseModel
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy_bind_manager import SQLAlchemyAsyncConfig
 from structlog.typing import Processor
 
 TYPE_ENVIRONMENT = Literal["local", "test", "staging", "production"]
 
 
+class CeleryConfig(BaseModel):
+    # https://docs.celeryq.dev/en/stable/userguide/configuration.html#configuration
+
+    timezone: str = "UTC"
+
+    # Broker config
+    broker_url: str = "redis://redis:6379/0"
+    broker_connection_retry_on_startup: bool = True
+
+    # Results backend config
+    result_backend: str = "redis://redis:6379/1"
+    redis_socket_keepalive: bool = True
+
+    # Enable to ignore the results by default and not produce tombstones
+    task_ignore_result: bool = False
+
+    # We want to use the default python logger configured using structlog
+    worker_hijack_root_logger: bool = False
+
+    # Events enabled for monitoring
+    worker_send_task_events: bool = True
+    task_send_sent_event: bool = True
+
+    beat_schedule: dict = {
+        "recurrent_example": {
+            "task": "domains.books.tasks.book_created",
+            "schedule": 5.0,
+            "args": ("a-random-book-id",),
+        },
+    }
+
+
 class AppConfig(BaseSettings):
+    model_config = SettingsConfigDict(env_nested_delimiter="__")
+
+    APP_NAME: str = "bootstrap"
+    CELERY: CeleryConfig = CeleryConfig()
+    DEBUG: bool = False
+    ENVIRONMENT: TYPE_ENVIRONMENT = "local"
     SQLALCHEMY_CONFIG: Dict[str, SQLAlchemyAsyncConfig] = dict(
         default=SQLAlchemyAsyncConfig(
             engine_url=f"sqlite+aiosqlite:///{os.path.dirname(os.path.abspath(__file__))}/sqlite.db",
@@ -24,8 +63,6 @@ class AppConfig(BaseSettings):
             ),
         ),
     )
-    ENVIRONMENT: TYPE_ENVIRONMENT = "local"
-    DEBUG: bool = False
 
 
 def init_logger(config: AppConfig) -> None:
