@@ -17,6 +17,9 @@ processors:
   batch:
 service:
   pipelines:
+    metrics:
+      receivers: [otlp]
+      exporters: [logging]
     traces:
       receivers: [otlp]
       exporters: [jaeger]
