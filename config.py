@@ -31,6 +31,10 @@ class CeleryConfig(BaseModel):
     # We want to use the default python logger configured using structlog
     worker_hijack_root_logger: bool = False
 
+    # Events enabled for monitoring
+    worker_send_task_events: bool = True
+    task_send_sent_event: bool = True
+
     beat_schedule: dict = {
         "recurrent_example": {
             "task": "domains.books.tasks.book_created",
