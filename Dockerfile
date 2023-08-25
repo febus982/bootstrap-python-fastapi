@@ -89,9 +89,9 @@ COPY --chown=nonroot:nonroot grpc_app ./grpc_app
 # Run CMD using array syntax, so it's uses `exec` and runs as PID1
 CMD ["opentelemetry-instrument", "python3", "-m", "grpc_app"]
 
-# Copy the grpc python package and requirements from relevant builder
+# Copy the celery python package and requirements from relevant builder
 FROM base_app as celery_app
 COPY --from=celery_builder /poetryvenvs /poetryvenvs
 COPY --chown=nonroot:nonroot celery_worker ./celery_worker
 # Run CMD using array syntax, so it's uses `exec` and runs as PID1
-CMD ["opentelemetry-instrument", "celery", "-A", "celery_worker:app", "worker", "--events"]
+CMD ["opentelemetry-instrument", "celery", "-A", "celery_worker:app", "worker", "-l", "INFO"]

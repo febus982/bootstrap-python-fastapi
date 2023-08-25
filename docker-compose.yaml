@@ -24,6 +24,8 @@ services:
       - celery_worker:app
       - worker
       - --beat
+      - -l
+      - INFO
 
   dev:
     build:
