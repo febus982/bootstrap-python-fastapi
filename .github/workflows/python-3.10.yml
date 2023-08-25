@@ -24,7 +24,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install poetry
         poetry config virtualenvs.create false
-        poetry install --no-root --with http,grpc,dev,celery
+        poetry install --no-root --with http,grpc,dev
     - name: Test with pytest
       run: |
         make ci-test

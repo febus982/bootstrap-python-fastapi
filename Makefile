@@ -31,7 +31,7 @@ typing:
 	poetry run mypy
 
 update-deps:
-	poetry update --with http,grpc,dev,celery
+	poetry update --with http,grpc,dev
 
 migrate:
 	poetry run alembic upgrade heads
