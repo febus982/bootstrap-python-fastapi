@@ -1,0 +1,23 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+exporters:
+  logging:
+    loglevel: debug
+  otlp:
+    endpoint: jaeger:4317
+    tls:
+      insecure: true
+  jaeger:
+    endpoint: jaeger:14250
+    tls:
+      insecure: true
+processors:
+  batch:
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [jaeger]
+      processors: [batch]
