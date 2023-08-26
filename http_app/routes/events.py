@@ -1,7 +1,8 @@
 import typing
-from typing import Any, Dict, List
+from typing import Dict, List
 
 from fastapi import APIRouter, Body, Header, HTTPException
+from fastapi.openapi.models import Example
 from pydantic import BaseModel
 
 from domains.books.events import BookCreatedV1
@@ -23,7 +24,7 @@ def _event_registry() -> Dict[str, typing.Type[BaseModel]]:
     }
 
 
-def _event_schema_examples() -> dict[str, dict[str, Any]]:
+def _event_schema_examples() -> dict[str, Example]:
     missing_example_message = (
         "No example has been added to this event but you can"
         " still explore the event schema. (Ask the developer"
@@ -32,11 +33,11 @@ def _event_schema_examples() -> dict[str, dict[str, Any]]:
     )
 
     return {
-        k: {
-            "value": getattr(v, "model_config", {})
+        k: Example(
+            value=getattr(v, "model_config", {})
             .get("json_schema_extra", {})
             .get("examples", [missing_example_message])[0]
-        }
+        )
         for k, v in _event_registry().items()
     }
 
@@ -85,6 +86,5 @@ async def submit_event(
         "application/cloudevents+json; charset=UTF-8"
     ] = Header(),
 ) -> None:
-    # A better approach than if/else should be used when we have multiple event types
-    if isinstance(event_data, BookCreatedV1):
-        await BookService().book_created_event_handler(event_data.data.book_id)
+    # Some routing will be necessary when multiple event types will be supported
+    await BookService().book_created_event_handler(event_data.data.book_id)
