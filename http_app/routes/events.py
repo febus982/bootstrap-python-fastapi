@@ -1,10 +1,12 @@
 import typing
-from typing import Any, Dict, List
+from typing import Dict, List
 
 from fastapi import APIRouter, Body, Header, HTTPException
+from fastapi.openapi.models import Example
 from pydantic import BaseModel
 
 from domains.books.events import BookCreatedV1
+from domains.books.service import BookService
 
 router = APIRouter(prefix="/events")
 
@@ -22,7 +24,7 @@ def _event_registry() -> Dict[str, typing.Type[BaseModel]]:
     }
 
 
-def _event_schema_examples() -> dict[str, dict[str, Any]]:
+def _event_schema_examples() -> dict[str, Example]:
     missing_example_message = (
         "No example has been added to this event but you can"
         " still explore the event schema. (Ask the developer"
@@ -31,11 +33,11 @@ def _event_schema_examples() -> dict[str, dict[str, Any]]:
     )
 
     return {
-        k: {
-            "value": getattr(v, "model_config", {})
+        k: Example(
+            value=getattr(v, "model_config", {})
             .get("json_schema_extra", {})
             .get("examples", [missing_example_message])[0]
-        }
+        )
         for k, v in _event_registry().items()
     }
 
@@ -67,15 +69,6 @@ async def event_schema_list() -> List[str]:
 
 @router.post(
     "",
-    openapi_extra={
-        "requestBody": {
-            "content": {
-                "application/cloudevents+json; charset=UTF-8": {
-                    "examples": _event_schema_examples(),
-                }
-            },
-        },
-    },
     status_code=204,
     description="""
     Entrypoint for CloudEvent processing, it supports only single events.
@@ -86,10 +79,12 @@ async def event_schema_list() -> List[str]:
 async def submit_event(
     event_data: _EVENTS_UNION_TYPE = Body(
         media_type="application/cloudevents+json; charset=UTF-8",
+        openapi_examples=_event_schema_examples(),
         discriminator="type",
     ),
     content_type: typing.Literal[
         "application/cloudevents+json; charset=UTF-8"
     ] = Header(),
 ) -> None:
-    pass
+    # Some routing will be necessary when multiple event types will be supported
+    await BookService().book_created_event_handler(event_data.data.book_id)

@@ -1,7 +1,8 @@
-from unittest.mock import patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 from httpx import AsyncClient
 
+from domains.books import service
 from domains.books.events import BookCreatedV1
 from domains.common.cloudevent_base import BaseEvent
 
@@ -39,12 +40,16 @@ async def test_event_returns_204(testapp):
     fake_event = BookCreatedV1(
         data={"book_id": 0, "title": "string", "author_name": "string"},
     )
-    async with AsyncClient(app=testapp, base_url="http://test") as ac:
-        response = await ac.post(
-            "/events",
-            headers={"content-type": "application/cloudevents+json; charset=UTF-8"},
-            content=fake_event.model_dump_json(),
-        )
+    svc = MagicMock(autospec=service.BookService)
+    svc.book_created_event_handler = AsyncMock(return_value=None)
+    with patch("domains.books.service.BookService.__new__", return_value=svc):
+        async with AsyncClient(app=testapp, base_url="http://test") as ac:
+            response = await ac.post(
+                "/events",
+                headers={"content-type": "application/cloudevents+json; charset=UTF-8"},
+                content=fake_event.model_dump_json(),
+            )
+    svc.book_created_event_handler.assert_called_once()
     assert response.status_code == 204
 
 
