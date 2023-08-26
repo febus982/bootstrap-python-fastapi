@@ -67,15 +67,6 @@ async def event_schema_list() -> List[str]:
 
 @router.post(
     "",
-    openapi_extra={
-        "requestBody": {
-            "content": {
-                "application/cloudevents+json; charset=UTF-8": {
-                    "examples": _event_schema_examples(),
-                }
-            },
-        },
-    },
     status_code=204,
     description="""
     Entrypoint for CloudEvent processing, it supports only single events.
@@ -86,6 +77,7 @@ async def event_schema_list() -> List[str]:
 async def submit_event(
     event_data: _EVENTS_UNION_TYPE = Body(
         media_type="application/cloudevents+json; charset=UTF-8",
+        openapi_examples=_event_schema_examples(),
         discriminator="type",
     ),
     content_type: typing.Literal[
