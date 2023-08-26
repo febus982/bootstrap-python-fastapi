@@ -5,6 +5,7 @@ from fastapi import APIRouter, Body, Header, HTTPException
 from pydantic import BaseModel
 
 from domains.books.events import BookCreatedV1
+from domains.books.service import BookService
 
 router = APIRouter(prefix="/events")
 
@@ -84,4 +85,6 @@ async def submit_event(
         "application/cloudevents+json; charset=UTF-8"
     ] = Header(),
 ) -> None:
-    pass
+    # A better approach than if/else should be used when we have multiple event types
+    if isinstance(event_data, BookCreatedV1):
+        await BookService().book_created_event_handler(event_data.data.book_id)
