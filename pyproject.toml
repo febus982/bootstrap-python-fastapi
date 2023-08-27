@@ -7,6 +7,7 @@ readme = "README.md"
 
 # https://python-poetry.org/docs/dependency-specification
 [tool.poetry.dependencies]
+aiokafka = "^0.8.1"
 aiosqlite = ">=0.18.0"
 alembic = "^1.11.1"
 asgiref = "^3.7.2"
