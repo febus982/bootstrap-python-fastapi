@@ -1,8 +1,9 @@
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 from domains.books import dto, service
 from domains.books._data_access_interfaces import BookEventGatewayInterface
 from domains.books.models import BookModel
+from domains.books.tasks import book_cpu_intensive_task
 
 
 async def test_create_book(book_repository):
@@ -15,7 +16,12 @@ async def test_create_book(book_repository):
         title="test",
         author_name="other",
     )
-    returned_book = await book_service.create_book(book)
+    mocked_task_return = MagicMock
+    mocked_task_return.get = MagicMock(return_value=book_cpu_intensive_task(book))
+    with patch.object(
+        book_cpu_intensive_task, "delay", return_value=mocked_task_return
+    ):
+        returned_book = await book_service.create_book(book)
     assert book.title == returned_book.title
     assert book.author_name == returned_book.author_name
     assert returned_book.book_id is not None
