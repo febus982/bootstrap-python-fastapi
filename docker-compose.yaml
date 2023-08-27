@@ -16,6 +16,18 @@ services:
   redis:
     image: redis
 
+  stream-consumer:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: dev
+    volumes:
+      - '.:/app'
+    command:
+      - python
+      - -m
+      - stream_consumer
+
   celery-worker:
     build:
       dockerfile: Dockerfile
