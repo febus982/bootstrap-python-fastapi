@@ -1,6 +1,7 @@
 from collections.abc import Iterable
 
 from anyio import to_thread
+from celery.result import AsyncResult
 from dependency_injector.wiring import Provide, inject
 from structlog import get_logger
 
@@ -9,6 +10,7 @@ from domains.books.models import BookModel
 
 from ._data_access_interfaces import BookEventGatewayInterface, BookRepositoryInterface
 from .dto import Book, BookData
+from .tasks import book_cpu_intensive_task
 
 
 class BookService:
@@ -30,13 +32,13 @@ class BookService:
         self.event_gateway = event_gateway
 
     async def create_book(self, book: BookData) -> Book:
-        # Example of CPU intensive task, run in a different thread
-        # Using processes could be better, but it would bring technical complexity
-        # https://anyio.readthedocs.io/en/3.x/subprocesses.html#running-functions-in-worker-processes
-        book_data_altered = await to_thread.run_sync(
-            some_cpu_intensive_blocking_task, book.model_dump()
-        )
-        book_model = BookModel(**book_data_altered)
+        # Example of CPU intensive task, run in a celery task
+        book_task: AsyncResult = book_cpu_intensive_task.delay(book)
+        # task.get() would block the application, we run it in a thread to remain async
+        # we can also build a wrapper coroutine to do this using `asyncio.sleep`
+        # and poll the AsyncResult class in case we do not want to use threads
+        book_data_altered: BookData = await to_thread.run_sync(book_task.get)
+        book_model = BookModel(**book_data_altered.model_dump())
         book = Book.model_validate(
             await self.book_repository.save(book_model), from_attributes=True
         )
@@ -56,13 +58,6 @@ class BookService:
         return [Book.model_validate(x, from_attributes=True) for x in books]
 
     async def book_created_event_handler(self, book_id) -> None:  # pragma: no cover
-        # This is just an example placeholder,
-        # there's nothing to test.
+        # This is just an example placeholder, there's nothing to test.
         logger = get_logger()
         await logger.ainfo(f"Processed book crated event for id `{book_id}`")
-
-
-def some_cpu_intensive_blocking_task(book: dict) -> dict:
-    # This is just an example placeholder,
-    # there's nothing to test.
-    return book  # pragma: no cover

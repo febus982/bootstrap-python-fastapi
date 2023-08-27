@@ -35,13 +35,15 @@ class CeleryConfig(BaseModel):
     worker_send_task_events: bool = True
     task_send_sent_event: bool = True
 
-    beat_schedule: dict = {
-        "recurrent_example": {
-            "task": "domains.books.tasks.book_created",
-            "schedule": 5.0,
-            "args": ("a-random-book-id",),
-        },
-    }
+    # Recurring tasks triggered directly by Celery
+    beat_schedule: dict = {}
+    # beat_schedule: dict = {
+    #     "recurrent_example": {
+    #         "task": "domains.books.tasks.book_cpu_intensive_task",
+    #         "schedule": 5.0,
+    #         "args": ("a-random-book-id",),
+    #     },
+    # }
 
 
 class AppConfig(BaseSettings):

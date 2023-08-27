@@ -1,19 +1,27 @@
-from asgiref.sync import async_to_sync
+"""
+Tasks defined in this module are considered intensive operations
+that happen as part of one of the BookService methods,
+therefore we shouldn't invoke again the book service directly
+from here.
+
+Tasks that invoke the BookService could exist (e.g. an event
+worker), there are 2 options to implement them:
+- Create a different module, that would behave similar to HTTP
+routes, and invoke the service from there.
+- Invoke the service using inversion of control.
+
+IMPORTANT: It's dangerous to have nested task when they depend
+on each other's result. If you find yourself in this scenario
+it is probably better to redesign your application. If this is
+not possible, then celery provides task synchronisation primitives.
+
+https://docs.celeryq.dev/en/stable/userguide/tasks.html#avoid-launching-synchronous-subtasks
+"""
 from celery import shared_task
 
-from domains.books.service import BookService
+from domains.books.dto import BookData
 
 
 @shared_task()
-def book_created(book_id):
-    book_service = BookService()
-
-    """
-    This might not work if we call directly hello() from an app with
-    an already running async loop. It would be great having either
-    native async support or a better solution to identify running loops.
-    For now, we'll assume this is always executed in the worker.
-    In order to call this directly we might have to use the opposite
-    `sync_to_async` wrapper from asgiref.sync
-    """
-    return async_to_sync(book_service.book_created_event_handler)(book_id)
+def book_cpu_intensive_task(book: BookData) -> BookData:
+    return book

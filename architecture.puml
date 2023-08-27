@@ -45,7 +45,7 @@ routes --> Book
 servicers --> BookService
 servicers --> Book
 celery_worker ---> tasks
-tasks <-u-> BookService
+tasks <-u- BookService
 tasks -u-> Book
 
 'links internal to books domain
