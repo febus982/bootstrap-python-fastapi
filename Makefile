@@ -30,6 +30,9 @@ ci-coverage:
 typing:
 	poetry run mypy
 
+dev-deps:
+	poetry install --no-root --with http,grpc,dev
+
 update-deps:
 	poetry update --with http,grpc,dev
 
