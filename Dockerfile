@@ -40,6 +40,7 @@ RUN poetry config virtualenvs.path /poetryvenvs
 
 COPY --chown=nonroot:nonroot pyproject.toml .
 COPY --chown=nonroot:nonroot poetry.lock .
+COPY --chown=nonroot:nonroot Makefile .
 
 # Test image, contains all files and dependencies
 FROM base_builder as dev
