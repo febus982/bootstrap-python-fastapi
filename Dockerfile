@@ -43,7 +43,7 @@ COPY --chown=nonroot:nonroot poetry.lock .
 
 # Test image, contains all files and dependencies
 FROM base_builder as dev
-RUN poetry install --with http,grpc,dev
+RUN make dev-dependencies
 COPY --chown=nonroot:nonroot . .
 # Note that opentelemetry doesn't play well together with uvicorn reloader
 # when signals are propagated, we disable it in dev image default CMD

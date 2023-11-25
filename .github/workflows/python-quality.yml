@@ -24,7 +24,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install poetry
         poetry config virtualenvs.create false
-        poetry install --no-root --with http,grpc,dev
+        make dev-dependencies
     - name: Test & publish code coverage
       uses: paambaati/codeclimate-action@v3.2.0
       if: env.CC_TEST_REPORTER_ID != null
