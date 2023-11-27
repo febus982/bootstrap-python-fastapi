@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Dict, List, Literal
+from typing import Dict, List, Literal, Optional
 
 import structlog
 from opentelemetry import trace
@@ -65,6 +65,8 @@ class AppConfig(BaseSettings):
             ),
         ),
     )
+    KAFKA_CONSUMER_TOPIC: Optional[str] = None
+    KAFKA_BOOTSTRAP_SERVERS: Optional[str] = None
 
 
 def init_logger(config: AppConfig) -> None:
