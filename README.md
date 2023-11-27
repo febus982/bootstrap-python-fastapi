@@ -76,6 +76,10 @@ Using Docker:
 Locally:
 
 * `make migrate`: Run database migrations
+* `make install-dependencies`: Install requirements
+* `make dev-dependencies`: Install dev requirements
+* `make update-dependencies`: Updates requirements
+* `make migrate`: Run database migrations
 * `make dev`: Run HTTP application with hot reload
 * `make grpc`: Run GRPC application
 * `make test`: Run test suite
