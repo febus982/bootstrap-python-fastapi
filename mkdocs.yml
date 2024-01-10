@@ -1,0 +1,46 @@
+# yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
+
+site_name: Bootstrap python fastapi
+site_description: 'A template for a python web service written applying Clean Architecture concepts'
+site_author: 'Federico Busetti'
+docs_dir: docs/
+repo_name: 'febus982/bootstrap-python-fastapi'
+repo_url: 'https://github.com/febus982/bootstrap-python-fastapi'
+
+theme:
+  name: material
+  features:
+    - navigation.expand
+    - navigation.top
+    - content.code.copy
+
+  palette:
+
+    # Palette toggle for light mode
+    - scheme: default
+      primary: teal
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: teal
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+extra:
+  social:
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/federico-b-a0b78232
+
+nav:
+  - Home: index.md
+
+markdown_extensions:
+  - pymdownx.details
+  - pymdownx.blocks.admonition
+  - pymdownx.blocks.details
+  - pymdownx.snippets
+  - pymdownx.superfences

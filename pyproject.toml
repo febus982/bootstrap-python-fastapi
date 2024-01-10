@@ -63,6 +63,9 @@ pytest-factoryboy = "*"
 pytest-xdist = "*"
 ruff = "*"
 strawberry-graphql = { version = "*", extras = ["debug-server", "fastapi"] }
+mkdocs = "*"
+mkdocs-material = "*"
+pymdown-extensions = "*"
 
 [build-system]
 requires = ["poetry-core"]
