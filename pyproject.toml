@@ -78,6 +78,30 @@ testpaths = [
     "tests",
 ]
 
+[tool.coverage.run]
+branch = true
+source = [
+    "http_app",
+    "grpc_app",
+    "domains",
+    "gateways",
+    "celery_worker",
+    "common",
+]
+omit = [
+    "grpc_app/generated/*",
+    "common/config.py",
+]
+concurrency = ["multiprocessing"]
+parallel = true
+
+[tool.coverage.report]
+exclude_also = [
+    "pragma: no cover",
+    "pass",
+    "\\.\\.\\.",
+    ]
+
 [tool.mypy]
 files = [
     "domains",
