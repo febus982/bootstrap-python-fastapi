@@ -1,3 +1,5 @@
+.PHONY: docs docs-build
+
 containers:
 	# Use local UID to avoid files permission issues when mounting directories
 	# We could do this at runtime, by specifying the user, but it's easier doing it
@@ -73,3 +75,9 @@ generate-proto:
 
 fix:  format-fix lint-fix
 check: typing test format lint
+
+docs:
+	poetry run mkdocs serve
+
+docs-build:
+	poetry run mkdocs build
