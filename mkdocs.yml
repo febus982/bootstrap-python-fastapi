@@ -7,6 +7,16 @@ docs_dir: docs/
 repo_name: 'febus982/bootstrap-python-fastapi'
 repo_url: 'https://github.com/febus982/bootstrap-python-fastapi'
 
+plugins:
+  - search
+  - awesome-pages
+
+# Do not use the nav section in this file but reference to the .pages files
+# in the docs/ directory and subdirectories (awesome-pages plugin)
+# https://github.com/lukasgeiter/mkdocs-awesome-pages-plugin
+#nav:
+#  - Home: index.md
+
 theme:
   name: material
   features:
@@ -34,9 +44,6 @@ extra:
   social:
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/in/federico-b-a0b78232
-
-nav:
-  - Home: index.md
 
 markdown_extensions:
   - pymdownx.details

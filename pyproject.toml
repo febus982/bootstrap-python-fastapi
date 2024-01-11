@@ -66,6 +66,7 @@ strawberry-graphql = { version = "*", extras = ["debug-server", "fastapi"] }
 mkdocs = "*"
 mkdocs-material = "*"
 pymdown-extensions = "*"
+mkdocs-awesome-pages-plugin = "*"
 
 [build-system]
 requires = ["poetry-core"]

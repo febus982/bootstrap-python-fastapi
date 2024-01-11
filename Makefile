@@ -1,4 +1,4 @@
-.PHONY: docs docs-build
+.PHONY: docs docs-build adr
 
 containers:
 	# Use local UID to avoid files permission issues when mounting directories
@@ -78,6 +78,9 @@ check: typing test format lint
 
 docs:
 	poetry run mkdocs serve
+
+adr:
+	adr-viewer --serve --adr-path docs/adr
 
 docs-build:
 	poetry run mkdocs build
