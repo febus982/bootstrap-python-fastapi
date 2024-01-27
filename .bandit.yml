@@ -93,6 +93,7 @@ skips:
 ### set of sensible defaults and these will be used if no configuration is
 ### provided. It is not necessary to provide settings for every (or any) plugin
 ### if the defaults are acceptable.
+exclude_dirs: ['tests']
 
 any_other_function_with_shell_equals_true:
   no_shell:
