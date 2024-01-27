@@ -57,7 +57,7 @@ jobs:
       # https://github.com/docker/build-push-action
       - name: Build test image
         id: build-test
-        uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
+        uses: docker/build-push-action@94d76d3bc1409736cb5dc1ada9502bec3a72973c
         with:
           context: .
           load: true
@@ -89,7 +89,7 @@ jobs:
       # https://github.com/docker/build-push-action
       - name: Build and push production image
         id: build-and-push
-        uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
+        uses: docker/build-push-action@94d76d3bc1409736cb5dc1ada9502bec3a72973c
         with:
           context: .
           target: http_app
