@@ -1,0 +1,12 @@
+version: "2"
+plugins:
+  bandit:
+    enabled: true
+  duplication:
+    enabled: true
+    config:
+      languages:
+        python:
+          python_version: 3
+  sonar-python:
+    enabled: true
