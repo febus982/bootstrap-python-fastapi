@@ -37,7 +37,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install poetry
           poetry config virtualenvs.create false
-          poetry install --no-root --with dev
+          make dev-dependencies
 
       - name: Build static pages
         run: make docs-build
