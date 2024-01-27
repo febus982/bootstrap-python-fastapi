@@ -1,0 +1,4 @@
+| Date | Decision | Status |
+|------|----------|--------|
+{% for d in documents %}| {{ d.date.strftime('%d-%m-%Y') }} | [{{ d.title }}]({{ d.filename }}) | {{ d.status }}  |
+{% endfor %}

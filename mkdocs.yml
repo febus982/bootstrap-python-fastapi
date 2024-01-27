@@ -10,6 +10,9 @@ repo_url: 'https://github.com/febus982/bootstrap-python-fastapi'
 plugins:
   - search
   - awesome-pages
+  - macros:
+      modules:
+        - mkdocs_macros_adr_summary
 
 # Do not use the nav section in this file but reference to the .pages files
 # in the docs/ directory and subdirectories (awesome-pages plugin)
@@ -25,20 +28,27 @@ theme:
     - content.code.copy
 
   palette:
-
-    # Palette toggle for light mode
-    - scheme: default
-      primary: teal
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
       toggle:
-        icon: material/brightness-7
+        icon: material/brightness-auto
         name: Switch to dark mode
 
     # Palette toggle for dark mode
     - scheme: slate
+      media: "(prefers-color-scheme: dark)"
       primary: teal
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
+
+    # Palette toggle for light mode
+    - scheme: default
+      media: "(prefers-color-scheme: light)"
+      primary: teal
+      toggle:
+        icon: material/brightness-7
+        name: Switch to auto mode
 
 extra:
   social:

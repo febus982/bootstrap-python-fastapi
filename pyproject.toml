@@ -64,9 +64,10 @@ pytest-xdist = "*"
 ruff = "*"
 strawberry-graphql = { version = "*", extras = ["debug-server", "fastapi"] }
 mkdocs = "*"
+mkdocs-awesome-pages-plugin = "*"
+mkdocs-macros-adr-summary = "*"
 mkdocs-material = "*"
 pymdown-extensions = "*"
-mkdocs-awesome-pages-plugin = "*"
 
 [build-system]
 requires = ["poetry-core"]
