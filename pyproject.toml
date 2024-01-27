@@ -53,8 +53,13 @@ optional = true
 
 [tool.poetry.group.dev.dependencies]
 asynctest = "*"
-coverage = "*"
+bandit = "*"
 black = "*"
+coverage = "*"
+mkdocs = "*"
+mkdocs-awesome-pages-plugin = "*"
+mkdocs-macros-adr-summary = "*"
+mkdocs-material = "*"
 mypy = "*"
 mypy-protobuf = "*"
 pytest = "*"
@@ -63,10 +68,7 @@ pytest-factoryboy = "*"
 pytest-xdist = "*"
 ruff = "*"
 strawberry-graphql = { version = "*", extras = ["debug-server", "fastapi"] }
-mkdocs = "*"
-mkdocs-material = "*"
 pymdown-extensions = "*"
-mkdocs-awesome-pages-plugin = "*"
 
 [build-system]
 requires = ["poetry-core"]
@@ -133,17 +135,7 @@ exclude = [
 "__init__.py" = ["F401"]
 
 [tool.black]
-files = '''
-(
-  http_app
-  grpc_app
-  domains
-  gateways
-  tests
-  alembic
-  common
-)
-'''
+target-version = ["py39", "py310", "py311", "py312"]
 extend-exclude = '''
 (
   /grpc_app/generated

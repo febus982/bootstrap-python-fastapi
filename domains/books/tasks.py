@@ -17,6 +17,7 @@ not possible, then celery provides task synchronisation primitives.
 
 https://docs.celeryq.dev/en/stable/userguide/tasks.html#avoid-launching-synchronous-subtasks
 """
+
 from celery import shared_task
 
 from domains.books.dto import BookData

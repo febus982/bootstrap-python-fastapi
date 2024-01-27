@@ -56,6 +56,9 @@ lint:
 lint-fix:
 	poetry run ruff . --fix
 
+bandit:
+	poetry run bandit -c .bandit.yml -r .
+
 # There are issues on how python imports are generated when using nested
 # packages. The following setup appears to work, however it might need
 # to be reviewed. https://github.com/protocolbuffers/protobuf/issues/1491
@@ -74,7 +77,7 @@ generate-proto:
 	git add ./grpc_app/generated
 
 fix:  format-fix lint-fix
-check: typing test format lint
+check: format lint typing bandit test
 
 docs:
 	poetry run mkdocs serve
