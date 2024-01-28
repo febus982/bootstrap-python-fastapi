@@ -95,8 +95,8 @@ omit = [
     "grpc_app/generated/*",
     "common/config.py",
 ]
-concurrency = ["multiprocessing"]
-parallel = true
+# It's not necessary to configure concurrency here
+# because pytest-cov takes care of that
 
 [tool.coverage.report]
 exclude_also = [
