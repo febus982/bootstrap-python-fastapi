@@ -27,6 +27,6 @@ jobs:
         python -m pip install poetry
         poetry config virtualenvs.create false
         make dev-dependencies
-    - name: Check code style with black
+    - name: Check code style
       run: |
         make format

@@ -45,19 +45,10 @@ migrate:
 	poetry run alembic upgrade heads
 
 format:
-	poetry run black --check .
-
-format-fix:
-	poetry run black .
+	poetry run ruff format --check .
 
 lint:
 	poetry run ruff .
-
-lint-fix:
-	poetry run ruff . --fix
-
-bandit:
-	poetry run bandit -c .bandit.yml -r .
 
 # There are issues on how python imports are generated when using nested
 # packages. The following setup appears to work, however it might need
@@ -76,8 +67,11 @@ generate-proto:
 	grpc_app/proto/*.proto
 	git add ./grpc_app/generated
 
-fix:  format-fix lint-fix
-check: format lint typing bandit test
+fix:
+	poetry run ruff . --fix
+	poetry run ruff format .
+
+check: lint format typing test
 
 docs:
 	poetry run mkdocs serve

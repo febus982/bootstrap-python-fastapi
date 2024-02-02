@@ -34,7 +34,7 @@ class Container(DeclarativeContainer):
 
     """
     Class mappings
-    
+
     These are classes we want the container to manage the life cycle for
     (e.g. Singletons), we map them using their class name directly.
     """
@@ -45,10 +45,10 @@ class Container(DeclarativeContainer):
 
     """
     Interface => Class mappings
-    
+
     We use the interface class name as key so that we can trigger the injection
     using `class.__name__` and avoid using any hardcoded string or constant.
-    
+
     e.g.
     Mapping
         MyInterface = providers.Factory("http_app.storage.repositories.ConcreteClass")

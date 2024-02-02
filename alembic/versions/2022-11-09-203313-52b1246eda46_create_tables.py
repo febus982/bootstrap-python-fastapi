@@ -1,7 +1,7 @@
 """create books table
 
 Revision ID: 52b1246eda46
-Revises: 
+Revises:
 Create Date: 2022-11-09 20:33:13.035514
 
 """
