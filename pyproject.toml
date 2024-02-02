@@ -5,6 +5,14 @@ description = ""
 authors = ["Federico Busetti <729029+febus982@users.noreply.github.com>"]
 readme = "README.md"
 
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+############################
+### Package requirements ###
+############################
 # https://python-poetry.org/docs/dependency-specification
 [tool.poetry.dependencies]
 aiosqlite = ">=0.18.0"
@@ -53,8 +61,6 @@ optional = true
 
 [tool.poetry.group.dev.dependencies]
 asynctest = "*"
-bandit = "*"
-black = "*"
 coverage = "*"
 mkdocs = "*"
 mkdocs-awesome-pages-plugin = "*"
@@ -70,16 +76,10 @@ ruff = "*"
 strawberry-graphql = { version = "*", extras = ["debug-server", "fastapi"] }
 pymdown-extensions = "*"
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-n auto --cov-report=term-missing"
-testpaths = [
-    "tests",
-]
+############################
+### Tools configuration  ###
+############################
 
 [tool.coverage.run]
 branch = true
@@ -99,6 +99,7 @@ omit = [
 # because pytest-cov takes care of that
 
 [tool.coverage.report]
+fail_under = 100
 exclude_also = [
     "pragma: no cover",
     "pass",
@@ -125,21 +126,50 @@ module = [
 ]
 ignore_missing_imports = true
 
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-n auto --cov-report=term-missing"
+testpaths = [
+    "tests",
+]
+
 [tool.ruff]
-exclude = [
+target-version = "py39"
+extend-exclude = [
     "grpc_app/generated",
+    "docs",
 ]
 
 [tool.ruff.lint]
-select = ["E", "F", "I"]
+select = [
+    "E",  # pycodestyle
+    "W",  # pycodestyle
+    "F",  # pyflakes
+    "I",  # isort
+    "N",  # pep8-naming
+    "S",  # flake8-bandit
+    "RUF",  # ruff-specific-rules
+]
+# Ignoring rules problematic with formatter
+# https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
+ignore = [
+    "W191",
+    "E111",
+    "E114",
+    "E117",
+    "D206",
+    "D300",
+    "Q000",
+    "Q001",
+    "Q002",
+    "Q003",
+    "COM812",
+    "COM819",
+    "ISC001",
+    "ISC002",
+]
 
 [tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["F401"]
-
-[tool.black]
-target-version = ["py39", "py310", "py311", "py312"]
-extend-exclude = '''
-(
-  /grpc_app/generated
-)
-'''
+"__init__.py" = ["F401"]  # Ignore unused imports on init files
+"tests/**/*.py" = ["S101"]  # Allow assert usage on tests
+"grpc_app/**/*.py" = ["N802"]  # Function name lowercase
