@@ -126,12 +126,14 @@ module = [
 ignore_missing_imports = true
 
 [tool.ruff]
-select = ["E", "F", "I"]
 exclude = [
     "grpc_app/generated",
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
 
 [tool.black]
