@@ -33,7 +33,7 @@ install-dependencies:
 	poetry install --no-root --with http
 
 dev-dependencies:
-	poetry install --with http,dev --sync
+	poetry install --with http,dev
 
 update-dependencies:
 	poetry update --with http,dev
