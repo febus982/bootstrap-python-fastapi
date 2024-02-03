@@ -6,7 +6,7 @@ exclude_patterns:
   - "spec/"
   - "!spec/support/helpers"
   - "config/"
-  - "alembic/"
+  - "src/alembic/"
   - "db/"
   - "dist/"
   - "features/"
