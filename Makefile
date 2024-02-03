@@ -36,7 +36,7 @@ install-dependencies:
 	poetry install --no-root --with http,grpc
 
 dev-dependencies:
-	poetry install --no-root --with http,grpc,dev
+	poetry install --with http,grpc,dev
 
 update-dependencies:
 	poetry update --with http,grpc,dev

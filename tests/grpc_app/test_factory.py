@@ -1,9 +1,8 @@
 from unittest.mock import patch
 
 import pytest
-from grpc.aio import Server
-
 from common.config import AppConfig
+from grpc.aio import Server
 from grpc_app import create_server
 
 

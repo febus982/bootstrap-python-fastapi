@@ -1,10 +1,9 @@
 from celery import Celery
 from dependency_injector.containers import DynamicContainer
 from dependency_injector.providers import Object
-from pydantic import BaseModel, ConfigDict
-
 from domains import init_celery, init_domains
 from gateways.storage import init_storage
+from pydantic import BaseModel, ConfigDict
 
 from .config import AppConfig, init_logger
 from .di_container import Container

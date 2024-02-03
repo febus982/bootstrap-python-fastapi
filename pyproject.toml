@@ -4,6 +4,9 @@ version = "0.1.0"
 description = ""
 authors = ["Federico Busetti <729029+febus982@users.noreply.github.com>"]
 readme = "README.md"
+packages = [
+    { include = "**/*.py", from = "src" }
+]
 
 [build-system]
 requires = ["poetry-core"]
@@ -83,17 +86,11 @@ pymdown-extensions = "*"
 
 [tool.coverage.run]
 branch = true
-source = [
-    "http_app",
-    "grpc_app",
-    "domains",
-    "gateways",
-    "celery_worker",
-    "common",
-]
+source = ["src"]
 omit = [
-    "grpc_app/generated/*",
-    "common/config.py",
+    "src/alembic/*",
+    "src/common/config.py",
+    "src/grpc_app/generated/*",
 ]
 # It's not necessary to configure concurrency here
 # because pytest-cov takes care of that
@@ -107,14 +104,8 @@ exclude_also = [
     ]
 
 [tool.mypy]
-files = [
-    "domains",
-    "grpc_app",
-    "http_app",
-    "gateways",
-    "tests",
-    "common",
-]
+files = ["src", "tests"]
+exclude = ["alembic"]
 plugins = "pydantic.mypy,strawberry.ext.mypy_plugin"
 
 # We can remove celery by installing `celery-types` but needs
@@ -136,7 +127,7 @@ testpaths = [
 [tool.ruff]
 target-version = "py39"
 extend-exclude = [
-    "grpc_app/generated",
+    "src/grpc_app/generated",
     "docs",
 ]
 
@@ -172,4 +163,4 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]  # Ignore unused imports on init files
 "tests/**/*.py" = ["S101"]  # Allow assert usage on tests
-"grpc_app/**/*.py" = ["N802"]  # Function name lowercase
+"src/grpc_app/**/*.py" = ["N802"]  # Function name lowercase

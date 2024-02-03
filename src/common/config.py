@@ -1,5 +1,6 @@
 import logging
 import os
+from pathlib import Path
 from typing import Dict, List, Literal
 
 import structlog
@@ -36,14 +37,14 @@ class CeleryConfig(BaseModel):
     task_send_sent_event: bool = True
 
     # Recurring tasks triggered directly by Celery
-    beat_schedule: dict = {}
-    # beat_schedule: dict = {
-    #     "recurrent_example": {
-    #         "task": "domains.books.tasks.book_cpu_intensive_task",
-    #         "schedule": 5.0,
-    #         "args": ("a-random-book-id",),
-    #     },
-    # }
+    # beat_schedule: dict = {}
+    beat_schedule: dict = {
+        "recurrent_example": {
+            "task": "domains.books.tasks.book_cpu_intensive_task",
+            "schedule": 5.0,
+            "args": ("a-random-book-id",),
+        },
+    }
 
 
 class AppConfig(BaseSettings):
@@ -55,7 +56,7 @@ class AppConfig(BaseSettings):
     ENVIRONMENT: TYPE_ENVIRONMENT = "local"
     SQLALCHEMY_CONFIG: Dict[str, SQLAlchemyAsyncConfig] = dict(
         default=SQLAlchemyAsyncConfig(
-            engine_url=f"sqlite+aiosqlite:///{os.path.dirname(os.path.abspath(__file__))}/sqlite.db",
+            engine_url=f"sqlite+aiosqlite:///{Path(__file__).parent.parent.joinpath('sqlite.db')}",
             engine_options=dict(
                 connect_args={
                     "check_same_thread": False,

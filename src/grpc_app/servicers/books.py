@@ -1,8 +1,8 @@
 import grpc
+from domains.books import service
 
 import grpc_app.generated.books_pb2 as books_messages
 import grpc_app.generated.books_pb2_grpc as books_grpc
-from domains.books import service
 
 
 class BooksServicer(books_grpc.BooksServicer):

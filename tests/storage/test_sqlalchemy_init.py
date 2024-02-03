@@ -2,10 +2,9 @@ import os
 from unittest.mock import Mock, patch
 from uuid import uuid4
 
-from sqlalchemy_bind_manager import SQLAlchemyAsyncConfig, SQLAlchemyBindManager
-
 from gateways.storage import init_storage
 from gateways.storage.SQLAlchemy import TABLE_INIT_REGISTRY, init_tables
+from sqlalchemy_bind_manager import SQLAlchemyAsyncConfig, SQLAlchemyBindManager
 
 
 def test_init_tables_calls_only_supported_bind_initialisation():

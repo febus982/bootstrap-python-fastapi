@@ -1,13 +1,13 @@
 from typing import Union
 
+from common.bootstrap import application_init
+from common.config import AppConfig
 from fastapi import FastAPI, Request
 from opentelemetry.instrumentation.asgi import OpenTelemetryMiddleware
 from starlette.responses import JSONResponse
 from starlette_prometheus import PrometheusMiddleware, metrics
 from structlog import get_logger
 
-from common.bootstrap import application_init
-from common.config import AppConfig
 from http_app.routes import init_routes
 
 

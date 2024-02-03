@@ -2,11 +2,11 @@ import os
 from concurrent import futures
 from typing import Optional
 
+from common.bootstrap import application_init
+from common.config import AppConfig
 from grpc.aio import server
 from structlog import get_logger
 
-from common.bootstrap import application_init
-from common.config import AppConfig
 from grpc_app.generated.books_pb2_grpc import add_BooksServicer_to_server
 from grpc_app.servicers.books import BooksServicer
 

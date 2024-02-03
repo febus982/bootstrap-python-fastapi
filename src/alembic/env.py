@@ -1,11 +1,11 @@
 import logging
 from asyncio import get_event_loop
 
+from common.bootstrap import application_init
+from common.config import AppConfig
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from alembic import context
-from common.bootstrap import application_init
-from common.config import AppConfig
 
 USE_TWOPHASE = False
 
