@@ -58,11 +58,11 @@ Packages are ordered from the highest level to the lowest one.
 
 ## Class dependency schema
 
-![](architecture.png)
+![](docs/puml/architecture.png)
 
 ## Data flow and layers responsibilities
 
-![](flow.png)
+![](docs/puml/flow.png)
 
 ## How to run
 
@@ -104,4 +104,4 @@ The following setup makes sure the production image will keep to a minimal size 
 Using the following pipeline the "test" image is instead ~850MB, more than 400MB that would
 end up as a cost in traffic on each image pull.
 
-![](docker-container.png)
+![](docs/puml/docker-container.png)
