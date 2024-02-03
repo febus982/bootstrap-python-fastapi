@@ -3,9 +3,8 @@ from secrets import randbelow
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from fastapi import FastAPI
-
 from domains.books import dto, service
+from fastapi import FastAPI
 from http_app import create_app
 
 

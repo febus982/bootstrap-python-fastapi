@@ -1,5 +1,4 @@
 import pytest
-
 from common.config import AppConfig
 
 

@@ -1,10 +1,9 @@
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from httpx import AsyncClient
-
 from domains.books import service
 from domains.books.events import BookCreatedV1
 from domains.common.cloudevent_base import BaseEvent
+from httpx import AsyncClient
 
 
 class FakeEvent(BaseEvent):

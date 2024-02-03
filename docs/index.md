@@ -45,9 +45,10 @@ Packages are ordered from the highest level to the lowest one.
 
 ------
 
+* `alembic` (database migration manager)
 * `http_app` (http presentation layer)
-* `grpc_app` (grpc presentation layer)
-* `storage` (database connection manager, repository implementation)
+* `celery_worker` (async tasks runner)
+* `gateways` (database connection manager, repository implementation, event emitter, etc.)
 
 ------
 
@@ -70,7 +71,7 @@ Using Docker:
 * `make containers`: Build containers
 * `docker compose run --rm dev make migrate`: Run database migrations
 * `docker compose up dev`: Run HTTP application with hot reload
-* `docker compose up grpc`: Run GRPC application
+* `docker compose up celery-worker`: Run the celery worker
 * `docker compose run --rm test`: Run test suite
 
 Locally:
@@ -81,12 +82,10 @@ Locally:
 * `make update-dependencies`: Updates requirements
 * `make migrate`: Run database migrations
 * `make dev`: Run HTTP application with hot reload
-* `make grpc`: Run GRPC application
 * `make test`: Run test suite
 
 ## Other commands for development
 
-* `make generate-proto`: Generates grpcio python stubs from `.proto` files in `grpc_app/proto` directory
 * `make check`: Run tests, code style and lint checks
 * `make fix`: Run tests, code style and lint checks with automatic fixes (where possible)
 

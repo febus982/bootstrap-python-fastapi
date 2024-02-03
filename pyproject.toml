@@ -4,6 +4,9 @@ version = "0.1.0"
 description = ""
 authors = ["Federico Busetti <729029+febus982@users.noreply.github.com>"]
 readme = "README.md"
+packages = [
+    { include = "**/*.py", from = "src" }
+]
 
 [build-system]
 requires = ["poetry-core"]
@@ -46,16 +49,6 @@ starlette-prometheus = "^0.9.0"
 strawberry-graphql = { version = ">=0.204.0", extras = ["debug-server"] }
 uvicorn = { version = "^0.27.0", extras = ["standard"] }
 
-[tool.poetry.group.grpc]
-optional = true
-
-[tool.poetry.group.grpc.dependencies]
-grpcio = "^1.51.1"
-grpcio-tools = "^1.51.1"
-grpc-stubs = "^1.24.11"
-mypy-protobuf = "^3.4.0"
-opentelemetry-instrumentation-grpc = "*"
-
 [tool.poetry.group.dev]
 optional = true
 
@@ -83,17 +76,10 @@ pymdown-extensions = "*"
 
 [tool.coverage.run]
 branch = true
-source = [
-    "http_app",
-    "grpc_app",
-    "domains",
-    "gateways",
-    "celery_worker",
-    "common",
-]
+source = ["src"]
 omit = [
-    "grpc_app/generated/*",
-    "common/config.py",
+    "src/alembic/*",
+    "src/common/config.py",
 ]
 # It's not necessary to configure concurrency here
 # because pytest-cov takes care of that
@@ -107,21 +93,14 @@ exclude_also = [
     ]
 
 [tool.mypy]
-files = [
-    "domains",
-    "grpc_app",
-    "http_app",
-    "gateways",
-    "tests",
-    "common",
-]
+files = ["src", "tests"]
+exclude = ["alembic"]
 plugins = "pydantic.mypy,strawberry.ext.mypy_plugin"
 
 # We can remove celery by installing `celery-types` but needs
 # at least python 3.10. For now we maintain the override.
 [[tool.mypy.overrides]]
 module = [
-    "grpc.aio.*",
     "celery.*"
 ]
 ignore_missing_imports = true
@@ -136,7 +115,6 @@ testpaths = [
 [tool.ruff]
 target-version = "py39"
 extend-exclude = [
-    "grpc_app/generated",
     "docs",
 ]
 
@@ -172,4 +150,3 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]  # Ignore unused imports on init files
 "tests/**/*.py" = ["S101"]  # Allow assert usage on tests
-"grpc_app/**/*.py" = ["N802"]  # Function name lowercase
