@@ -59,6 +59,7 @@ mkdocs = "*"
 mkdocs-awesome-pages-plugin = "*"
 mkdocs-macros-adr-summary = "*"
 mkdocs-material = "*"
+mkdocs-mermaid2-plugin = "*"
 mypy = "*"
 mypy-protobuf = "*"
 pytest = "*"
@@ -73,7 +74,6 @@ pymdown-extensions = "*"
 ############################
 ### Tools configuration  ###
 ############################
-
 [tool.coverage.run]
 branch = true
 source = ["src"]

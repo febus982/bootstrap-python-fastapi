@@ -13,6 +13,10 @@ plugins:
   - macros:
       modules:
         - mkdocs_macros_adr_summary
+  - mermaid2:
+      arguments:
+        theme: |
+          ^(JSON.parse(window.localStorage.getItem('/.__palette')).index == 1) ? 'dark' : 'neutral'
 
 # Do not use the nav section in this file but reference to the .pages files
 # in the docs/ directory and subdirectories (awesome-pages plugin)
@@ -60,4 +64,8 @@ markdown_extensions:
   - pymdownx.blocks.admonition
   - pymdownx.blocks.details
   - pymdownx.snippets
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid_custom
