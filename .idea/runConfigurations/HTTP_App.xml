@@ -2,8 +2,9 @@
   <configuration default="false" name="HTTP App" type="Python.FastAPI">
     <option name="additionalOptions" value="--reload --factory" />
     <option name="appName" value="create_app" />
-    <option name="file" value="$PROJECT_DIR$/http_app/__init__.py" />
+    <option name="file" value="$PROJECT_DIR$/src/http_app/__init__.py" />
     <module name="bootstrap-fastapi-service" />
+    <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <option name="SDK_HOME" value="" />
