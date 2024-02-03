@@ -1,15 +1,8 @@
 version: '3.8'
 services:
 
-  jaeger:
-    image: jaegertracing/all-in-one
-    ports:
-      - "16686:16686"
-
   otel-collector:
     image: otel/opentelemetry-collector-contrib
-    depends_on:
-      - jaeger
     volumes:
       - ./otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
 
@@ -25,7 +18,24 @@ services:
       OTEL_SERVICE_NAME: "bootstrap-fastapi-worker"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
     volumes:
-      - '.:/app'
+      - './src:/app'
+      - './pyproject.toml:/app/pyproject.toml'
+    depends_on:
+      - redis
+      - otel-collector
+      - celery-beat
+
+  celery-beat:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: celery_app
+    environment:
+      OTEL_SERVICE_NAME: "bootstrap-fastapi-worker"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
+    volumes:
+      - './src:/app'
+      - './pyproject.toml:/app/pyproject.toml'
     depends_on:
       - redis
       - otel-collector
@@ -34,8 +44,7 @@ services:
       - celery
       - -A
       - celery_worker:app
-      - worker
-      - --beat
+      - beat
       - -l
       - INFO
 
@@ -50,10 +59,11 @@ services:
     ports:
       - '8000:8000'
     volumes:
-      - '.:/app'
+      - './src:/app'
+      - './pyproject.toml:/app/pyproject.toml'
     depends_on:
       - redis
-      - celery-worker
+      - otel-collector
     command:
       - opentelemetry-instrument
       - uvicorn
@@ -72,7 +82,6 @@ services:
       target: http_app
     depends_on:
       - redis
-      - celery-worker
       - otel-collector
     environment:
       OTEL_SERVICE_NAME: "bootstrap-fastapi-http"
@@ -82,35 +91,7 @@ services:
     volumes:
       - './sqlite.db:/app/sqlite.db'
 
-  grpc:
-    build:
-      dockerfile: Dockerfile
-      context: .
-      target: grpc_app
-    depends_on:
-      - redis
-      - celery-worker
-      - otel-collector
-    environment:
-      OTEL_SERVICE_NAME: "bootstrap-fastapi-grpc"
-      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
-    ports:
-      - "9999:9999"
-    volumes:
-      - '.:/app'
-
   # Starting from here there are only single-run commands, we can use `make` here
-  generate-proto:
-    build:
-      dockerfile: Dockerfile
-      context: .
-      target: grpc_builder
-    volumes:
-      - '.:/app'
-    command:
-      - "make"
-      - "generate-proto"
-
   test:
     build:
       dockerfile: Dockerfile

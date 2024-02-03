@@ -8,10 +8,6 @@ package http_app #fff {
     package routes #DDDDDD
 }
 
-package grpc_app #fff {
-    package servicers #DDDDDD
-}
-
 package domains #DDDDDD {
     package books {
         class Book
@@ -42,8 +38,6 @@ package gateways #DDDDDD {
 'links framework - domains
 routes --> BookService
 routes --> Book
-servicers --> BookService
-servicers --> Book
 celery_worker ---> tasks
 tasks <-u- BookService
 tasks -u-> Book

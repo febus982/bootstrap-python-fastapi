@@ -5,6 +5,7 @@ ARG GID=2000
 RUN addgroup --gid $GID nonroot && \
     adduser --uid $UID --gid $GID --disabled-password --gecos "" nonroot
 WORKDIR /app
+RUN chown nonroot:nonroot /app
 
 # Creating a separate directory for venvs allows to easily
 # copy them from the builder and to mount the application
@@ -44,8 +45,8 @@ COPY --chown=nonroot:nonroot Makefile .
 
 # Test image, contains all files and dependencies
 FROM base_builder as dev
-RUN make dev-dependencies
 COPY --chown=nonroot:nonroot . .
+RUN make dev-dependencies
 # Note that opentelemetry doesn't play well together with uvicorn reloader
 # when signals are propagated, we disable it in dev image default CMD
 CMD ["uvicorn", "http_app:create_app", "--host", "0.0.0.0", "--port", "8000", "--factory", "--reload"]
@@ -58,40 +59,30 @@ RUN poetry install --no-root
 FROM base_builder as http_builder
 RUN poetry install --no-root --with http
 
-# Installs requirements to run production grpc application
-FROM base_builder as grpc_builder
-RUN poetry install --no-root --with grpc
-
 # Copy the shared python packages
 FROM base as base_app
 USER nonroot
 RUN poetry config virtualenvs.path /poetryvenvs
 COPY --chown=nonroot:nonroot pyproject.toml .
 COPY --chown=nonroot:nonroot poetry.lock .
-COPY --chown=nonroot:nonroot alembic ./alembic
-COPY --chown=nonroot:nonroot domains ./domains
-COPY --chown=nonroot:nonroot gateways ./gateways
-COPY --chown=nonroot:nonroot common ./common
-COPY --chown=nonroot:nonroot alembic.ini .
+COPY --chown=nonroot:nonroot src/alembic ./alembic
+COPY --chown=nonroot:nonroot src/domains ./domains
+COPY --chown=nonroot:nonroot src/gateways ./gateways
+COPY --chown=nonroot:nonroot src/common ./common
+COPY --chown=nonroot:nonroot src/alembic.ini .
 COPY --chown=nonroot:nonroot Makefile .
 
 # Copy the http python package and requirements from relevant builder
 FROM base_app as http_app
 COPY --from=http_builder /poetryvenvs /poetryvenvs
-COPY --chown=nonroot:nonroot http_app ./http_app
+COPY --chown=nonroot:nonroot src/http_app ./http_app
 # Run CMD using array syntax, so it's uses `exec` and runs as PID1
 CMD ["opentelemetry-instrument", "uvicorn", "http_app:create_app", "--host", "0.0.0.0", "--port", "8000", "--factory"]
-
-# Copy the grpc python package and requirements from relevant builder
-FROM base_app as grpc_app
-COPY --from=grpc_builder /poetryvenvs /poetryvenvs
-COPY --chown=nonroot:nonroot grpc_app ./grpc_app
-# Run CMD using array syntax, so it's uses `exec` and runs as PID1
-CMD ["opentelemetry-instrument", "python3", "-m", "grpc_app"]
 
 # Copy the celery python package and requirements from relevant builder
 FROM base_app as celery_app
 COPY --from=celery_builder /poetryvenvs /poetryvenvs
-COPY --chown=nonroot:nonroot celery_worker ./celery_worker
+COPY --chown=nonroot:nonroot src/celery_worker ./celery_worker
+RUN ls
 # Run CMD using array syntax, so it's uses `exec` and runs as PID1
 CMD ["opentelemetry-instrument", "celery", "-A", "celery_worker:app", "worker", "-l", "INFO"]

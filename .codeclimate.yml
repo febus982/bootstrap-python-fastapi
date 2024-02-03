@@ -7,7 +7,6 @@ exclude_patterns:
   - "!spec/support/helpers"
   - "config/"
   - "alembic/"
-  - "grpc_app/generated/"
   - "db/"
   - "dist/"
   - "features/"

@@ -45,16 +45,16 @@ rectangle HTTP {
         "" to run the application""
     ]
 }
-rectangle GRPC {
-    usecase grpc_builder [
-        =GRPC builder
+rectangle Celery {
+    usecase celery_builder [
+        =Celery builder
         ----
-        ""Builds GRPC dependencies""
+        ""Builds Celery dependencies""
     ]
-    usecase grpc_app [
-        =GRPC app
+    usecase celery_app [
+        =Celery app
         ----
-        ""Copies GRPC framework""
+        ""Copies Celery framework""
         ""shared logic""
         ""and dependencies""
         "" to run the application""
@@ -68,9 +68,9 @@ base_builder ===> http_builder
 http_builder ===> http_app
 base_app ===> http_app
 
-base_builder ===> grpc_builder
-grpc_builder ===> grpc_app
-base_app ===> grpc_app
+base_builder ===> celery_builder
+celery_builder ===> celery_app
+base_app ===> celery_app
 
 base_builder ==r=> dev
 @enduml
