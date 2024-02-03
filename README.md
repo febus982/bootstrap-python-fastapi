@@ -58,7 +58,45 @@ Packages are ordered from the highest level to the lowest one.
 
 ## Class dependency schema
 
-![](docs/puml/architecture.png)
+```mermaid
+flowchart TD
+    celery_worker
+    http_app
+    subgraph gateways
+      SQLAlchemyRepository
+      NullEventGateway
+    end
+    
+    subgraph domains
+      subgraph books
+        subgraph domain_logic
+            BookService-->BookTask
+        end
+        subgraph dto
+            Book
+        end
+      
+        subgraph data_access_interfaces
+          BookEventGatewayInterface
+          BookRepositoryInterface
+        end
+        subgraph entities
+          BookEvent
+          BookModel
+        end
+      end
+    end
+    
+    celery_worker-->domain_logic
+    celery_worker-->dto
+    http_app-->domain_logic
+    http_app-->dto
+    domain_logic-->entities
+    domain_logic-->dto
+    domain_logic-->data_access_interfaces
+    gateways-..->|Implement| data_access_interfaces
+    data_access_interfaces-->entities
+```
 
 ## Data flow and layers responsibilities
 
