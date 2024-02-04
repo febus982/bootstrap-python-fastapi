@@ -1,4 +1,4 @@
-# Application layers
+# Application architecture
 
 This application is structured following the principles of Clean Architecture.
 Higher level layers can import directly lower level layers. An inversion of control

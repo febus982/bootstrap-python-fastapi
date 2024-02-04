@@ -1,7 +1,8 @@
 nav:
   - Home: index.md
   - api-documentation.md
-  - Application architecture: architecture
+  - architecture.md
+  - src packages: packages
   - inversion-of-control.md
   - dockerfile.md
   - ...
