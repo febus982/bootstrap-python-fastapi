@@ -38,30 +38,35 @@ the concrete class whenever the protocol is expected:
 def main():
     Container()
     service = BookService()
-    
-# file `books/_data_access_interfaces.py`
+
+
+# file `books/_gateway_interfaces.py`
 class BookRepositoryInterface(Protocol):
     async def save(self, book: BookModel) -> BookModel:
         ...
 
-# file `domains/books/service.py`
-from domains.books._data_access_interfaces import BookRepositoryInterface
+
+# file `domains/books/_service.py`
+from domains.books._gateway_interfaces import BookRepositoryInterface
 from dependency_injector.wiring import Provide, inject
+
 
 class BookService:
     book_repository: BookRepositoryInterface
 
     @inject
     def __init__(
-        self,
-        book_repository: BookRepositoryInterface = Provide["book_repository"],
+            self,
+            book_repository: BookRepositoryInterface = Provide["book_repository"],
     ) -> None:
         self.book_repository = book_repository
+
 
 # file `bootstrap/di_container.py`
 from sqlalchemy_bind_manager._repository import SQLAlchemyAsyncRepository
 from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Factory
+
 
 class Container(DeclarativeContainer):
     # Note that dependency-injector package only allows string references
@@ -122,23 +127,26 @@ concrete classes because nested imported modules, solving nothing.
 ///
 
 ```python
-# file `domains/books/service.py`
+# file `domains/books/_service.py`
 from dependency_injector.containers import DynamicContainer
-from domains.books._data_access_interfaces import BookRepositoryInterface
+from domains.books._gateway_interfaces import BookRepositoryInterface
+
 
 class BookService:
     book_repository: BookRepositoryInterface
 
     def __init__(
-        self,
-        container: DynamicContainer,
+            self,
+            container: DynamicContainer,
     ) -> None:
         self.book_repository = container.book_repository()
 
+
 # entrypoint
-from domains.books.service import BookService
+from domains.books._service import BookService
 from dependency_injector.providers import Factory
 from sqlalchemy_bind_manager._repository import SQLAlchemyAsyncRepository
+
 
 def main():
     container = DynamicContainer()
@@ -198,7 +206,7 @@ and we don't end up in circular dependencies.
 
 ```python
 # file `bootstrap/factories.py`
-from domains.books._data_access_interfaces import BookRepositoryInterface
+from domains.books._gateway_interfaces import BookRepositoryInterface
 
 
 def book_repository_factory() -> BookRepositoryInterface:
@@ -206,8 +214,8 @@ def book_repository_factory() -> BookRepositoryInterface:
     return SQLAlchemyAsyncRepository()
 
 
-# file `domains/books/service.py`
-from domains.books._data_access_interfaces import BookRepositoryInterface
+# file `domains/books/_service.py`
+from domains.books._gateway_interfaces import BookRepositoryInterface
 from bootstrap.factories import book_repository_factory
 
 

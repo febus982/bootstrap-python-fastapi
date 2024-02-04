@@ -1,9 +1,9 @@
 # Bootstrap
 
-The `bootstrap` module contains logic that is shared among the external layer
+The `bootstrap` package contains logic that is shared among the external layer
 (i.e. `http_app`, `celery_worker`, etc.).
 
-It contains 3 submodules (and related responsibilities):
+It contains the following submodules and packages (and related responsibilities):
 
 * `bootstrap.bootstrap`: The application initialisation logic (database, logging,
   celery tasks) necessary to run the domain logic. It uses `bootstrap.config` and

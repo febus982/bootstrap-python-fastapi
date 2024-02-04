@@ -1,6 +1,6 @@
 # Gateways
 
-The `gateways` module contains the implementations of the drivers
+The `gateways` package contains the implementations of the drivers
 handling communication with external services (i.e. database repositories,
 event producers, HTTP clients).
 

@@ -1,6 +1,6 @@
 import logging
 from pathlib import Path
-from typing import Dict, List, Literal
+from typing import Dict, List, Literal, Optional
 
 import structlog
 from opentelemetry import trace
@@ -18,11 +18,11 @@ class CeleryConfig(BaseModel):
     timezone: str = "UTC"
 
     # Broker config
-    broker_url: str = "redis://redis:6379/0"
+    broker_url: Optional[str] = None
     broker_connection_retry_on_startup: bool = True
 
     # Results backend config
-    result_backend: str = "redis://redis:6379/1"
+    result_backend: Optional[str] = None
     redis_socket_keepalive: bool = True
 
     # Enable to ignore the results by default and not produce tombstones
@@ -36,14 +36,14 @@ class CeleryConfig(BaseModel):
     task_send_sent_event: bool = True
 
     # Recurring tasks triggered directly by Celery
-    # beat_schedule: dict = {}
-    beat_schedule: dict = {
-        "recurrent_example": {
-            "task": "domains.books.tasks.book_cpu_intensive_task",
-            "schedule": 5.0,
-            "args": ("a-random-book-id",),
-        },
-    }
+    beat_schedule: dict = {}
+    # beat_schedule: dict = {
+    #     "recurrent_example": {
+    #         "task": "domains.books._tasks.book_cpu_intensive_task",
+    #         "schedule": 5.0,
+    #         "args": ("a-random-book-id",),
+    #     },
+    # }
 
 
 class AppConfig(BaseSettings):

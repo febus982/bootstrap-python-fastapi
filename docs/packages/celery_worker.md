@@ -1,6 +1,6 @@
 # Celery worker
 
-The `celery_worker` module is a small entrypoint to run Celery workers and beat.
+The `celery_worker` package is a small entrypoint to run Celery workers and beat.
 
 The `Celery` class has to be initialised to invoke tasks from domain logic,
 in addition to the worker, therefore we initialise it together with the generic

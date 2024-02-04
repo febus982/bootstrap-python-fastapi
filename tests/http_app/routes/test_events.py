@@ -1,6 +1,6 @@
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from domains.books import service
+from domains.books import BookService
 from domains.books.events import BookCreatedV1
 from domains.common.cloudevent_base import BaseEvent
 from httpx import AsyncClient
@@ -39,9 +39,9 @@ async def test_event_returns_204(testapp):
     fake_event = BookCreatedV1(
         data={"book_id": 0, "title": "string", "author_name": "string"},
     )
-    svc = MagicMock(autospec=service.BookService)
+    svc = MagicMock(autospec=BookService)
     svc.book_created_event_handler = AsyncMock(return_value=None)
-    with patch("domains.books.service.BookService.__new__", return_value=svc):
+    with patch("domains.books.BookService.__new__", return_value=svc):
         async with AsyncClient(app=testapp, base_url="http://test") as ac:
             response = await ac.post(
                 "/events",

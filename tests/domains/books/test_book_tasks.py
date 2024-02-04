@@ -1,8 +1,8 @@
 from unittest.mock import MagicMock, patch
 
+from domains.books._service import BookService
+from domains.books._tasks import book_cpu_intensive_task
 from domains.books.dto import BookData
-from domains.books.service import BookService
-from domains.books.tasks import book_cpu_intensive_task
 
 
 @patch.object(BookService, "book_created_event_handler", return_value=None)

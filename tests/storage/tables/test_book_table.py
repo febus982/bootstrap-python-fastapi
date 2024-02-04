@@ -1,4 +1,4 @@
-from domains.books.models import BookModel
+from domains.books._models import BookModel
 from sqlalchemy_bind_manager._repository import SQLAlchemyAsyncRepository
 
 

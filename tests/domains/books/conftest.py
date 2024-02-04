@@ -1,7 +1,7 @@
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
-from domains.books._data_access_interfaces import BookRepositoryInterface
+from domains.books._gateway_interfaces import BookRepositoryInterface
 
 
 @pytest.fixture
