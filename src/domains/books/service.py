@@ -1,7 +1,6 @@
 from collections.abc import Iterable
 
 from anyio import to_thread
-from celery.result import AsyncResult
 from dependency_injector.wiring import Provide, inject
 from structlog import get_logger
 
@@ -32,13 +31,19 @@ class BookService:
         self.event_gateway = event_gateway
 
     async def create_book(self, book: BookData) -> Book:
-        # Example of CPU intensive task, run in a celery task
-        book_task: AsyncResult = book_cpu_intensive_task.delay(book)
-        # task.get() would block the application, we run it in a thread to remain async
-        # we can also build a wrapper coroutine to do this using `asyncio.sleep`
-        # and poll the AsyncResult class in case we do not want to use threads
-        book_data_altered: BookData = await to_thread.run_sync(book_task.get)
-        book_model = BookModel(**book_data_altered.model_dump())
+        # Example of CPU intensive task ran in a different thread
+        # Using processes could be better, but it would bring technical complexity
+        # https://anyio.readthedocs.io/en/3.x/subprocesses.html#running-functions-in-worker-processes
+        book_data_altered: dict = await to_thread.run_sync(
+            self.some_cpu_intensive_blocking_task, book.model_dump()
+        )
+
+        # Example of CPU intensive task ran in a celery task. We should not rely on
+        # celery if we need to wait the operation result. The worker could be terminated
+        # (e.g. during deployments) and this function would time out or raise an error.
+        book_cpu_intensive_task.delay(book)
+
+        book_model = BookModel(**book_data_altered)
         book = Book.model_validate(
             await self.book_repository.save(book_model), from_attributes=True
         )
@@ -61,3 +66,8 @@ class BookService:
         # This is just an example placeholder, there's nothing to test.
         logger = get_logger()
         await logger.ainfo(f"Processed book crated event for id `{book_id}`")
+
+    def some_cpu_intensive_blocking_task(self, book: dict) -> dict:
+        # This is just an example placeholder,
+        # there's nothing to test.
+        return book  # pragma: no cover
