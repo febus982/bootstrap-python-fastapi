@@ -9,7 +9,7 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
 
-This is an example implementation of microservice applying
+This is an example implementation of a python application applying
 concepts from [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 and [SOLID principles](https://en.wikipedia.org/wiki/SOLID).
 
@@ -18,87 +18,36 @@ and [SOLID principles](https://en.wikipedia.org/wiki/SOLID).
 * The application frameworks are decoupled from the domain logic
 * The storage layer is decoupled from the domain logic
 
-In this way our components are loosely coupled and the application logic
-(the domains package) is completely independent of the chosen framework
-and the persistence layer.
+This template provides out of the box some commonly used functionalities:
 
-## HTTP API Docs and versioning
+* API Documentation using [FastAPI](https://fastapi.tiangolo.com/)
+* Async tasks execution using [Celery](https://docs.celeryq.dev/en/stable/index.html)
+* Repository pattern for databases using [SQLAlchemy](https://www.sqlalchemy.org/) and [SQLAlchemy bind manager](https://febus982.github.io/sqlalchemy-bind-manager/stable/)
+* Database migrations using [Alembic](https://alembic.sqlalchemy.org/en/latest/) (configured supporting both sync and async SQLAlchemy engines)
+* [TODO] Producer and consumer to emit and consume events using [CloudEvents](https://cloudevents.io/) format on [Confluent Kafka](https://docs.confluent.io/kafka-clients/python/current/overview.html)
 
-API documentation is provided by [FastAPI](https://fastapi.tiangolo.com/features/)
-on `/docs` and `/redoc` paths using OpenAPI format.
+## Documentation
 
-I believe that versioning an API at resource level provides a much more
-flexible approach than versioning the whole API.
+The detailed documentation is available:
 
-The example `books` domain provides 2 endpoints to demonstrate this approach
+* Online on [GitHub pages](https://febus982.github.io/bootstrap-python-fastapi/)
+* Offline by running `make docs` after installing dependencies with `make dev-dependencies`
 
-* `/api/books/v1` (POST)
-* `/api/books/v2` (POST)
+## How to use
 
-## Package layers
+Create your GitHub repository using this template (The big green `Use this template` button).
+Optionally tweak name and authors in the `pyproject.toml` file, however the metadata
+are not used when building the application, nor are referenced anywhere in the code.
 
-This application is structured following the principles of Clean Architecture.
-Higher level layers can import directly lower level layers. An inversion of control
-pattern has to be used for lower level layers to use higher level ones.
+Locally:
 
-Packages are ordered from the highest level to the lowest one.
-
-------
-
-* `alembic` (database migration manager)
-* `http_app` (http presentation layer)
-* `celery_worker` (async tasks runner)
-* `gateways` (database connection manager, repository implementation, event emitter, etc.)
-
-------
-
-* `domains` (services, repository interfaces)
-
-------
-
-## Class dependency schema
-
-```mermaid
-flowchart TD
-    celery_worker
-    http_app
-    subgraph gateways
-      SQLAlchemyRepository
-      NullEventGateway
-    end
-    
-    subgraph domains
-      subgraph books
-        subgraph domain_logic
-            BookService-->BookTask
-        end
-        subgraph dto
-            Book
-        end
-      
-        subgraph data_access_interfaces
-          BookEventGatewayInterface
-          BookRepositoryInterface
-        end
-        subgraph entities
-          BookEvent
-          BookModel
-        end
-      end
-    end
-    
-    celery_worker-->domain_logic
-    celery_worker-->dto
-    http_app-->domain_logic
-    http_app-->dto
-    domain_logic-->entities
-    domain_logic-->dto
-    domain_logic-->data_access_interfaces
-    gateways-..->|Implement| data_access_interfaces
-    data_access_interfaces-->entities
-```
-
-## How to run
+* `make migrate`: Run database migrations
+* `make install-dependencies`: Install runtime requirements
+* `make dev-dependencies`: Install development requirements
+* `make update-dependencies`: Updates requirements
+* `make migrate`: Run database migrations
+* `make dev`: Run HTTP application with hot reload
+* `make test`: Run test suite
 
 Using Docker:
 
@@ -108,100 +57,7 @@ Using Docker:
 * `docker compose up celery-worker`: Run the celery worker
 * `docker compose run --rm test`: Run test suite
 
-Locally:
-
-* `make migrate`: Run database migrations
-* `make install-dependencies`: Install requirements
-* `make dev-dependencies`: Install dev requirements
-* `make update-dependencies`: Updates requirements
-* `make migrate`: Run database migrations
-* `make dev`: Run HTTP application with hot reload
-* `make test`: Run test suite
-
 ## Other commands for development
 
 * `make check`: Run tests, code style and lint checks
 * `make fix`: Run tests, code style and lint checks with automatic fixes (where possible)
-
-## Multistage dockerfile configuration
-
-Python docker image tend to become large after installing the application requirements
-(the slim base is ~150 MB uncompressed), therefore it's important to spend efforts
-to minimise the image size, even if it produces a slightly more complex multistage
-Dockerfile.
-
-The following setup makes sure the production image will keep to a minimal size ("only" 390MB):
- * 150MB base image
- * 165MB python installed dependencies
- * 73MB poetry + updated pip
-
-Using the following pipeline the "test" image is instead ~850MB, more than 400MB that would
-end up as a cost in traffic on each image pull.
-
-```mermaid
-flowchart TD
-    subgraph BASE
-      base["Base
-      ====
-      Contains system runtime
-      libraries necessary to run
-      all the applications
-      (e.g. libmysql)"]
-  
-      base_app["Base app
-      ========
-      Copies shared application logic
-      independent from the used framework
-      (domains, storage, etc.)"]
-  
-      base_builder["Base Builder
-      ============
-      Contains system libraries
-      necessary to build python
-      dependencies
-      (e.g. gcc, library headers)"]
-
-    end
-    
-    dev["Dev
-    ===
-    Fat image containing everything
-    for local development"]
-
-    base-->base_app
-    base-->base_builder
-    base----->dev
-    
-    subgraph HTTP
-      http_builder["HTTP builder
-          ============
-          Installs requirements for
-          HTTP app in a virtualenv"]
-      http_app["HTTP app
-        ========
-        Copies HTTP app,
-        shared logic
-        and requirements
-        from previous containers"]
-      http_builder-->http_app
-    end
-    
-    subgraph Celery
-      celery_builder["Celery builder
-          ============
-          Installs requirements for
-          Celery worker in a virtualenv"]
-      celery_app["HTTP app
-        ========
-        Copies Celery worker app,
-        shared logic
-        and requirements
-        from previous containers"]
-      celery_builder-->celery_app
-    end
-    
-    base_builder-->http_builder
-    base_builder-->celery_builder
-    base_app-->http_app
-    base_app-->celery_app
-```
