@@ -3,10 +3,10 @@ from typing import Callable, Dict
 from dependency_injector.wiring import Provide, inject
 from sqlalchemy_bind_manager import SQLAlchemyBindManager
 
-from . import default_tables
+from . import default_bind_tables
 
 TABLE_INIT_REGISTRY: Dict[str, Callable] = {
-    "default": default_tables.init_tables,
+    "default": default_bind_tables.init_tables,
 }
 
 

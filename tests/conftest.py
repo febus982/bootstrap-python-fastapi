@@ -1,5 +1,5 @@
 import pytest
-from common.config import AppConfig
+from bootstrap import AppConfig
 
 
 @pytest.fixture(autouse=True)

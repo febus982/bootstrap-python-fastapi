@@ -58,7 +58,7 @@ class BookService:
     ) -> None:
         self.book_repository = book_repository
 
-# file `common/di_container.py`
+# file `bootstrap/di_container.py`
 from sqlalchemy_bind_manager._repository import SQLAlchemyAsyncRepository
 from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Factory
@@ -196,18 +196,20 @@ the life cycle of the concrete classes is handled in the correct order
 and we don't end up in circular dependencies.
 ///
 
-
 ```python
-# file `common/factories.py`
+# file `bootstrap/factories.py`
 from domains.books._data_access_interfaces import BookRepositoryInterface
+
 
 def book_repository_factory() -> BookRepositoryInterface:
     from sqlalchemy_bind_manager._repository import SQLAlchemyAsyncRepository
     return SQLAlchemyAsyncRepository()
 
+
 # file `domains/books/service.py`
 from domains.books._data_access_interfaces import BookRepositoryInterface
-from common.factories import book_repository_factory
+from bootstrap.factories import book_repository_factory
+
 
 class BookService:
     book_repository: BookRepositoryInterface
@@ -258,13 +260,13 @@ We would need to implement the functionalities a dependency injection container 
 ///
 
 ```python
-# file `common/injectors.py` (Theoretical)
+# file `bootstrap/injectors.py` (Theoretical)
 def inject_book_repository(f):
     @functools.wraps(f)
     def wrapper(*args, **kwds):
         # This allows overriding the decorator
         if "book_repository" not in kwds.keys():
-            from gateways.storage import BookRepository
+            from bootstrap.storage import BookRepository
             kwds["book_repository"] = BookRepository()
         elif not isinstance(kwds["book_repository"], BookRepositoryInterface):
             import warnings

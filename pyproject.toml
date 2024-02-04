@@ -79,7 +79,7 @@ branch = true
 source = ["src"]
 omit = [
     "src/alembic/*",
-    "src/common/config.py",
+    "src/bootstrap/config.py",
 ]
 # It's not necessary to configure concurrency here
 # because pytest-cov takes care of that

@@ -1,6 +1,6 @@
+from bootstrap.config import AppConfig
+from bootstrap.di_container import Container
 from celery import Celery
-from common.config import AppConfig
-from common.di_container import Container
 from dependency_injector.providers import Object
 
 
