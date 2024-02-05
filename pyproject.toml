@@ -80,6 +80,7 @@ source = ["src"]
 omit = [
     "src/alembic/*",
     "src/bootstrap/config.py",
+    "src/bootstrap/logs/*",
 ]
 # It's not necessary to configure concurrency here
 # because pytest-cov takes care of that
