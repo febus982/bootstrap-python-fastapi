@@ -18,11 +18,12 @@ not possible, then celery provides task synchronisation primitives.
 https://docs.celeryq.dev/en/stable/userguide/tasks.html#avoid-launching-synchronous-subtasks
 """
 
-from celery import shared_task
+import logging
 
-from domains.books.dto import BookData
+from celery import shared_task
 
 
 @shared_task()
-def book_cpu_intensive_task(book: BookData) -> BookData:
-    return book
+def book_cpu_intensive_task(book_id: str, **kwargs) -> str:
+    logging.info("Book CPU intensive executed", extra={"book_id": book_id})
+    return book_id

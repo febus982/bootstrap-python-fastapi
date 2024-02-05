@@ -1,4 +1,4 @@
-from domains.books.models import BookModel
+from domains.books._models import BookModel
 from sqlalchemy import Column, Integer, String, Table
 from sqlalchemy.orm import registry
 

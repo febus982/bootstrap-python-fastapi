@@ -1,15 +1,15 @@
 from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
 from dependency_injector.providers import Dependency, Factory, Singleton
-from domains.books._data_access_interfaces import (
+from domains.books._gateway_interfaces import (
     BookEventGatewayInterface,
     BookRepositoryInterface,
 )
-from domains.books.models import BookModel
+from domains.books._models import BookModel
 from gateways.event import NullEventGateway
 from sqlalchemy_bind_manager import SQLAlchemyBindManager
-from sqlalchemy_bind_manager._repository import SQLAlchemyAsyncRepository
+from sqlalchemy_bind_manager.repository import SQLAlchemyAsyncRepository
 
-from common.config import AppConfig
+from bootstrap.config import AppConfig
 
 
 class Container(DeclarativeContainer):
@@ -21,7 +21,7 @@ class Container(DeclarativeContainer):
 
     wiring_config = WiringConfiguration(
         packages=[
-            "gateways",
+            "bootstrap",
             "domains",
         ]
     )

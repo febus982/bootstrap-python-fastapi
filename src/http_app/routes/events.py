@@ -1,8 +1,8 @@
 import typing
 from typing import Dict, List
 
+from domains.books import BookService
 from domains.books.events import BookCreatedV1
-from domains.books.service import BookService
 from fastapi import APIRouter, Body, Header, HTTPException
 from fastapi.openapi.models import Example
 from pydantic import BaseModel

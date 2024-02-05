@@ -1,4 +1,4 @@
-from domains.books import dto, service
+from domains.books import BookService, dto
 from fastapi import APIRouter, status
 from pydantic import BaseModel, ConfigDict
 
@@ -48,7 +48,7 @@ The views defined here have the functionalities of two components:
 async def create_book(
     data: CreateBookRequest,
 ) -> CreateBookResponse:
-    book_service = service.BookService()
+    book_service = BookService()
     created_book = await book_service.create_book(
         book=dto.BookData.model_validate(data, from_attributes=True)
     )
@@ -60,7 +60,7 @@ async def create_book_v2(
     data: CreateBookRequest,
     some_optional_query_param: bool = False,
 ) -> CreateBookResponse:
-    book_service = service.BookService()
+    book_service = BookService()
     created_book = await book_service.create_book(
         book=dto.BookData.model_validate(data, from_attributes=True)
     )

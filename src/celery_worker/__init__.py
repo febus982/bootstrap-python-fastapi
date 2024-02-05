@@ -4,7 +4,6 @@ application layers (storage, logs) when running standalone workers
 without having to initialise the HTTP framework (or other ones)
 """
 
-from common.bootstrap import application_init
-from common.config import AppConfig
+from bootstrap import AppConfig, application_init
 
 app = application_init(AppConfig()).celery_app

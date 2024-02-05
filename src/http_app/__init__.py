@@ -1,7 +1,6 @@
 from typing import Union
 
-from common.bootstrap import application_init
-from common.config import AppConfig
+from bootstrap import AppConfig, application_init
 from fastapi import FastAPI, Request
 from opentelemetry.instrumentation.asgi import OpenTelemetryMiddleware
 from starlette.responses import JSONResponse

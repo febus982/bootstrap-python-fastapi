@@ -3,7 +3,7 @@ from typing import Any, List, Protocol, Tuple, Union
 
 from sqlalchemy_bind_manager.repository import SortDirection
 
-from domains.books.models import BookModel
+from domains.books._models import BookModel
 from domains.common.cloudevent_base import BaseEvent
 
 

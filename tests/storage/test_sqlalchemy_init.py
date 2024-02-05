@@ -2,8 +2,8 @@ import os
 from unittest.mock import Mock, patch
 from uuid import uuid4
 
-from gateways.storage import init_storage
-from gateways.storage.SQLAlchemy import TABLE_INIT_REGISTRY, init_tables
+from bootstrap.storage import init_storage
+from bootstrap.storage.SQLAlchemy import TABLE_INIT_REGISTRY, init_tables
 from sqlalchemy_bind_manager import SQLAlchemyAsyncConfig, SQLAlchemyBindManager
 
 
@@ -54,7 +54,7 @@ def test_init_tables_calls_only_supported_bind_initialisation():
 
 def test_init_storage_calls_sqlalchemy_init_tables():
     with patch(
-        "gateways.storage.SQLAlchemy.init_tables", return_value=None
+        "bootstrap.storage.SQLAlchemy.init_tables", return_value=None
     ) as mocked_init_tables:
         init_storage()
 

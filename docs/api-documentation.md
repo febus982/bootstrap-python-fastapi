@@ -14,5 +14,6 @@ The example `books` domain provides 2 endpoints to demonstrate this approach
 * `/api/books/v2` (POST)
 
 /// note | Media type versioning
+
 An improvement could be moving to [media type versioning](https://opensource.zalando.com/restful-api-guidelines/#114)
 ///
