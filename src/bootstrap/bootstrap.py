@@ -1,9 +1,9 @@
 from celery import Celery
 from dependency_injector.containers import DynamicContainer
 from dependency_injector.providers import Object
-from domains import init_celery, init_domains
 from pydantic import BaseModel, ConfigDict
 
+from .celery import init_celery
 from .config import AppConfig
 from .di_container import Container
 from .logs import init_logger
@@ -22,7 +22,6 @@ def application_init(app_config: AppConfig) -> InitReference:
         config=Object(app_config),
     )
     init_logger(app_config)
-    init_domains(app_config)
     init_storage()
     celery = init_celery(app_config)
 
