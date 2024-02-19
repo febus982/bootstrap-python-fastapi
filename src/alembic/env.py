@@ -168,11 +168,20 @@ async def run_migrations_online() -> None:
                 rec["connection"].close()
 
 
+background_tasks = set()
+
 if context.is_offline_mode():
     run_migrations_offline()
 else:
     loop = get_event_loop()
     if loop.is_running():
-        loop.create_task(run_migrations_online())
+        task = loop.create_task(run_migrations_online())
+        # Add task to the set. This creates a strong reference.
+        background_tasks.add(task)
+
+        # To prevent keeping references to finished tasks forever,
+        # make each task remove its own reference from the set after
+        # completion:
+        task.add_done_callback(background_tasks.discard)
     else:
         loop.run_until_complete(run_migrations_online())
