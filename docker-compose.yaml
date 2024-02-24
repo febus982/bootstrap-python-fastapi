@@ -58,6 +58,7 @@ services:
       context: .
       target: dev
     environment:
+      WATCHFILES_FORCE_POLLING: true
       OTEL_SERVICE_NAME: "bootstrap-fastapi-dev"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
       CELERY__broker_url: "redis://redis:6379/0"
