@@ -34,8 +34,9 @@ def create_app(
     """
     OpenTelemetry middleware has to be the last one to make sure the
     tracing data handling is the outermost logic
+    Some typing issues to be addressed in OpenTelemetry but it works.
     """
-    app.add_middleware(OpenTelemetryMiddleware)
+    app.add_middleware(OpenTelemetryMiddleware)  # type: ignore
 
     return app
 
