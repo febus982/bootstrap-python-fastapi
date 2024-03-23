@@ -3,16 +3,17 @@ from collections.abc import AsyncIterator
 import pytest
 from bootstrap.storage.SQLAlchemy import init_tables
 from sqlalchemy.orm import clear_mappers
-from sqlalchemy_bind_manager import SQLAlchemyAsyncConfig, SQLAlchemyBindManager
+from sqlalchemy_bind_manager import SQLAlchemyBindManager, SQLAlchemyConfig
 
 
 @pytest.fixture(scope="function")
 async def test_sa_manager() -> AsyncIterator[SQLAlchemyBindManager]:
     clear_mappers()
 
-    db_config = SQLAlchemyAsyncConfig(
+    db_config = SQLAlchemyConfig(
         engine_url="sqlite+aiosqlite://",
         engine_options=dict(connect_args={"check_same_thread": False}),
+        async_engine=True,
     )
     sa_manager = SQLAlchemyBindManager(config=db_config)
     init_tables(sqlalchemy_manager=sa_manager)

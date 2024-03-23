@@ -3,7 +3,7 @@ from typing import Dict, Literal, Optional
 
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from sqlalchemy_bind_manager import SQLAlchemyAsyncConfig
+from sqlalchemy_bind_manager import SQLAlchemyConfig
 
 TYPE_ENVIRONMENT = Literal["local", "test", "staging", "production"]
 
@@ -49,8 +49,8 @@ class AppConfig(BaseSettings):
     CELERY: CeleryConfig = CeleryConfig()
     DEBUG: bool = False
     ENVIRONMENT: TYPE_ENVIRONMENT = "local"
-    SQLALCHEMY_CONFIG: Dict[str, SQLAlchemyAsyncConfig] = dict(
-        default=SQLAlchemyAsyncConfig(
+    SQLALCHEMY_CONFIG: Dict[str, SQLAlchemyConfig] = dict(
+        default=SQLAlchemyConfig(
             engine_url=f"sqlite+aiosqlite:///{Path(__file__).parent.parent.joinpath('sqlite.db')}",
             engine_options=dict(
                 connect_args={
@@ -59,5 +59,6 @@ class AppConfig(BaseSettings):
                 echo=False,
                 future=True,
             ),
+            async_engine=True,
         ),
     )
