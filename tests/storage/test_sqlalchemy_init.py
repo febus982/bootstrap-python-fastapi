@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from bootstrap.storage import init_storage
 from bootstrap.storage.SQLAlchemy import TABLE_INIT_REGISTRY, init_tables
-from sqlalchemy_bind_manager import SQLAlchemyAsyncConfig, SQLAlchemyBindManager
+from sqlalchemy_bind_manager import SQLAlchemyBindManager, SQLAlchemyConfig
 
 
 def test_init_tables_calls_only_supported_bind_initialisation():
@@ -13,15 +13,17 @@ def test_init_tables_calls_only_supported_bind_initialisation():
 
     sa_manager = SQLAlchemyBindManager(
         config={
-            "default": SQLAlchemyAsyncConfig(
+            "default": SQLAlchemyConfig(
                 engine_url=f"sqlite+aiosqlite:///{db1_path}",
                 engine_options=dict(connect_args={"check_same_thread": False}),
                 session_options=dict(expire_on_commit=False),
+                async_engine=True,
             ),
-            "not_existing": SQLAlchemyAsyncConfig(
+            "not_existing": SQLAlchemyConfig(
                 engine_url=f"sqlite+aiosqlite:///{db2_path}",
                 engine_options=dict(connect_args={"check_same_thread": False}),
                 session_options=dict(expire_on_commit=False),
+                async_engine=True,
             ),
         }
     )
