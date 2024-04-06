@@ -80,6 +80,7 @@ services:
       - --port
       - "8000"
       - --factory
+      # Remember to disable the reloader in order to allow otel instrumentation
       - --reload
 
   http:
