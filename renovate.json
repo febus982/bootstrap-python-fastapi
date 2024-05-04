@@ -10,6 +10,7 @@
       "matchPackagePatterns": [
         "*"
       ],
+      "excludePackageNames": ["python"],
       "matchUpdateTypes": [
         "minor",
         "patch"
