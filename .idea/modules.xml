@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/bootstrap-fastapi-service.iml" filepath="$PROJECT_DIR$/.idea/bootstrap-fastapi-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/bootstrap-python-fastapi.iml" filepath="$PROJECT_DIR$/.idea/bootstrap-python-fastapi.iml" />
     </modules>
   </component>
 </project>

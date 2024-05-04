@@ -3,7 +3,7 @@
     <option name="additionalOptions" value="--reload --factory" />
     <option name="appName" value="create_app" />
     <option name="file" value="$PROJECT_DIR$/src/http_app/__init__.py" />
-    <module name="bootstrap-fastapi-service" />
+    <module name="bootstrap-python-fastapi" />
     <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
