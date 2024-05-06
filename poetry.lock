@@ -1444,13 +1444,13 @@ pyyaml = ">=5.1"
 
 [[package]]
 name = "mkdocs-macros-adr-summary"
-version = "0.1.0"
+version = "1.0.0"
 description = "A plugin to generate a summary of a ADR directory"
 optional = false
-python-versions = ">=3.8,<3.13"
+python-versions = "<3.13,>=3.8"
 files = [
-    {file = "mkdocs_macros_adr_summary-0.1.0-py3-none-any.whl", hash = "sha256:ec7cc612d354a2c579425a6a16213e65ea284547194eb1b3f37e2c5e896d02c5"},
-    {file = "mkdocs_macros_adr_summary-0.1.0.tar.gz", hash = "sha256:6b85aa928282038e61c1ed4418e2551fcda0f9182b6a5475779f9720ac61443c"},
+    {file = "mkdocs_macros_adr_summary-1.0.0-py3-none-any.whl", hash = "sha256:b62f42568667d8a768fd57905cf845b10b2c31f0ece13e17e0e6e84a7869215d"},
+    {file = "mkdocs_macros_adr_summary-1.0.0.tar.gz", hash = "sha256:f1ee09fdea3b328af04c368a437e6e4de80de0e0961bb82c3f1b3baff8f73534"},
 ]
 
 [package.dependencies]
