@@ -2,7 +2,7 @@ from collections.abc import Iterable, Mapping
 from typing import Any, List, Literal, Protocol, Tuple, Union
 
 from domains.books._models import BookModel
-from domains.common.cloudevent_base import BaseEvent
+from domains.events.cloudevent_base import BaseEvent
 
 
 class BookRepositoryInterface(Protocol):

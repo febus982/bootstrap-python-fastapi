@@ -3,7 +3,7 @@ import typing
 import pydantic
 from pydantic import ConfigDict
 
-from domains.common.cloudevent_base import (
+from .cloudevent_base import (
     BaseEvent,
     dataschema_field,
     type_field,

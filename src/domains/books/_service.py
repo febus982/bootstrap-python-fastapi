@@ -8,7 +8,7 @@ from ._gateway_interfaces import BookEventGatewayInterface, BookRepositoryInterf
 from ._models import BookModel
 from ._tasks import book_cpu_intensive_task
 from .dto import Book, BookData
-from .events import BookCreatedV1, BookCreatedV1Data
+from domains.events.books import BookCreatedV1, BookCreatedV1Data
 
 
 class BookService:
