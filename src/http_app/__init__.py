@@ -69,11 +69,11 @@ def init_exception_handlers(app: FastAPI) -> None:
 
 def faststream_lifespan(broker: BrokerUsecase[Any, Any]) -> Lifespan:
     @asynccontextmanager
-    async def f(app: FastAPI):
+    async def handler(app: FastAPI):
         await broker.start()
         try:
             yield
         finally:
             await broker.close()
 
-    return f
+    return handler
