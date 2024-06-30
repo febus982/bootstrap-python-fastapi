@@ -1,5 +1,5 @@
 import pytest
-from bootstrap import AppConfig
+from bootstrap.config import AppConfig, CeleryConfig, EventConfig
 
 
 @pytest.fixture(autouse=True)
@@ -16,4 +16,9 @@ def test_config() -> AppConfig:
     return AppConfig(
         SQLALCHEMY_CONFIG={},
         ENVIRONMENT="test",
+        EVENTS=EventConfig(REDIS_BROKER_URL=""),
+        CELERY=CeleryConfig(
+            broker_url="",
+            result_backend="",
+        ),
     )

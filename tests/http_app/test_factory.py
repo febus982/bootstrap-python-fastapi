@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-from bootstrap.config import AppConfig
+from bootstrap.config import AppConfig, EventConfig, CeleryConfig
 from http_app import create_app
 
 
@@ -19,6 +19,11 @@ def test_with_debug_config() -> None:
                 SQLALCHEMY_CONFIG={},
                 ENVIRONMENT="test",
                 DEBUG=True,
+                EVENTS=EventConfig(REDIS_BROKER_URL=""),
+                CELERY=CeleryConfig(
+                    broker_url="",
+                    result_backend="",
+                ),
             )
         )
 

@@ -1,8 +1,8 @@
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from domains.books import BookService
-from domains.books.events import BookCreatedV1
-from domains.common.cloudevent_base import BaseEvent
+from domains.events.books import BookCreatedV1
+from domains.events.cloudevent_base import BaseEvent
 from httpx import AsyncClient
 
 
