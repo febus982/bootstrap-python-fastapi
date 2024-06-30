@@ -45,10 +45,10 @@ format:
 	poetry run ruff format --check .
 
 lint:
-	poetry run ruff .
+	poetry run ruff check .
 
 fix:
-	poetry run ruff . --fix
+	poetry run ruff check . --fix
 	poetry run ruff format .
 
 check: lint format typing test
