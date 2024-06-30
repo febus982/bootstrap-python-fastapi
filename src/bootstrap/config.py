@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, Literal, Optional
+from typing import Dict, Literal
 
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -14,11 +14,11 @@ class CeleryConfig(BaseModel):
     timezone: str = "UTC"
 
     # Broker config
-    broker_url: Optional[str] = None
+    broker_url: str
     broker_connection_retry_on_startup: bool = True
 
     # Results backend config
-    result_backend: Optional[str] = None
+    result_backend: str
     redis_socket_keepalive: bool = True
 
     # Enable to ignore the results by default and not produce tombstones
@@ -42,11 +42,16 @@ class CeleryConfig(BaseModel):
     # }
 
 
+class EventConfig(BaseModel):
+    REDIS_BROKER_URL: str
+
+
 class AppConfig(BaseSettings):
     model_config = SettingsConfigDict(env_nested_delimiter="__")
 
     APP_NAME: str = "bootstrap"
-    CELERY: CeleryConfig = CeleryConfig()
+    CELERY: CeleryConfig
+    EVENTS: EventConfig
     DEBUG: bool = False
     ENVIRONMENT: TYPE_ENVIRONMENT = "local"
     SQLALCHEMY_CONFIG: Dict[str, SQLAlchemyConfig] = dict(
