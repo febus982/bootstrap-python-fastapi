@@ -9,6 +9,9 @@ services:
   redis:
     image: redis
 
+  redis-events:
+    image: redis
+
   celery-worker:
     build:
       dockerfile: Dockerfile
@@ -19,11 +22,13 @@ services:
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
       CELERY__broker_url: "redis://redis:6379/0"
       CELERY__result_backend: "redis://redis:6379/1"
+      EVENTS__REDIS_BROKER_URL: "redis://redis-events:6379"
     working_dir: "/app/src"
     volumes:
       - '.:/app'
     depends_on:
       - redis
+      - redis-events
       - otel-collector
       - celery-beat
 
@@ -37,11 +42,13 @@ services:
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
       CELERY__broker_url: "redis://redis:6379/0"
       CELERY__result_backend: "redis://redis:6379/1"
+      EVENTS__REDIS_BROKER_URL: "redis://redis-events:6379"
     working_dir: "/app/src"
     volumes:
       - '.:/app'
     depends_on:
       - redis
+      - redis-events
       - otel-collector
     command:
       - opentelemetry-instrument
@@ -63,6 +70,7 @@ services:
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
       CELERY__broker_url: "redis://redis:6379/0"
       CELERY__result_backend: "redis://redis:6379/1"
+      EVENTS__REDIS_BROKER_URL: "redis://redis-events:6379"
     ports:
       - '8000:8000'
     working_dir: "/app/src"
@@ -70,6 +78,7 @@ services:
       - '.:/app'
     depends_on:
       - redis
+      - redis-events
       - otel-collector
     command:
       - opentelemetry-instrument
@@ -83,6 +92,61 @@ services:
       # Remember to disable the reloader in order to allow otel instrumentation
       - --reload
 
+  event-consumer:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: dev
+    environment:
+      WATCHFILES_FORCE_POLLING: true
+      OTEL_SERVICE_NAME: "bootstrap-fastapi-dev"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
+      CELERY__broker_url: "redis://redis:6379/0"
+      CELERY__result_backend: "redis://redis:6379/1"
+      EVENTS__REDIS_BROKER_URL: "redis://redis-events:6379"
+    ports:
+      - '8000:8000'
+    working_dir: "/app/src"
+    volumes:
+      - '.:/app'
+    depends_on:
+      - redis
+      - redis-events
+      - otel-collector
+    command:
+      - faststream
+      - run
+      - event_consumer:app
+
+  event-docs:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: dev
+    environment:
+      WATCHFILES_FORCE_POLLING: true
+      OTEL_SERVICE_NAME: "bootstrap-fastapi-dev"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
+      CELERY__broker_url: "redis://redis:6379/0"
+      CELERY__result_backend: "redis://redis:6379/1"
+      EVENTS__REDIS_BROKER_URL: "redis://redis-events:6379"
+    ports:
+      - '8000:8000'
+    working_dir: "/app/src"
+    volumes:
+      - '.:/app'
+    depends_on:
+      - redis
+      - redis-events
+      - otel-collector
+    command:
+      - faststream
+      - docs
+      - serve
+      - event_consumer:app
+      - --host
+      - 0.0.0.0
+
   http:
     build:
       dockerfile: Dockerfile
@@ -90,12 +154,14 @@ services:
       target: http_app
     depends_on:
       - redis
+      - redis-events
       - otel-collector
     environment:
       OTEL_SERVICE_NAME: "bootstrap-fastapi-http"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
       CELERY__broker_url: "redis://redis:6379/0"
       CELERY__result_backend: "redis://redis:6379/1"
+      EVENTS__REDIS_BROKER_URL: "redis://redis-events:6379"
     ports:
       - '8001:8000'
     volumes:
