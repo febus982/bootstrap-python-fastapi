@@ -4,11 +4,12 @@ from anyio import to_thread
 from dependency_injector.wiring import Provide, inject
 from structlog import get_logger
 
+from domains.events.books import BookCreatedV1, BookCreatedV1Data
+
 from ._gateway_interfaces import BookEventGatewayInterface, BookRepositoryInterface
 from ._models import BookModel
 from ._tasks import book_cpu_intensive_task
 from .dto import Book, BookData
-from domains.events.books import BookCreatedV1, BookCreatedV1Data
 
 
 class BookService:

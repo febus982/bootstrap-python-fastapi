@@ -9,7 +9,7 @@ from pydantic import BaseModel, ConfigDict
 from .celery import init_celery
 from .config import AppConfig
 from .di_container import Container
-from .faststream import init_broker
+from .faststream import init_broker, init_publishers
 from .logs import init_logger
 from .storage import init_storage
 
@@ -30,6 +30,7 @@ def application_init(app_config: AppConfig) -> InitReference:
     init_storage()
     celery = init_celery(app_config)
     broker = init_broker(app_config)
+    init_publishers(broker)
 
     return InitReference(
         celery_app=celery,
