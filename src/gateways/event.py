@@ -1,9 +1,9 @@
-from typing import Any, Collection, Dict, Optional, Union
+from typing import Collection, Dict, Optional, Union
 
 from domains.events import get_topic_registry
 from domains.events.cloudevent_base import BaseEvent
-from faststream.broker.core.usecase import BrokerUsecase
-from faststream.broker.publisher.proto import PublisherProto
+from faststream.redis import RedisBroker
+from faststream.redis.publisher.asyncapi import AsyncAPIPublisher
 from structlog import get_logger
 
 
@@ -18,13 +18,13 @@ class NullEventGateway:
         )
 
 
-class FastStreamGateway:
-    _broker: BrokerUsecase[Any, Any]
-    _publishers: Dict[type[BaseEvent], PublisherProto[type[BaseEvent]]]
+class FastStreamRedisGateway:
+    _broker: RedisBroker
+    _publishers: Dict[type[BaseEvent], AsyncAPIPublisher]
 
     def __init__(
         self,
-        broker: BrokerUsecase[Any, Any],
+        broker: RedisBroker,
         topic_filter: Optional[Collection[str]] = None,
     ):
         self._broker = broker
