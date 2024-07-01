@@ -1,3 +1,4 @@
+from faststream import context
 from opentelemetry import trace
 from structlog.typing import EventDict
 
@@ -9,6 +10,30 @@ def extract_from_record(_, __, event_dict: EventDict) -> EventDict:
     record = event_dict["_record"]
     event_dict["thread_name"] = record.threadName
     event_dict["process_name"] = record.processName
+
+    return event_dict
+
+
+def faststream_context(_, __, event_dict: EventDict) -> EventDict:
+    """
+    Extract FastStream context information and adds them to the event dict.
+    """
+    c = context.get_local("log_context") or {}
+    event_context = event_dict.get(
+        "event_context",
+        c.copy(),
+    )
+
+    # Handle undesired extra override from FastStream
+    extra = event_dict.get("extra", {}).copy()
+    if {"channel", "message_id"} == set(extra.keys()):
+        event_context["channel"] = extra["channel"]
+        event_context["message_id"] = extra["message_id"]
+        del event_dict["extra"]
+
+    if event_context:
+        event_dict["event_context"] = event_context
+
     return event_dict
 
 

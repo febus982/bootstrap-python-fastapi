@@ -2,14 +2,14 @@ import logging
 from typing import List
 
 import structlog
-from opentelemetry import trace
-from structlog.typing import EventDict, Processor
+from structlog.typing import Processor
 
 from ..config import AppConfig
 from .processors import (
     add_logging_open_telemetry_spans,
     drop_color_message_key,
     extract_from_record,
+    faststream_context,
 )
 
 
@@ -29,6 +29,7 @@ def init_logger(config: AppConfig) -> None:
         structlog.stdlib.add_logger_name,
         structlog.stdlib.add_log_level,
         structlog.stdlib.PositionalArgumentsFormatter(),
+        faststream_context,
         structlog.stdlib.ExtraAdder(),
         drop_color_message_key,
         add_logging_open_telemetry_spans,
@@ -81,11 +82,17 @@ def init_logger(config: AppConfig) -> None:
 
     # Use structlog to format logs coming from stdlib logger
     stdlib_logger = logging.getLogger()
-    # stdlib_logger.handlers.clear()
+    stdlib_logger.handlers.clear()
     stdlib_logger.addHandler(stdlib_handler)
     stdlib_logger.setLevel(log_level)
 
-    for _log in ["uvicorn", "uvicorn.error", "uvicorn.access"]:
+    for _log in [
+        "uvicorn",
+        "uvicorn.error",
+        "uvicorn.access",
+        "faststream",
+        "faststream.access",
+    ]:
         # Clear the log handlers for uvicorn loggers, and enable propagation
         # so the messages are caught by our root logger and formatted correctly
         # by structlog. Initial messages from reloader startup are not caught.
