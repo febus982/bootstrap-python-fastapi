@@ -1,5 +1,6 @@
-from domains.common.cloudevent_base import BaseEvent
 from structlog import get_logger
+
+from domains.common.cloudevent_base import BaseEvent
 
 
 class NullEventGateway:

@@ -49,11 +49,7 @@ class BookService:
 
         await self._event_gateway.emit(
             BookCreatedV1(
-                data=BookCreatedV1Data(
-                    book_id=book_model.book_id,
-                    title=book_model.title,
-                    author_name=book_model.author_name,
-                )
+                data=BookCreatedV1Data.model_validate(book_model, from_attributes=True)
             )
         )
         return book

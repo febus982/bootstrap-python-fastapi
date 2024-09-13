@@ -1,4 +1,5 @@
 import pytest
+
 from bootstrap import AppConfig
 
 

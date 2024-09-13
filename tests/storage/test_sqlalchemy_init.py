@@ -2,9 +2,10 @@ import os
 from unittest.mock import Mock, patch
 from uuid import uuid4
 
+from sqlalchemy_bind_manager import SQLAlchemyBindManager, SQLAlchemyConfig
+
 from bootstrap.storage import init_storage
 from bootstrap.storage.SQLAlchemy import TABLE_INIT_REGISTRY, init_tables
-from sqlalchemy_bind_manager import SQLAlchemyBindManager, SQLAlchemyConfig
 
 
 def test_init_tables_calls_only_supported_bind_initialisation():
