@@ -1,6 +1,7 @@
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
+
 from domains.books._gateway_interfaces import BookRepositoryInterface
 
 

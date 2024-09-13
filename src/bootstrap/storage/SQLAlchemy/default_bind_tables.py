@@ -1,6 +1,7 @@
-from domains.books._models import BookModel
 from sqlalchemy import Column, Integer, String, Table
 from sqlalchemy.orm import registry
+
+from domains.books._models import BookModel
 
 
 def init_tables(registry_mapper: registry):

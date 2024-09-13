@@ -1,9 +1,10 @@
 from collections.abc import AsyncIterator
 
 import pytest
-from bootstrap.storage.SQLAlchemy import init_tables
 from sqlalchemy.orm import clear_mappers
 from sqlalchemy_bind_manager import SQLAlchemyBindManager, SQLAlchemyConfig
+
+from bootstrap.storage.SQLAlchemy import init_tables
 
 
 @pytest.fixture(scope="function")

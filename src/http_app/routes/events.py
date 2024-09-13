@@ -1,11 +1,12 @@
 import typing
 from typing import Dict, List
 
-from domains.books import BookService
-from domains.books.events import BookCreatedV1
 from fastapi import APIRouter, Body, Header, HTTPException
 from fastapi.openapi.models import Example
 from pydantic import BaseModel
+
+from domains.books import BookService
+from domains.books.events import BookCreatedV1
 
 router = APIRouter(prefix="/events")
 

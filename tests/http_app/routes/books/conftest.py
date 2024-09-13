@@ -3,8 +3,9 @@ from secrets import randbelow
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from domains.books import BookService, dto
 from fastapi import FastAPI
+
+from domains.books import BookService, dto
 from http_app import create_app
 
 

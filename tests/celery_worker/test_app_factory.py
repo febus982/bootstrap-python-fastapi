@@ -1,4 +1,5 @@
 from celery import Celery
+
 from celery_worker import app
 
 

@@ -1,6 +1,7 @@
-from domains.books import BookService, dto
 from fastapi import APIRouter, status
 from pydantic import BaseModel, ConfigDict
+
+from domains.books import BookService, dto
 
 router_v1 = APIRouter(prefix="/books/v1")
 router_v2 = APIRouter(prefix="/books/v2")
