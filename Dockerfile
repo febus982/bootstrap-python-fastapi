@@ -1,5 +1,5 @@
-ARG PYTHON_VERSION=3.11
-FROM python:$PYTHON_VERSION-slim as base
+ARG PYTHON_VERSION=3.12
+FROM python:$PYTHON_VERSION-slim AS base
 ARG UID=2000
 ARG GID=2000
 RUN addgroup --gid $GID nonroot && \
@@ -26,7 +26,7 @@ RUN pip install --no-cache-dir -U poetry
 # for binaries installed in virtual environments
 ENTRYPOINT ["poetry", "run"]
 
-FROM base as base_builder
+FROM base AS base_builder
 # Install build system requirements (gcc, library headers, etc.)
 # for compiled Python requirements like psycopg2
 RUN apt-get update \
@@ -44,7 +44,7 @@ COPY --chown=nonroot:nonroot poetry.lock .
 COPY --chown=nonroot:nonroot Makefile .
 
 # Test image, contains all files and dependencies
-FROM base_builder as dev
+FROM base_builder AS dev
 COPY --chown=nonroot:nonroot . .
 RUN make dev-dependencies
 # Note that opentelemetry doesn't play well together with uvicorn reloader
@@ -52,15 +52,15 @@ RUN make dev-dependencies
 CMD ["uvicorn", "http_app:create_app", "--host", "0.0.0.0", "--port", "8000", "--factory", "--reload"]
 
 # Installs requirements to run production celery application
-FROM base_builder as celery_builder
+FROM base_builder AS celery_builder
 RUN poetry install --no-root
 
 # Installs requirements to run production http application
-FROM base_builder as http_builder
+FROM base_builder AS http_builder
 RUN poetry install --no-root --with http
 
 # Copy the shared python packages
-FROM base as base_app
+FROM base AS base_app
 USER nonroot
 RUN poetry config virtualenvs.path /poetryvenvs
 COPY --chown=nonroot:nonroot pyproject.toml .
@@ -73,16 +73,15 @@ COPY --chown=nonroot:nonroot src/alembic.ini .
 COPY --chown=nonroot:nonroot Makefile .
 
 # Copy the http python package and requirements from relevant builder
-FROM base_app as http_app
+FROM base_app AS http_app
 COPY --from=http_builder /poetryvenvs /poetryvenvs
 COPY --chown=nonroot:nonroot src/http_app ./http_app
 # Run CMD using array syntax, so it's uses `exec` and runs as PID1
 CMD ["opentelemetry-instrument", "uvicorn", "http_app:create_app", "--host", "0.0.0.0", "--port", "8000", "--factory"]
 
 # Copy the celery python package and requirements from relevant builder
-FROM base_app as celery_app
+FROM base_app AS celery_app
 COPY --from=celery_builder /poetryvenvs /poetryvenvs
 COPY --chown=nonroot:nonroot src/celery_worker ./celery_worker
-RUN ls
 # Run CMD using array syntax, so it's uses `exec` and runs as PID1
 CMD ["opentelemetry-instrument", "celery", "-A", "celery_worker:app", "worker", "-l", "INFO"]
