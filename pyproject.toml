@@ -33,7 +33,7 @@ opentelemetry-instrumentation-httpx = "*"
 opentelemetry-instrumentation-sqlalchemy = "*"
 pydantic = "^2.2.1"
 pydantic-settings = "^2.0.3"
-python = ">=3.9,<3.12"
+python = ">=3.9,<3.13"
 rich = "^13.2.0"
 SQLAlchemy = { version = "^2.0.0", extras = ["asyncio", "mypy"] }
 sqlalchemy-bind-manager = "*"
