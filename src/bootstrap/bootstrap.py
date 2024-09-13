@@ -1,3 +1,5 @@
+from typing import cast
+
 from celery import Celery
 from dependency_injector.containers import DynamicContainer
 from dependency_injector.providers import Object
@@ -18,8 +20,11 @@ class InitReference(BaseModel):
 
 
 def application_init(app_config: AppConfig) -> InitReference:
-    container = Container(
-        config=Object(app_config),
+    container = cast(
+        DynamicContainer,  # Make mypy happy
+        Container(
+            config=Object(app_config),
+        ),
     )
     init_logger(app_config)
     init_storage()
