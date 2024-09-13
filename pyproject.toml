@@ -46,7 +46,7 @@ optional = true
 fastapi = ">=0.99.0"
 jinja2 = "^3.1.2"
 opentelemetry-instrumentation-fastapi = "*"
-starlette-prometheus = "^0.9.0"
+starlette-prometheus = "^0.10.0"
 strawberry-graphql = { version = ">=0.204.0", extras = ["debug-server"] }
 uvicorn = { version = "^0.30.0", extras = ["standard"] }
 
