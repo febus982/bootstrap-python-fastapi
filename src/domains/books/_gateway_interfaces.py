@@ -1,8 +1,9 @@
 from collections.abc import Iterable, Mapping
 from typing import Any, List, Literal, Protocol, Tuple, Union
 
+from cloudevents_pydantic.events import CloudEvent
+
 from domains.books._models import BookModel
-from domains.common.cloudevent_base import BaseEvent
 
 
 class BookRepositoryInterface(Protocol):
@@ -18,4 +19,4 @@ class BookRepositoryInterface(Protocol):
 
 
 class BookEventGatewayInterface(Protocol):
-    async def emit(self, event: BaseEvent) -> None: ...
+    async def emit(self, event: CloudEvent) -> None: ...

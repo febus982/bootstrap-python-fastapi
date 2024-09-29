@@ -23,7 +23,7 @@ aiosqlite = ">=0.18.0"
 alembic = "^1.11.1"
 asgiref = "^3.7.2"
 celery =  { version = "^5.3.1", extras = ["redis"] }
-cloudevents = "^1.9.0"
+cloudevents-pydantic = "^0.0.2"
 dependency-injector = { version = "^4.41.0", extras = ["pydantic"] }
 httpx = ">=0.23.0"
 opentelemetry-distro = { version = "*", extras = ["otlp"] }
