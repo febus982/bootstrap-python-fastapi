@@ -48,7 +48,7 @@ class BookService:
         book_cpu_intensive_task.delay(book_id=book.book_id)
 
         await self._event_gateway.emit(
-            BookCreatedV1(
+            BookCreatedV1.event_factory(
                 data=BookCreatedV1Data.model_validate(book_model, from_attributes=True)
             )
         )

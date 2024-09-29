@@ -1,19 +1,22 @@
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import pytest
+from cloudevents_pydantic.events import CloudEvent
 from httpx import AsyncClient
 
 from domains.books import BookService
 from domains.books.events import BookCreatedV1
-from domains.common.cloudevent_base import BaseEvent
 
 
-class FakeEvent(BaseEvent):
+class FakeEvent(CloudEvent):
     type: str = "aa"
+    # source: Annotated[URIReference, Field(default="https://example.com")]
 
 
 async def test_event_schema_returns_data_if_present_in_registry(testapp):
-    with patch(
-        "http_app.routes.events._event_registry", return_value={"test_event": FakeEvent}
+    with patch.dict(
+        "http_app.routes.events._EVENT_REGISTRY", {"test_event": FakeEvent}, clear=True
     ):
         async with AsyncClient(app=testapp, base_url="http://test") as ac:
             response = await ac.get("/events/dataschemas/test_event")
@@ -27,8 +30,8 @@ async def test_event_schema_returns_404_when_not_present_in_registry(testapp):
 
 
 async def test_event_schema_list_returns_data_from_registry(testapp):
-    with patch(
-        "http_app.routes.events._event_registry", return_value={"test_event": FakeEvent}
+    with patch.dict(
+        "http_app.routes.events._EVENT_REGISTRY", {"test_event": FakeEvent}, clear=True
     ):
         async with AsyncClient(app=testapp, base_url="http://test") as ac:
             response = await ac.get("/events/dataschemas")
@@ -36,8 +39,22 @@ async def test_event_schema_list_returns_data_from_registry(testapp):
     assert response.json() == ["test_event"]
 
 
-async def test_event_returns_204(testapp):
-    fake_event = BookCreatedV1(
+@pytest.mark.parametrize(
+    ["batch"],
+    (
+        pytest.param(True, id="batch"),
+        pytest.param(False, id="single"),
+    ),
+)
+async def test_event_endpoints_returns_204(testapp, batch):
+    url = "/events" if not batch else "/events/batch"
+    content_type = (
+        "application/cloudevents+json; charset=UTF-8"
+        if not batch
+        else "application/cloudevents-batch+json; charset=UTF-8"
+    )
+
+    fake_event = BookCreatedV1.event_factory(
         data={"book_id": 0, "title": "string", "author_name": "string"},
     )
     svc = MagicMock(autospec=BookService)
@@ -45,36 +62,68 @@ async def test_event_returns_204(testapp):
     with patch("domains.books.BookService.__new__", return_value=svc):
         async with AsyncClient(app=testapp, base_url="http://test") as ac:
             response = await ac.post(
-                "/events",
-                headers={"content-type": "application/cloudevents+json; charset=UTF-8"},
-                content=fake_event.model_dump_json(),
+                url,
+                headers={"content-type": content_type},
+                content=fake_event.model_dump_json()
+                if not batch
+                else f"[{fake_event.model_dump_json()}]",
             )
     svc.book_created_event_handler.assert_called_once()
     assert response.status_code == 204
 
 
-async def test_malformed_event_returns_422(testapp):
-    fake_event = BookCreatedV1(
+@pytest.mark.parametrize(
+    ["batch"],
+    (
+        pytest.param(True, id="batch"),
+        pytest.param(False, id="single"),
+    ),
+)
+async def test_malformed_event_returns_422(testapp, batch):
+    url = "/events" if not batch else "/events/batch"
+    content_type = (
+        "application/cloudevents+json; charset=UTF-8"
+        if not batch
+        else "application/cloudevents-batch+json; charset=UTF-8"
+    )
+
+    class MalformedBookCreatedV1(BookCreatedV1):
+        source: Any = None
+
+    fake_event = MalformedBookCreatedV1.event_factory(
         data={"book_id": 0, "title": "string", "author_name": "string"},
     )
-    fake_event.dataschema = None
+    fake_event.source = None
     async with AsyncClient(app=testapp, base_url="http://test") as ac:
         response = await ac.post(
-            "/events",
-            headers={"content-type": "application/cloudevents+json; charset=UTF-8"},
-            content=fake_event.model_dump_json(),
+            url,
+            headers={"content-type": content_type},
+            content=fake_event.model_dump_json()
+            if not batch
+            else f"[{fake_event.model_dump_json()}]",
         )
     assert response.status_code == 422
 
 
-async def test_wrong_content_type_returns_422(testapp):
-    fake_event = BookCreatedV1(
+@pytest.mark.parametrize(
+    ["batch"],
+    (
+        pytest.param(True, id="batch"),
+        pytest.param(False, id="single"),
+    ),
+)
+async def test_wrong_content_type_returns_422(testapp, batch):
+    url = "/events" if not batch else "/events/batch"
+
+    fake_event = BookCreatedV1.event_factory(
         data={"book_id": 0, "title": "string", "author_name": "string"},
     )
     async with AsyncClient(app=testapp, base_url="http://test") as ac:
         response = await ac.post(
-            "/events",
+            url,
             headers={"content-type": "application/json"},
-            content=fake_event.model_dump_json(),
+            content=fake_event.model_dump_json()
+            if not batch
+            else f"[{fake_event.model_dump_json()}]",
         )
     assert response.status_code == 422

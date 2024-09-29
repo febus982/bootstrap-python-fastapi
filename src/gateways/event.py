@@ -1,11 +1,10 @@
+from cloudevents_pydantic.events import CloudEvent
 from structlog import get_logger
-
-from domains.common.cloudevent_base import BaseEvent
 
 
 class NullEventGateway:
     async def emit(
-        self, event: BaseEvent
+        self, event: CloudEvent
     ) -> None:  # pragma: no cover # No need to test this
         logger = get_logger()
         await logger.ainfo(
