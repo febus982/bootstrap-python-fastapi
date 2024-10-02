@@ -42,11 +42,16 @@ class CeleryConfig(BaseModel):
     # }
 
 
+class EventConfig(BaseModel):
+    REDIS_BROKER_URL: str
+
+
 class AppConfig(BaseSettings):
     model_config = SettingsConfigDict(env_nested_delimiter="__")
 
     APP_NAME: str = "bootstrap"
     CELERY: CeleryConfig = CeleryConfig()
+    # EVENTS: EventConfig
     DEBUG: bool = False
     ENVIRONMENT: TYPE_ENVIRONMENT = "local"
     SQLALCHEMY_CONFIG: Dict[str, SQLAlchemyConfig] = dict(

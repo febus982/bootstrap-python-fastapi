@@ -25,15 +25,17 @@ asgiref = "^3.7.2"
 celery =  { version = "^5.3.1", extras = ["redis"] }
 cloudevents-pydantic = "^0.0.2"
 dependency-injector = { version = "^4.41.0", extras = ["pydantic"] }
+faststream = { version = "^0.5.25", extras = ["redis"] }
 httpx = ">=0.23.0"
 opentelemetry-distro = { version = "*", extras = ["otlp"] }
 opentelemetry-instrumentation = "*"
 opentelemetry-instrumentation-celery = "*"
+opentelemetry-instrumentation-faststream = "*"
 opentelemetry-instrumentation-httpx = "*"
 opentelemetry-instrumentation-sqlalchemy = "*"
 pydantic = "^2.2.1"
 pydantic-settings = "^2.0.3"
-python = ">=3.9,<3.13"
+python = ">=3.11,<3.13"
 rich = "^13.2.0"
 SQLAlchemy = { version = "^2.0.0", extras = ["asyncio", "mypy"] }
 sqlalchemy-bind-manager = "*"
