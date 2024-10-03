@@ -45,7 +45,9 @@ optional = true
 [tool.poetry.group.http.dependencies]
 fastapi = ">=0.99.0"
 jinja2 = "^3.1.2"
-opentelemetry-instrumentation-fastapi = "*"
+# We use the generic ASGI instrumentation, so that if we decide to change
+# Framework it will still work consistently.
+opentelemetry-instrumentation-asgi = "*"
 starlette-prometheus = "^0.10.0"
 strawberry-graphql = { version = ">=0.204.0", extras = ["debug-server"] }
 uvicorn = { version = "^0.31.0", extras = ["standard"] }
