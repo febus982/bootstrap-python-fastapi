@@ -12,7 +12,7 @@ from bootstrap import AppConfig, application_init
 
 @worker_process_init.connect(weak=False)
 def init_celery_tracing(*args, **kwargs):
-    CeleryInstrumentor().instrument()
+    CeleryInstrumentor().instrument()  # pragma: nocover
 
 
 app = application_init(AppConfig()).celery_app
