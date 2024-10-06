@@ -1,3 +1,7 @@
+# mypy: disable-error-code="call-arg,syntax"
+# `call-arg` is because of nested models (they have to be supplied via ENV)
+# `syntax` is because of Pydantic plugin
+# https://github.com/pydantic/pydantic-settings/issues/403
 from pathlib import Path
 from typing import Dict, Literal, Optional
 
@@ -43,15 +47,20 @@ class CeleryConfig(BaseModel):
 
 
 class EventConfig(BaseModel):
-    REDIS_BROKER_URL: str
+    REDIS_BROKER_URL: str = ""
+    TOPIC: Optional[str] = None
 
 
 class AppConfig(BaseSettings):
-    model_config = SettingsConfigDict(env_nested_delimiter="__")
+    model_config = SettingsConfigDict(
+        case_sensitive=True,
+        env_nested_delimiter="__",
+        nested_model_default_partial_update=True,
+    )
 
     APP_NAME: str = "bootstrap"
     CELERY: CeleryConfig = CeleryConfig()
-    EVENTS: EventConfig
+    EVENTS: EventConfig = EventConfig()
     DEBUG: bool = False
     ENVIRONMENT: TYPE_ENVIRONMENT = "local"
     SQLALCHEMY_CONFIG: Dict[str, SQLAlchemyConfig] = dict(

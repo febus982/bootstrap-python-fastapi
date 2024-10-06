@@ -1,10 +1,10 @@
-from typing import cast, Any
+from typing import cast
 
 from celery import Celery
 from dependency_injector.containers import DynamicContainer
 from dependency_injector.providers import Object
-from faststream.broker.core.usecase import BrokerUsecase
 from faststream.redis import RedisBroker
+
 # from gateways.event import FastStreamRedisGateway
 from pydantic import BaseModel, ConfigDict
 

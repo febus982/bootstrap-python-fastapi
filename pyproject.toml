@@ -23,7 +23,8 @@ aiosqlite = ">=0.18.0"
 alembic = "^1.11.1"
 asgiref = "^3.7.2"
 celery =  { version = "^5.3.1", extras = ["redis"] }
-cloudevents-pydantic = "^0.0.2"
+cloudevents-pydantic = { git = "https://github.com/febus982/cloudevents-pydantic", branch = "main" }
+#cloudevents-pydantic = "^0.0.2"
 dependency-injector = { version = "^4.41.0", extras = ["pydantic"] }
 faststream = { version = "^0.5.25", extras = ["redis"] }
 httpx = ">=0.23.0"
@@ -99,9 +100,7 @@ exclude_also = [
 [tool.mypy]
 files = ["src", "tests"]
 exclude = ["alembic"]
-# Pydantic plugin causes some issues: https://github.com/pydantic/pydantic-settings/issues/403
-#plugins = "pydantic.mypy,strawberry.ext.mypy_plugin"
-plugins = "strawberry.ext.mypy_plugin"
+plugins = "pydantic.mypy,strawberry.ext.mypy_plugin"
 python_version = "3.9"
 
 # We can remove celery by installing `celery-types` but needs

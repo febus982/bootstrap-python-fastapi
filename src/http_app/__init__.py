@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from typing import Union, Any
+from typing import Any, Union
 
 from fastapi import FastAPI, Request
 from faststream.broker.core.usecase import BrokerUsecase
@@ -28,7 +28,7 @@ def create_app(
     app = FastAPI(
         debug=app_config.DEBUG,
         title=app_config.APP_NAME,
-        # lifespan=faststream_lifespan(ref.faststream_broker),
+        lifespan=faststream_lifespan(ref.faststream_broker),
     )
     init_exception_handlers(app)
 
