@@ -51,7 +51,7 @@ class AppConfig(BaseSettings):
 
     APP_NAME: str = "bootstrap"
     CELERY: CeleryConfig = CeleryConfig()
-    # EVENTS: EventConfig
+    EVENTS: EventConfig
     DEBUG: bool = False
     ENVIRONMENT: TYPE_ENVIRONMENT = "local"
     SQLALCHEMY_CONFIG: Dict[str, SQLAlchemyConfig] = dict(
