@@ -49,6 +49,8 @@ class CeleryConfig(BaseModel):
 class EventConfig(BaseModel):
     REDIS_BROKER_URL: str = ""
     TOPIC: Optional[str] = None
+    IS_PUBLISHER: bool = False
+    IS_SUBSCRIBER: bool = False
 
 
 class AppConfig(BaseSettings):

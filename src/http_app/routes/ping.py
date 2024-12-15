@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from pydantic import BaseModel, ConfigDict
+from starlette.responses import JSONResponse
 
 router = APIRouter()
 
@@ -18,4 +19,5 @@ class PingResponse(BaseModel):
 
 @router.get("/ping")
 async def ping() -> PingResponse:
+    JSONResponse({"ping": "pong!"})
     return PingResponse(ping="pong!")

@@ -67,6 +67,8 @@ services:
       CELERY__broker_url: "redis://redis:6379/0"
       CELERY__result_backend: "redis://redis:6379/1"
       EVENTS__REDIS_BROKER_URL: "redis://redis:6379/2"
+      EVENTS__IS_PUBLISHER: "True"
+      EVENTS__IS_SUBSCRIBER: "False"
     ports:
       - '8000:8000'
     working_dir: "/app/src"
@@ -99,6 +101,8 @@ services:
       CELERY__broker_url: "redis://redis:6379/0"
       CELERY__result_backend: "redis://redis:6379/1"
       EVENTS__REDIS_BROKER_URL: "redis://redis:6379/2"
+      EVENTS__IS_PUBLISHER: "True"
+      EVENTS__IS_SUBSCRIBER: "True"
     working_dir: "/app/src"
     volumes:
       - '.:/app'
@@ -108,7 +112,6 @@ services:
     command:
       - faststream
       - run
-#      - event_consumer:app
       - event_consumer:create_app
       - --factory
 
@@ -124,6 +127,8 @@ services:
       CELERY__broker_url: "redis://redis:6379/0"
       CELERY__result_backend: "redis://redis:6379/1"
       EVENTS__REDIS_BROKER_URL: "redis://redis:6379/2"
+      EVENTS__IS_PUBLISHER: "True"
+      EVENTS__IS_SUBSCRIBER: "True"
     ports:
       - '8000:8000'
     working_dir: "/app/src"

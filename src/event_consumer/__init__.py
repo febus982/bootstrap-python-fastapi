@@ -5,17 +5,20 @@ without having to initialise the HTTP framework (or other ones)
 """
 
 import os
-from typing import Union
+from typing import Union, Optional
 
 import structlog
 from faststream import FastStream
+from faststream.redis import RedisRouter
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
+from alembic.env import logger
 from bootstrap import AppConfig, application_init
+from domains import event_registry
 from domains.books.events import BookCreatedV1, BookCreatedV1Data
 
 
@@ -33,7 +36,8 @@ def create_app(test_config: Union[AppConfig, None] = None) -> FastStream:
     setup_telemetry(
         "faststream", otlp_endpoint=os.environ["OTEL_EXPORTER_OTLP_ENDPOINT"]
     )
-    broker = application_init(AppConfig()).faststream_broker
+    router = application_init(AppConfig()).faststream_broker
+    broker = router.broker
     app = FastStream(broker, logger=structlog.get_logger())
 
     @app.after_startup
@@ -50,3 +54,20 @@ def create_app(test_config: Union[AppConfig, None] = None) -> FastStream:
         )
 
     return app
+
+
+
+# TODO: Add Routing structure similar to the one in the fastapi and
+#       move this in the event_consumer_module
+def register_subscribers(router: RedisRouter, topic: Optional[str] = None):
+    if topic is not None and topic in event_registry.keys():
+        topics_map = {topic: event_registry[topic]}
+    else:
+        topics_map = event_registry.copy()
+
+    logger = structlog.get_logger()
+
+    for topic, event_type in topics_map.items():
+        @router.subscriber(topic)
+        async def handler(msg: event_type) -> None:  # type: ignore[valid-type]
+            logger.info(f"Received message {type(msg)} {msg}")

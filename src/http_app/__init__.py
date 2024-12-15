@@ -1,9 +1,8 @@
-from contextlib import asynccontextmanager
-from typing import Any, Union
+from typing import Union, Any
 
 from fastapi import FastAPI, Request
 from faststream.broker.core.usecase import BrokerUsecase
-from faststream.types import Lifespan
+from faststream.redis import RedisRouter, fastapi
 from opentelemetry.instrumentation.asgi import OpenTelemetryMiddleware
 from starlette.responses import JSONResponse
 from starlette_prometheus import PrometheusMiddleware, metrics
@@ -19,20 +18,14 @@ def create_app(
     app_config = test_config or AppConfig()
     ref = application_init(app_config)
 
-    """
-    We don't want to couple together FastAPI and FastStream
-    so we use a lifespan handler instead of the plugin to
-    remain decoupled but still able use any generic broker
-    for message publishing in FastAPI.
-    """
     app = FastAPI(
         debug=app_config.DEBUG,
         title=app_config.APP_NAME,
-        lifespan=faststream_lifespan(ref.faststream_broker),
     )
     init_exception_handlers(app)
 
     init_routes(app)
+    add_faststream_router(app, ref.faststream_broker)
 
     """
     OpenTelemetry prometheus exporter does not work together with automatic
@@ -67,13 +60,7 @@ def init_exception_handlers(app: FastAPI) -> None:
             return JSONResponse({"error": "Internal server error"}, status_code=500)
 
 
-def faststream_lifespan(broker: BrokerUsecase[Any, Any]) -> Lifespan:
-    @asynccontextmanager
-    async def handler(app: FastAPI):
-        await broker.start()
-        try:
-            yield
-        finally:
-            await broker.close()
-
-    return handler
+def add_faststream_router(app: FastAPI, router: RedisRouter) -> None:
+    f_router = fastapi.RedisRouter()
+    f_router.include_router(router)
+    app.include_router(f_router)
