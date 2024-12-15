@@ -1,7 +1,7 @@
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from fastapi import FastAPI
-from httpx import AsyncClient
+from fastapi.testclient import TestClient
 
 
 @patch("http_app.get_logger")
@@ -17,8 +17,8 @@ async def test_exception_is_logged_handler_returns_500(
 
     mocked_get_logger.return_value.aexception = AsyncMock(return_value=None)
 
-    async with AsyncClient(app=testapp, base_url="http://test") as ac:
-        response = await ac.get("/ppp")
+    ac = TestClient(app=testapp, base_url="http://test")
+    response = ac.get("/ppp")
 
     assert response.status_code == 500
     assert response.json() == {"error": "Internal server error"}
