@@ -1,7 +1,7 @@
-from httpx import AsyncClient
+from fastapi.testclient import TestClient
 
 
 async def test_root(testapp):
-    async with AsyncClient(app=testapp, base_url="http://test") as ac:
-        response = await ac.get("/hello/")
+    ac = TestClient(app=testapp, base_url="http://test")
+    response = ac.get("/hello/")
     assert response.status_code == 200
