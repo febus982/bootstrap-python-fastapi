@@ -6,6 +6,7 @@ from structlog import get_logger
 
 from common.tracing import trace_function
 from common.utils import apply_decorator_to_methods
+
 from ._gateway_interfaces import BookEventGatewayInterface, BookRepositoryInterface
 from ._models import BookModel
 from ._tasks import book_cpu_intensive_task

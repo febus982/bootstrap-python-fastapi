@@ -8,15 +8,15 @@ from common.utils import apply_decorator_to_methods
 @pytest.mark.parametrize(
     "apply_to_protected_methods",
     [
-        True,
-        False,
+        pytest.param(True, id="protected_methods"),
+        pytest.param(False, id="no_protected_methods"),
     ],
 )
 @pytest.mark.parametrize(
     "apply_to_private_methods",
     [
-        True,
-        False,
+        pytest.param(True, id="private_methods"),
+        pytest.param(False, id="no_private_methods"),
     ],
 )
 async def test_class_decorator(
@@ -61,7 +61,7 @@ async def test_class_decorator(
     c = MyClass()
     assert c.get_public() == 20
     assert c._get_protected() == 20 if apply_to_protected_methods else 10
-    assert c._MyClass__get_private() == 20 if apply_to_private_methods else 10
+    assert c._MyClass__get_private() == 20 if apply_to_private_methods else 10  # type: ignore
     assert await c.get_apublic() == 20
     assert await c._get_aprotected() == 20 if apply_to_protected_methods else 10
-    assert await c._MyClass__get_aprivate() == 20 if apply_to_private_methods else 10
+    assert await c._MyClass__get_aprivate() == 20 if apply_to_private_methods else 10  # type: ignore

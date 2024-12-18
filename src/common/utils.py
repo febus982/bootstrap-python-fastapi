@@ -16,9 +16,8 @@ def apply_decorator_to_methods(
                 if not private_methods:
                     continue
 
-            elif attr_name.startswith("_"):
-                if not protected_methods:
-                    continue
+            elif attr_name.startswith("_") and not protected_methods:
+                continue
 
             # Replace the original callable with the decorated version
             setattr(cls, attr_name, decorator(attr_value))
