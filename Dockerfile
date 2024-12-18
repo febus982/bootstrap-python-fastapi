@@ -68,7 +68,7 @@ COPY --chown=nonroot:nonroot poetry.lock .
 COPY --chown=nonroot:nonroot src/alembic ./alembic
 COPY --chown=nonroot:nonroot src/domains ./domains
 COPY --chown=nonroot:nonroot src/gateways ./gateways
-COPY --chown=nonroot:nonroot src/bootstrap ./bootstrap
+COPY --chown=nonroot:nonroot src/common ./bootstrap
 COPY --chown=nonroot:nonroot src/alembic.ini .
 COPY --chown=nonroot:nonroot Makefile .
 

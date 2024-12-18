@@ -7,7 +7,7 @@ without having to initialise the HTTP framework (or other ones)
 from celery.signals import worker_process_init
 from opentelemetry.instrumentation.celery import CeleryInstrumentor
 
-from bootstrap import AppConfig, application_init
+from common import AppConfig, application_init
 
 
 @worker_process_init.connect(weak=False)
