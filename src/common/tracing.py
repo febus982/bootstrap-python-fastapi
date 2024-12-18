@@ -1,9 +1,7 @@
 import asyncio
 from functools import wraps
-
 from opentelemetry import trace
 
-# Get the _tracer instance (You can set your own _tracer name)
 tracer = trace.get_tracer(__name__)
 
 
@@ -16,41 +14,47 @@ def trace_function(trace_attributes: bool = True, trace_result: bool = True):
     - trace_result (bool): If False, disables adding the function's result to the span.
     """
 
+    def set_span_attributes(span, args, kwargs, result=None):
+        """Helper to set function arguments and results as span attributes."""
+        if trace_attributes:
+            span.set_attribute("function.args", str(args))
+            span.set_attribute("function.kwargs", str(kwargs))
+        if trace_result and result is not None:
+            span.set_attribute("function.result", str(result))
+
+    def record_exception(span, exception):
+        """Helper to handle exception recording in a span."""
+        span.record_exception(exception)
+        span.set_status(trace.status.Status(trace.status.StatusCode.ERROR))
+
+    async def handle_async(span, func, *args, **kwargs):
+        """Handle asynchronous functions."""
+        try:
+            result = await func(*args, **kwargs)
+            set_span_attributes(span, args, kwargs, result)
+            return result
+        except Exception as e:
+            record_exception(span, e)
+            raise
+
+    def handle_sync(span, func, *args, **kwargs):
+        """Handle synchronous functions."""
+        try:
+            result = func(*args, **kwargs)
+            set_span_attributes(span, args, kwargs, result)
+            return result
+        except Exception as e:
+            record_exception(span, e)
+            raise
+
     def decorator(func):
         @wraps(func)
-        def sync_or_async_wrapper(*args, **kwargs):
+        def wrapper(*args, **kwargs):
             with tracer.start_as_current_span(func.__name__) as span:
-                try:
-                    # Set function arguments as attributes
-                    if trace_attributes:
-                        span.set_attribute("function.args", str(args))
-                        span.set_attribute("function.kwargs", str(kwargs))
+                if asyncio.iscoroutinefunction(func):
+                    return handle_async(span, func, *args, **kwargs)
+                return handle_sync(span, func, *args, **kwargs)
 
-                    async def async_handler():
-                        result = await func(*args, **kwargs)
-                        # Add result to span
-                        if trace_result:
-                            span.set_attribute("function.result", str(result))
-                        return result
-
-                    def sync_handler():
-                        result = func(*args, **kwargs)
-                        # Add result to span
-                        if trace_result:
-                            span.set_attribute("function.result", str(result))
-                        return result
-
-                    if asyncio.iscoroutinefunction(func):
-                        return async_handler()
-                    else:
-                        return sync_handler()
-
-                except Exception as e:
-                    # Record the exception in the span
-                    span.record_exception(e)
-                    span.set_status(trace.status.Status(trace.status.StatusCode.ERROR))
-                    raise
-
-        return sync_or_async_wrapper
+        return wrapper
 
     return decorator
