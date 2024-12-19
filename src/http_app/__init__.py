@@ -6,7 +6,7 @@ from starlette.responses import JSONResponse
 from starlette_prometheus import PrometheusMiddleware, metrics
 from structlog import get_logger
 
-from bootstrap import AppConfig, application_init
+from common import AppConfig, application_init
 from http_app.routes import init_routes
 
 

@@ -3,7 +3,7 @@ from dependency_injector.providers import Dependency, Factory, Singleton
 from sqlalchemy_bind_manager import SQLAlchemyBindManager
 from sqlalchemy_bind_manager.repository import SQLAlchemyAsyncRepository
 
-from bootstrap.config import AppConfig
+from common.config import AppConfig
 from domains.books._gateway_interfaces import (
     BookEventGatewayInterface,
     BookRepositoryInterface,
@@ -21,7 +21,7 @@ class Container(DeclarativeContainer):
 
     wiring_config = WiringConfiguration(
         packages=[
-            "bootstrap",
+            "common",
             "domains",
         ]
     )

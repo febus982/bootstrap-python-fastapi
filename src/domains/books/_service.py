@@ -4,6 +4,9 @@ from anyio import to_thread
 from dependency_injector.wiring import Provide, inject
 from structlog import get_logger
 
+from common.tracing import trace_function
+from common.utils import apply_decorator_to_methods
+
 from ._gateway_interfaces import BookEventGatewayInterface, BookRepositoryInterface
 from ._models import BookModel
 from ._tasks import book_cpu_intensive_task
@@ -11,6 +14,7 @@ from .dto import Book, BookData
 from .events import BookCreatedV1, BookCreatedV1Data
 
 
+@apply_decorator_to_methods(trace_function())
 class BookService:
     _book_repository: BookRepositoryInterface
     _event_gateway: BookEventGatewayInterface
