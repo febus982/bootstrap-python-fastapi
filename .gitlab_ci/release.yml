@@ -1,0 +1,25 @@
+# Production Build with Multi-Arch
+release:
+  stage: release
+  image: docker:24.0.2
+  only:
+    - main
+  services:
+    - docker:24.0.2-dind
+  variables:
+    CI_REGISTRY_USER: "$CI_REGISTRY_USER"
+    CI_REGISTRY_PASSWORD: "$CI_REGISTRY_PASSWORD"
+    DOCKER_BUILDKIT: 1
+  before_script:
+    - apk add --no-cache qemu bash
+    - docker buildx create --use
+    - docker login $CI_REGISTRY -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
+  script:
+    - docker buildx inspect --bootstrap
+    - |
+      docker buildx build --push --target=http_app \
+        --platform linux/amd64,linux/arm64 \
+        --tag $CI_REGISTRY/$CI_PROJECT_PATH:latest \
+        --tag $CI_REGISTRY/$CI_PROJECT_PATH:$(date +%Y%m%d%H%M%S) \
+        --cache-to=type=registry,ref=$CI_REGISTRY/$CI_PROJECT_PATH/cache,mode=max \
+        --cache-from=type=registry,ref=$CI_REGISTRY/$CI_PROJECT_PATH/cache .
