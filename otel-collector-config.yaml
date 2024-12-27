@@ -2,10 +2,11 @@ receivers:
   otlp:
     protocols:
       grpc:
+        endpoint: 0.0.0.0:4317
 
 exporters:
-  logging:
-    loglevel: debug
+  debug:
+    verbosity: detailed
   otlp:
     endpoint: jaeger:4317
     tls:
@@ -18,8 +19,8 @@ service:
   pipelines:
     metrics:
       receivers: [otlp]
-      exporters: [logging]
+      exporters: [debug]
     traces:
       receivers: [otlp]
-      exporters: [logging]
+      exporters: [debug]
       processors: [batch]
