@@ -30,10 +30,10 @@ typing:
 	uv run mypy
 
 install-dependencies:
-	uv sync --all-groups --no-dev --no-install-project
+	uv sync --all-groups --no-dev --no-install-project --frozen
 
 dev-dependencies:
-	uv sync --all-groups
+	uv sync --all-groups --frozen
 
 update-dependencies:
 	uv lock --upgrade
