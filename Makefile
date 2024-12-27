@@ -9,56 +9,56 @@ containers:
 	docker compose build --build-arg UID=`id -u`
 
 dev:
-	poetry run uvicorn http_app:create_app --host 0.0.0.0 --port 8000 --factory --reload
+	uv run uvicorn http_app:create_app --host 0.0.0.0 --port 8000 --factory --reload
 
 otel:
-	OTEL_SERVICE_NAME=bootstrap-fastapi OTEL_TRACES_EXPORTER=none OTEL_METRICS_EXPORTER=none OTEL_LOGS_EXPORTER=none poetry run opentelemetry-instrument uvicorn http_app:create_app --host 0.0.0.0 --port 8000 --factory
+	OTEL_SERVICE_NAME=bootstrap-fastapi OTEL_TRACES_EXPORTER=none OTEL_METRICS_EXPORTER=none OTEL_LOGS_EXPORTER=none uv run opentelemetry-instrument uvicorn http_app:create_app --host 0.0.0.0 --port 8000 --factory
 
 run:
-	poetry run uvicorn http_app:create_app --host 0.0.0.0 --port 8000 --factory
+	uv run uvicorn http_app:create_app --host 0.0.0.0 --port 8000 --factory
 
 test:
-	poetry run pytest -n auto --cov
+	uv run pytest -n auto --cov
 
 ci-test:
-	poetry run pytest
+	uv run pytest
 
 ci-coverage:
-	poetry run pytest --cov --cov-report lcov
+	uv run pytest --cov --cov-report lcov
 
 typing:
-	poetry run mypy
+	uv run mypy
 
 install-dependencies:
-	poetry install --no-root --with http
+	uv sync --all-groups --no-dev --no-install-project --frozen
 
 dev-dependencies:
-	poetry install --with http,dev
+	uv sync --all-groups --frozen
 
 update-dependencies:
-	poetry update --with http,dev
+	uv lock --upgrade
 
 migrate:
-	poetry run alembic upgrade heads
+	uv run alembic upgrade heads
 
 format:
-	poetry run ruff format --check .
+	uv run ruff format --check .
 
 lint:
-	poetry run ruff check .
+	uv run ruff check .
 
 fix:
-	poetry run ruff format .
-	poetry run ruff check . --fix
-	poetry run ruff format .
+	uv run ruff format .
+	uv run ruff check . --fix
+	uv run ruff format .
 
 check: lint format typing test
 
 docs:
-	poetry run mkdocs serve
+	uv run mkdocs serve
 
 adr:
 	adr-viewer --serve --adr-path docs/adr
 
 docs-build:
-	poetry run mkdocs build
+	uv run mkdocs build

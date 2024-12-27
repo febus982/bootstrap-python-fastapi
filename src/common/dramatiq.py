@@ -1,3 +1,5 @@
+import logging
+
 import orjson
 from dramatiq import set_broker, set_encoder
 from dramatiq.broker import Broker
@@ -26,15 +28,17 @@ class ORJSONEncoder(Encoder):
 
 
 def init_dramatiq(config: AppConfig):
-    DramatiqInstrumentor().instrument()
     broker: Broker
-    if config.ENVIRONMENT == "test":
-        broker = StubBroker()
-        # broker.emit_after("process_boot")
-    elif config.DRAMATIQ.REDIS_URL is not None:
+
+    DramatiqInstrumentor().instrument()
+
+    if config.DRAMATIQ.REDIS_URL is not None:
         broker = RedisBroker(url=config.DRAMATIQ.REDIS_URL)
     else:
-        raise RuntimeError("Running a non-test environment without Redis URL set")
+        broker = StubBroker()
+        # broker.emit_after("process_boot")
+        if config.ENVIRONMENT != "test":
+            logging.critical("Running a non-test environment without Redis URL set")
     broker.add_middleware(AsyncIO())
     set_broker(broker)
     set_encoder(ORJSONEncoder())
