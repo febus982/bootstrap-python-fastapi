@@ -69,10 +69,9 @@ Python docker image tend to become large after installing the application requir
 to minimise the image size, even if it produces a slightly more complex multistage
 Dockerfile.
 
-The following setup makes sure the production image will keep to a minimal size ("only" 390MB):
+The following setup makes sure the production image will keep to a minimal size ("only" 360MB):
  * 150MB base image
- * 165MB python installed dependencies
- * 73MB poetry + updated pip
+ * 210MB python installed dependencies
 
 Using the following pipeline the "test" image is instead ~850MB, more than 400MB that would
 end up as a cost in traffic on each image pull.
