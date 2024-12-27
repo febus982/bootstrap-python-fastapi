@@ -8,34 +8,16 @@ services:
   redis:
     image: redis
 
-  celery-worker:
+  dramatiq:
     build:
       dockerfile: Dockerfile
       context: .
-      target: celery_app
+      target: dramatiq_app
     environment:
-      OTEL_SERVICE_NAME: "bootstrap-fastapi-worker"
+      WATCHFILES_FORCE_POLLING: true
+      OTEL_SERVICE_NAME: "bootstrap-fastapi-dramatiq-worker"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
-      CELERY__broker_url: "redis://redis:6379/0"
-      CELERY__result_backend: "redis://redis:6379/1"
-    working_dir: "/app/src"
-    volumes:
-      - '.:/app'
-    depends_on:
-      - redis
-      - otel-collector
-      - celery-beat
-
-  celery-beat:
-    build:
-      dockerfile: Dockerfile
-      context: .
-      target: celery_app
-    environment:
-      OTEL_SERVICE_NAME: "bootstrap-fastapi-worker"
-      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
-      CELERY__broker_url: "redis://redis:6379/0"
-      CELERY__result_backend: "redis://redis:6379/1"
+      DRAMATIQ__REDIS_URL: "redis://redis:6379/0"
     working_dir: "/app/src"
     volumes:
       - '.:/app'
@@ -44,12 +26,14 @@ services:
       - otel-collector
     command:
       - opentelemetry-instrument
-      - celery
-      - -A
-      - celery_worker:app
-      - beat
-      - -l
-      - INFO
+      - dramatiq
+      - --watch
+      - .
+      - -p
+      - "1"
+      - -t
+      - "1"
+      - dramatiq_worker
 
   dev:
     build:
