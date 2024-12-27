@@ -1,10 +1,10 @@
-from unittest.mock import patch, MagicMock
-from dramatiq.encoder import DecodeError
+from unittest.mock import MagicMock, patch
+
+import orjson
+import pytest
 from dramatiq import get_broker, get_encoder
 from dramatiq.brokers.stub import StubBroker
-
-import pytest
-import orjson
+from dramatiq.encoder import DecodeError
 
 from common import AppConfig
 from common.config import DramatiqConfig
@@ -27,7 +27,10 @@ def test_orjson_encoder(
     mocked_loads.assert_called_once_with(b"serialized")
 
 
-@patch("common.dramatiq.orjson.loads", side_effect=orjson.JSONDecodeError("msg","doc", 123))
+@patch(
+    "common.dramatiq.orjson.loads",
+    side_effect=orjson.JSONDecodeError("msg", "doc", 123),
+)
 def test_orjson_encoder_fails(
     mocked_loads: MagicMock,
 ):
@@ -60,6 +63,10 @@ def test_init_dramatiq_with_redis():
 
 def test_init_dramatiq_without_redis_url():
     """Test if an exception is raised when in non-test environment without Redis URL."""
-    config = AppConfig(ENVIRONMENT="production", DRAMATIQ=DramatiqConfig(REDIS_URL=None))  # Mock config
-    with pytest.raises(RuntimeError, match="Running a non-test environment without Redis URL set"):
+    config = AppConfig(
+        ENVIRONMENT="production", DRAMATIQ=DramatiqConfig(REDIS_URL=None)
+    )  # Mock config
+    with pytest.raises(
+        RuntimeError, match="Running a non-test environment without Redis URL set"
+    ):
         init_dramatiq(config)
