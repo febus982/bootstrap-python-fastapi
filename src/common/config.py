@@ -9,7 +9,7 @@ TYPE_ENVIRONMENT = Literal["local", "test", "staging", "production"]
 
 
 class DramatiqConfig(BaseModel):
-    REDIS_HOST: Optional[str] = None
+    REDIS_URL: Optional[str] = None
 
 class CeleryConfig(BaseModel):
     # https://docs.celeryq.dev/en/stable/userguide/configuration.html#configuration

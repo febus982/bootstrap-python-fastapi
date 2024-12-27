@@ -12,9 +12,9 @@ def init_dramatiq(config: AppConfig):
     if config.ENVIRONMENT == "test":
         broker = StubBroker()
         # broker.emit_after("process_boot")
-    elif config.DRAMATIQ.REDIS_HOST is not None:
-        broker = RedisBroker(host=config.DRAMATIQ.REDIS_HOST)
+    elif config.DRAMATIQ.REDIS_URL is not None:
+        broker = RedisBroker(host=config.DRAMATIQ.REDIS_URL)
     else:
-        raise RuntimeError("Running a non-test environment without Redis host set")
+        raise RuntimeError("Running a non-test environment without Redis URL set")
     broker.add_middleware(AsyncIO())
     set_broker(broker)
