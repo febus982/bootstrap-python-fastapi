@@ -18,7 +18,7 @@ def trace_function(trace_attributes: bool = True, trace_result: bool = True):
 
     def decorator(func):
         @wraps(func)
-        def sync_or_async_wrapper(*args, **kwargs):
+        async def async_wrapper(*args, **kwargs):
             with tracer.start_as_current_span(func.__name__) as span:
                 try:
                     # Set function arguments as attributes
@@ -26,24 +26,31 @@ def trace_function(trace_attributes: bool = True, trace_result: bool = True):
                         span.set_attribute("function.args", str(args))
                         span.set_attribute("function.kwargs", str(kwargs))
 
-                    async def async_handler():
-                        result = await func(*args, **kwargs)
-                        # Add result to span
-                        if trace_result:
-                            span.set_attribute("function.result", str(result))
-                        return result
+                    result = await func(*args, **kwargs)
+                    # Add result to span
+                    if trace_result:
+                        span.set_attribute("function.result", str(result))
+                    return result
+                except Exception as e:
+                    # Record the exception in the span
+                    span.record_exception(e)
+                    span.set_status(trace.status.Status(trace.status.StatusCode.ERROR))
+                    raise
 
-                    def sync_handler():
-                        result = func(*args, **kwargs)
-                        # Add result to span
-                        if trace_result:
-                            span.set_attribute("function.result", str(result))
-                        return result
+        @wraps(func)
+        def sync_wrapper(*args, **kwargs):
+            with tracer.start_as_current_span(func.__name__) as span:
+                try:
+                    # Set function arguments as attributes
+                    if trace_attributes:
+                        span.set_attribute("function.args", str(args))
+                        span.set_attribute("function.kwargs", str(kwargs))
 
-                    if asyncio.iscoroutinefunction(func):
-                        return async_handler()
-                    else:
-                        return sync_handler()
+                    result = func(*args, **kwargs)
+                    # Add result to span
+                    if trace_result:
+                        span.set_attribute("function.result", str(result))
+                    return result
 
                 except Exception as e:
                     # Record the exception in the span
@@ -51,6 +58,6 @@ def trace_function(trace_attributes: bool = True, trace_result: bool = True):
                     span.set_status(trace.status.Status(trace.status.StatusCode.ERROR))
                     raise
 
-        return sync_or_async_wrapper
+        return async_wrapper if asyncio.iscoroutinefunction(func) else sync_wrapper
 
     return decorator
