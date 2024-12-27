@@ -21,7 +21,7 @@ and [SOLID principles](https://en.wikipedia.org/wiki/SOLID).
 This template provides out of the box some commonly used functionalities:
 
 * API Documentation using [FastAPI](https://fastapi.tiangolo.com/)
-* Async tasks execution using [Celery](https://docs.celeryq.dev/en/stable/index.html)
+* Async tasks execution using [Dramatiq](https://dramatiq.io/index.html)
 * Repository pattern for databases using [SQLAlchemy](https://www.sqlalchemy.org/) and [SQLAlchemy bind manager](https://febus982.github.io/sqlalchemy-bind-manager/stable/)
 * Database migrations using [Alembic](https://alembic.sqlalchemy.org/en/latest/) (configured supporting both sync and async SQLAlchemy engines)
 * [TODO] Producer and consumer to emit and consume events using [CloudEvents](https://cloudevents.io/) format on [Confluent Kafka](https://docs.confluent.io/kafka-clients/python/current/overview.html)
@@ -44,7 +44,7 @@ Using Docker:
 * `make containers`: Build containers
 * `docker compose run --rm dev make migrate`: Run database migrations
 * `docker compose up dev`: Run HTTP application with hot reload
-* `docker compose up celery-worker`: Run the celery worker
+* `docker compose up dramatiq-worker`: Run the dramatiq worker
 * `docker compose run --rm test`: Run test suite
 
 Locally:

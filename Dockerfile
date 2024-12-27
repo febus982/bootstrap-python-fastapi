@@ -51,8 +51,8 @@ RUN make dev-dependencies
 # when signals are propagated, we disable it in dev image default CMD
 CMD ["uvicorn", "http_app:create_app", "--host", "0.0.0.0", "--port", "8000", "--factory", "--reload"]
 
-# Installs requirements to run production celery application
-FROM base_builder AS celery_builder
+# Installs requirements to run production dramatiq application
+FROM base_builder AS dramatiq_builder
 RUN poetry install --no-root
 
 # Installs requirements to run production http application
@@ -68,7 +68,7 @@ COPY --chown=nonroot:nonroot poetry.lock .
 COPY --chown=nonroot:nonroot src/alembic ./alembic
 COPY --chown=nonroot:nonroot src/domains ./domains
 COPY --chown=nonroot:nonroot src/gateways ./gateways
-COPY --chown=nonroot:nonroot src/common ./bootstrap
+COPY --chown=nonroot:nonroot src/common ./common
 COPY --chown=nonroot:nonroot src/alembic.ini .
 COPY --chown=nonroot:nonroot Makefile .
 
@@ -79,9 +79,10 @@ COPY --chown=nonroot:nonroot src/http_app ./http_app
 # Run CMD using array syntax, so it's uses `exec` and runs as PID1
 CMD ["opentelemetry-instrument", "uvicorn", "http_app:create_app", "--host", "0.0.0.0", "--port", "8000", "--factory"]
 
-# Copy the celery python package and requirements from relevant builder
-FROM base_app AS celery_app
-COPY --from=celery_builder /poetryvenvs /poetryvenvs
-COPY --chown=nonroot:nonroot src/celery_worker ./celery_worker
+# Copy the dramatiq python package and requirements from relevant builder
+FROM base_app AS dramatiq_app
+COPY --from=dramatiq_builder /poetryvenvs /poetryvenvs
+COPY --chown=nonroot:nonroot src/dramatiq_worker ./dramatiq_worker
 # Run CMD using array syntax, so it's uses `exec` and runs as PID1
-CMD ["opentelemetry-instrument", "celery", "-A", "celery_worker:app", "worker", "-l", "INFO"]
+# TODO: Review processes/threads
+CMD ["opentelemetry-instrument", "dramatiq", "-p", "1", "-t", "1", "dramatiq_worker"]
