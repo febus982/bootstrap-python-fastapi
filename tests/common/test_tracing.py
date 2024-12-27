@@ -66,7 +66,7 @@ async def test_async_function_default_params(mock_tracer):
     mock_span.set_attribute.assert_any_call("function.result", "20")
 
 
-def test_disable_function_attributes(mock_tracer):
+def test_disable_function_attributes_sync(mock_tracer):
     """
     Test a synchronous function with `add_function_attributes` set to False.
     """
@@ -83,6 +83,29 @@ def test_disable_function_attributes(mock_tracer):
     # Assertions
     assert result == 4
     mock_tracer.start_as_current_span.assert_called_once_with("sync_func")
+    mock_span.set_attribute.assert_any_call("function.result", "4")
+    assert (
+        call("function.args", "(10, 6)") not in mock_span.set_attribute.call_args_list
+    )
+
+
+async def test_disable_function_attributes_async(mock_tracer):
+    """
+    Test an asynchronous function with `add_function_attributes` set to False.
+    """
+    mock_tracer, mock_span = mock_tracer
+
+    # Define a sync function with attributes disabled
+    @trace_function(trace_attributes=False)
+    async def async_func(a, b):
+        return a - b
+
+    # Call the function
+    result = await async_func(10, 6)
+
+    # Assertions
+    assert result == 4
+    mock_tracer.start_as_current_span.assert_called_once_with("async_func")
     mock_span.set_attribute.assert_any_call("function.result", "4")
     assert (
         call("function.args", "(10, 6)") not in mock_span.set_attribute.call_args_list
@@ -133,7 +156,7 @@ async def test_disable_result_in_span(mock_tracer):
     assert call("function.result") not in mock_span.set_attribute.call_args_list
 
 
-def test_exception_in_function(mock_tracer):
+def test_exception_in_function_sync(mock_tracer):
     """
     Test behavior when the function raises an exception.
     """
@@ -149,6 +172,29 @@ def test_exception_in_function(mock_tracer):
     # Use pytest to assert the exception is raised
     with pytest.raises(ValueError, match="Division by zero!"):
         failing_func(10, 0)
+
+    # Assertions
+    mock_tracer.start_as_current_span.assert_called_once_with("failing_func")
+    mock_span.record_exception.assert_called_once()
+    mock_span.set_status.assert_called_once()
+
+
+async def test_exception_in_function_async(mock_tracer):
+    """
+    Test behavior when the function raises an exception.
+    """
+    mock_tracer, mock_span = mock_tracer
+
+    # Define a failing function
+    @trace_function()
+    async def failing_func(a, b):
+        if b == 0:
+            raise ValueError("Division by zero!")
+        return a / b
+
+    # Use pytest to assert the exception is raised
+    with pytest.raises(ValueError, match="Division by zero!"):
+        await failing_func(10, 0)
 
     # Assertions
     mock_tracer.start_as_current_span.assert_called_once_with("failing_func")
