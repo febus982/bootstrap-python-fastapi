@@ -1,5 +1,4 @@
 services:
-
   otel-collector:
     image: otel/opentelemetry-collector-contrib
     volumes:
@@ -13,11 +12,9 @@ services:
       dockerfile: Dockerfile
       context: .
       target: dramatiq_app
+    env_file: local.env
     environment:
-      WATCHFILES_FORCE_POLLING: true
       OTEL_SERVICE_NAME: "bootstrap-fastapi-dramatiq-worker"
-      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
-      DRAMATIQ__REDIS_URL: "redis://redis:6379/0"
     working_dir: "/app/src"
     volumes:
       - '.:/app'
@@ -40,10 +37,9 @@ services:
       dockerfile: Dockerfile
       context: .
       target: dev
+    env_file: local.env
     environment:
-      WATCHFILES_FORCE_POLLING: true
       OTEL_SERVICE_NAME: "bootstrap-fastapi-dev"
-      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
     ports:
       - '8000:8000'
     working_dir: "/app/src"
@@ -72,9 +68,9 @@ services:
     depends_on:
       - redis
       - otel-collector
+    env_file: local.env
     environment:
       OTEL_SERVICE_NAME: "bootstrap-fastapi-http"
-      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
     ports:
       - '8001:8000'
     volumes:
