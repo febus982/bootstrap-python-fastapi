@@ -61,22 +61,22 @@ flowchart TD
       http_builder-->http_app
     end
     
-    subgraph Celery
-      celery_builder["Celery builder
+    subgraph Dramatiq
+      dramatiq_builder["Dramatiq builder
           ============
           Installs requirements for
-          Celery worker in a virtualenv"]
-      celery_app["HTTP app
+          Dramatiq worker in a virtualenv"]
+      dramatiq_app["HTTP app
         ========
-        Copies Celery worker app,
+        Copies Dramatiq worker app,
         shared logic
         and requirements
         from previous containers"]
-      celery_builder-->celery_app
+      dramatiq_builder-->dramatiq_app
     end
     
     base_builder-->http_builder
-    base_builder-->celery_builder
+    base_builder-->dramatiq_builder
     base_app-->http_app
-    base_app-->celery_app
+    base_app-->dramatiq_app
 ```

@@ -1,12 +1,12 @@
 # Bootstrap
 
 The `bootstrap` package contains logic that is shared among the external layer
-(i.e. `http_app`, `celery_worker`, etc.).
+(i.e. `http_app`, `dramatiq_worker`, etc.).
 
 It contains the following submodules and packages (and related responsibilities):
 
 * `bootstrap.bootstrap`: The application initialisation logic (database, logging,
-  celery tasks) necessary to run the domain logic. It uses `bootstrap.config` and
+  dramatiq tasks) necessary to run the domain logic. It uses `bootstrap.config` and
   `bootstrap.di_container` subpackages. It does not contain the specific HTTP
   framework initialisation (or other frameworks such as GRPC).
 * `bootstrap.config`: The application config models, based on `BaseSettings`

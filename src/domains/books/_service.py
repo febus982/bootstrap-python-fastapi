@@ -46,10 +46,11 @@ class BookService:
             await self._book_repository.save(book_model), from_attributes=True
         )
 
-        # Example of CPU intensive task ran in a celery task. We should not rely on
-        # celery if we need to wait the operation result. The worker could be terminated
-        # (e.g. during deployments) and this function would time out or raise an error.
-        book_cpu_intensive_task.delay(book_id=book.book_id)
+        # Example of CPU intensive task ran in a dramatiq task. We should not rely on
+        # dramatiq if we need to wait the operation result.
+        # The worker could be terminated (e.g. during deployments) and this function
+        # would time out or raise an error.
+        book_cpu_intensive_task.send(book_id=str(book.book_id))
 
         await self._event_gateway.emit(
             BookCreatedV1.event_factory(

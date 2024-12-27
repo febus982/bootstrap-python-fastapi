@@ -22,7 +22,6 @@ build-backend = "poetry.core.masonry.api"
 aiosqlite = ">=0.18.0"
 alembic = "^1.11.1"
 asgiref = "^3.7.2"
-celery =  { version = "^5.3.1", extras = ["redis"] }
 cloudevents-pydantic = "^0.0.3"
 dependency-injector = { version = "^4.41.0", extras = ["pydantic"] }
 dramatiq = { version = "^1.17.1", extras = ["redis", "watch"] }
@@ -30,7 +29,6 @@ hiredis = "^3.1.0"  # Recommended by dramatiq
 httpx = ">=0.23.0"
 opentelemetry-distro = { version = "*", extras = ["otlp"] }
 opentelemetry-instrumentation = "*"
-opentelemetry-instrumentation-celery = "*"
 opentelemetry-instrumentation-httpx = "*"
 opentelemetry-instrumentation-sqlalchemy = "*"
 opentelemetry-instrumentor-dramatiq = "*"
@@ -109,11 +107,9 @@ exclude = ["alembic"]
 plugins = "strawberry.ext.mypy_plugin"
 python_version = "3.9"
 
-# We can remove celery by installing `celery-types` but needs
-# at least python 3.10. For now we maintain the override.
 [[tool.mypy.overrides]]
 module = [
-    "celery.*"
+    "opentelemetry_instrumentor_dramatiq.*"
 ]
 ignore_missing_imports = true
 

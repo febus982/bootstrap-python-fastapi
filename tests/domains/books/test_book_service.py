@@ -18,9 +18,7 @@ async def test_create_book(book_repository):
     )
     mocked_task_return = MagicMock
     mocked_task_return.get = MagicMock(return_value=book_cpu_intensive_task(book))
-    with patch.object(
-        book_cpu_intensive_task, "delay", return_value=mocked_task_return
-    ):
+    with patch.object(book_cpu_intensive_task, "send", return_value=mocked_task_return):
         returned_book = await book_service.create_book(book)
     assert book.title == returned_book.title
     assert book.author_name == returned_book.author_name
