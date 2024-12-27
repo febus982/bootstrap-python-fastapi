@@ -16,5 +16,8 @@
         "patch"
       ]
     }
-  ]
+  ],
+  "lockFileMaintenance": {
+    "enabled": true
+  }
 }
