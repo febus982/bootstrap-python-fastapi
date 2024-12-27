@@ -8,6 +8,9 @@ from sqlalchemy_bind_manager import SQLAlchemyConfig
 TYPE_ENVIRONMENT = Literal["local", "test", "staging", "production"]
 
 
+class DramatiqConfig(BaseModel):
+    REDIS_HOST: Optional[str] = None
+
 class CeleryConfig(BaseModel):
     # https://docs.celeryq.dev/en/stable/userguide/configuration.html#configuration
 
@@ -47,6 +50,7 @@ class AppConfig(BaseSettings):
 
     APP_NAME: str = "bootstrap"
     CELERY: CeleryConfig = CeleryConfig()
+    DRAMATIQ: DramatiqConfig = DramatiqConfig()
     DEBUG: bool = False
     ENVIRONMENT: TYPE_ENVIRONMENT = "local"
     SQLALCHEMY_CONFIG: Dict[str, SQLAlchemyConfig] = dict(
