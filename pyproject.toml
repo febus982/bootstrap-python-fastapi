@@ -25,12 +25,15 @@ asgiref = "^3.7.2"
 celery =  { version = "^5.3.1", extras = ["redis"] }
 cloudevents-pydantic = "^0.0.3"
 dependency-injector = { version = "^4.41.0", extras = ["pydantic"] }
+dramatiq = { version = "^1.17.1", extras = ["redis", "watch"] }
+hiredis = "^3.1.0"  # Recommended by dramatiq
 httpx = ">=0.23.0"
 opentelemetry-distro = { version = "*", extras = ["otlp"] }
 opentelemetry-instrumentation = "*"
 opentelemetry-instrumentation-celery = "*"
 opentelemetry-instrumentation-httpx = "*"
 opentelemetry-instrumentation-sqlalchemy = "*"
+opentelemetry-instrumentor-dramatiq = "*"
 pydantic = "^2.2.1"
 pydantic-settings = "^2.0.3"
 python = ">=3.9,<3.14"
