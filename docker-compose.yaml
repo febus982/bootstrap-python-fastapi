@@ -74,7 +74,7 @@ services:
     ports:
       - '8001:8000'
     volumes:
-      - './sqlite.db:/app/sqlite.db'
+      - './src/sqlite.db:/app/sqlite.db'
 
   # Starting from here there are only single-run commands, we can use `make` here
   test:
