@@ -1,9 +1,8 @@
-import time
 from typing import Annotated, Any, Optional
 
 import jwt
 from fastapi import Depends, HTTPException, Request, status
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer, SecurityScopes
 
 from common import AppConfig
 from http_app.dependencies import app_config
@@ -35,35 +34,21 @@ def _jwks_client(config: Annotated[AppConfig, Depends(app_config)]) -> jwt.PyJWK
     return jwt.PyJWKClient(config.AUTH.JWKS_URL)
 
 
-class JWTBearer(HTTPBearer):
+class JWTDecoder:
+    """Does all the token verification using PyJWT"""
+
     async def __call__(
         self,
-        request: Request,
-    ) -> Optional[HTTPAuthorizationCredentials]:
-        credentials = await super(JWTBearer, self).__call__(request)
-
-        await self.decode(request)
-
-        return credentials
-
-    async def decode(
-        self,
-        request: Request,
-        jwks_client: jwt.PyJWKClient = Depends(_jwks_client),
+        security_scopes: SecurityScopes,
         config: AppConfig = Depends(app_config),
-    ) -> dict[str, Any]:
-        credentials = await super(JWTBearer, self).__call__(request)
-
-        if not credentials:
+        jwks_client: jwt.PyJWKClient = Depends(_jwks_client),
+        token: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer()),
+    ):
+        if token is None:
             raise UnauthenticatedException()
 
-        if not credentials.scheme == "Bearer":
-            raise UnauthorizedException("Invalid authentication scheme.")
-
         try:
-            signing_key = jwks_client.get_signing_key_from_jwt(
-                credentials.credentials
-            ).key
+            signing_key = jwks_client.get_signing_key_from_jwt(token.credentials).key
         except jwt.exceptions.PyJWKClientError as error:
             raise UnauthorizedException(str(error))
         except jwt.exceptions.DecodeError as error:
@@ -73,7 +58,7 @@ class JWTBearer(HTTPBearer):
             # TODO: Review decode setup and verifications
             #       https://pyjwt.readthedocs.io/en/stable/api.html#jwt.decode
             payload = jwt.decode(
-                jwt=credentials.credentials,
+                jwt=token.credentials,
                 key=signing_key,
                 algorithms=[config.AUTH.JWT_ALGORITHM],
             )

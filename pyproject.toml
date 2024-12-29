@@ -32,6 +32,7 @@ dependencies = [
 
 [dependency-groups]
 http = [
+    "cryptography>=44.0.0",
     "fastapi>=0.99.0",
     "jinja2<4.0.0,>=3.1.2",
     # We use the generic ASGI instrumentation, so that if we decide to change

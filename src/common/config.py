@@ -13,7 +13,7 @@ class DramatiqConfig(BaseModel):
 
 
 class AuthConfig(BaseModel):
-    JWT_ALGORITHM: str = "HS256"
+    JWT_ALGORITHM: str = "RS256"
     JWKS_URL: Optional[str] = None
 
 

@@ -1,11 +1,15 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Security
 from fastapi.responses import HTMLResponse
 
 from http_app.templates import templates
 
+from .auth import JWTDecoder
+
 router = APIRouter(prefix="/hello")
 
 
-@router.get("/", response_class=HTMLResponse, include_in_schema=False)
-async def hello(request: Request):
-    return templates.TemplateResponse("hello.html", {"request": request})
+@router.get("/", response_class=HTMLResponse, include_in_schema=True)
+async def hello(request: Request, jwt_token=Security(JWTDecoder())):
+    return templates.TemplateResponse(
+        "hello.html", {"request": request, "token_payload": jwt_token}
+    )
