@@ -2,8 +2,9 @@ nav:
   - Home: index.md
   - api-documentation.md
   - architecture.md
-  - src packages: packages
+  - zero_trust.md
   - inversion-of-control.md
   - dockerfile.md
+  - src packages: packages
   - ...
   - ADR: adr
