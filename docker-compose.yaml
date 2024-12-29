@@ -1,4 +1,53 @@
 services:
+  dev:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: dev
+    env_file: local.env
+    environment:
+      OTEL_SERVICE_NAME: "bootstrap-fastapi-dev"
+    ports:
+      - '8000:8000'
+    working_dir: "/app/src"
+    volumes:
+      - '.:/app'
+    depends_on:
+      - dramatiq-worker
+      - otel-collector
+    command:
+      - opentelemetry-instrument
+      - uvicorn
+      - http_app:create_app
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - --factory
+      # Remember to disable the reloader in order to allow otel instrumentation
+      - --reload
+
+  # Production image
+  http:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: http_app
+    depends_on:
+      - dramatiq-worker
+      - otel-collector
+    env_file: local.env
+    environment:
+      OTEL_SERVICE_NAME: "bootstrap-fastapi-http"
+    ports:
+      - '8001:8000'
+    volumes:
+      - './src/sqlite.db:/app/sqlite.db'
+
+  #########################
+  #### Helper services ####
+  #########################
+
   otel-collector:
     image: otel/opentelemetry-collector-contrib
     volumes:
@@ -32,51 +81,9 @@ services:
       - "1"
       - dramatiq_worker
 
-  dev:
-    build:
-      dockerfile: Dockerfile
-      context: .
-      target: dev
-    env_file: local.env
-    environment:
-      OTEL_SERVICE_NAME: "bootstrap-fastapi-dev"
-    ports:
-      - '8000:8000'
-    working_dir: "/app/src"
-    volumes:
-      - '.:/app'
-    depends_on:
-      - redis
-      - otel-collector
-    command:
-      - opentelemetry-instrument
-      - uvicorn
-      - http_app:create_app
-      - --host
-      - 0.0.0.0
-      - --port
-      - "8000"
-      - --factory
-      # Remember to disable the reloader in order to allow otel instrumentation
-      - --reload
-
-  http:
-    build:
-      dockerfile: Dockerfile
-      context: .
-      target: http_app
-    depends_on:
-      - redis
-      - otel-collector
-    env_file: local.env
-    environment:
-      OTEL_SERVICE_NAME: "bootstrap-fastapi-http"
-    ports:
-      - '8001:8000'
-    volumes:
-      - './src/sqlite.db:/app/sqlite.db'
-
-  # Starting from here there are only single-run commands, we can use `make` here
+  ##########################
+  #### One-off commands ####
+  ##########################
   test:
     build:
       dockerfile: Dockerfile
