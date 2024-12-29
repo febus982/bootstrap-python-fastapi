@@ -34,35 +34,31 @@ def _jwks_client(config: Annotated[AppConfig, Depends(app_config)]) -> jwt.PyJWK
     return jwt.PyJWKClient(config.AUTH.JWKS_URL)
 
 
-class JWTDecoder:
-    """Does all the token verification using PyJWT"""
+async def decode_jwt(
+    security_scopes: SecurityScopes,
+    config: AppConfig = Depends(app_config),
+    jwks_client: jwt.PyJWKClient = Depends(_jwks_client),
+    token: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer()),
+):
+    if token is None:
+        raise UnauthenticatedException()
 
-    async def __call__(
-        self,
-        security_scopes: SecurityScopes,
-        config: AppConfig = Depends(app_config),
-        jwks_client: jwt.PyJWKClient = Depends(_jwks_client),
-        token: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer()),
-    ):
-        if token is None:
-            raise UnauthenticatedException()
+    try:
+        signing_key = jwks_client.get_signing_key_from_jwt(token.credentials).key
+    except jwt.exceptions.PyJWKClientError as error:
+        raise UnauthorizedException(str(error))
+    except jwt.exceptions.DecodeError as error:
+        raise UnauthorizedException(str(error))
 
-        try:
-            signing_key = jwks_client.get_signing_key_from_jwt(token.credentials).key
-        except jwt.exceptions.PyJWKClientError as error:
-            raise UnauthorizedException(str(error))
-        except jwt.exceptions.DecodeError as error:
-            raise UnauthorizedException(str(error))
+    try:
+        # TODO: Review decode setup and verifications
+        #       https://pyjwt.readthedocs.io/en/stable/api.html#jwt.decode
+        payload = jwt.decode(
+            jwt=token.credentials,
+            key=signing_key,
+            algorithms=[config.AUTH.JWT_ALGORITHM],
+        )
+    except Exception as error:
+        raise UnauthorizedException(str(error))
 
-        try:
-            # TODO: Review decode setup and verifications
-            #       https://pyjwt.readthedocs.io/en/stable/api.html#jwt.decode
-            payload = jwt.decode(
-                jwt=token.credentials,
-                key=signing_key,
-                algorithms=[config.AUTH.JWT_ALGORITHM],
-            )
-        except Exception as error:
-            raise UnauthorizedException(str(error))
-
-        return payload
+    return payload
