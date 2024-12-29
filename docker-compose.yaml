@@ -1,4 +1,53 @@
 services:
+  dev:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: dev
+    env_file: local.env
+    environment:
+      OTEL_SERVICE_NAME: "bootstrap-fastapi-dev"
+    ports:
+      - '8000:8000'
+    working_dir: "/app/src"
+    volumes:
+      - '.:/app'
+    depends_on:
+      - dramatiq-worker
+      - otel-collector
+    command:
+      - opentelemetry-instrument
+      - uvicorn
+      - http_app:create_app
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - --factory
+      # Remember to disable the reloader in order to allow otel instrumentation
+      - --reload
+
+  # Production image
+  http:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: http_app
+    depends_on:
+      - dramatiq-worker
+      - otel-collector
+    env_file: local.env
+    environment:
+      OTEL_SERVICE_NAME: "bootstrap-fastapi-http"
+    ports:
+      - '8001:8000'
+    volumes:
+      - './src/sqlite.db:/app/sqlite.db'
+
+  #########################
+  #### Helper services ####
+  #########################
+
   otel-collector:
     image: otel/opentelemetry-collector-contrib
     volumes:
@@ -32,51 +81,77 @@ services:
       - "1"
       - dramatiq_worker
 
-  dev:
-    build:
-      dockerfile: Dockerfile
-      context: .
-      target: dev
-    env_file: local.env
+  #################################
+  #### Authentication services ####
+  #################################
+
+  kratos-migrate:
+    image: oryd/kratos:v1.3.1
     environment:
-      OTEL_SERVICE_NAME: "bootstrap-fastapi-dev"
-    ports:
-      - '8000:8000'
-    working_dir: "/app/src"
+      DSN: "sqlite:///etc/config/kratos/db.sqlite?_fk=true&mode=rwc"
     volumes:
-      - '.:/app'
+      - ./auth_volumes/kratos:/etc/config/kratos
+    command: -c /etc/config/kratos/kratos.yml migrate sql -e --yes
+    restart: on-failure
+
+  kratos:
     depends_on:
-      - redis
-      - otel-collector
+      - kratos-migrate
+    image: oryd/kratos:v1.3.1
+    # It's not needed to expose these, leaving for documentation
+#    ports:
+#      - '4433:4433' # public API
+#      - '4434:4434' # admin API
+    restart: unless-stopped
+    environment:
+      DSN: "sqlite:///etc/config/kratos/db.sqlite?_fk=true&mode=rwc"
+      LOG_LEVEL: "trace"
+    volumes:
+      - ./auth_volumes/kratos:/etc/config/kratos
+    command: serve -c /etc/config/kratos/kratos.yml --dev --watch-courier
+
+  auth-ui:
+    image: oryd/kratos-selfservice-ui-node:v1.3.1
+    environment:
+      PORT: 3000
+      # Internal access URL for the BFF instance
+      KRATOS_PUBLIC_URL: "http://kratos:4433/"
+      # External access URL for the browser
+      KRATOS_BROWSER_URL: "http://127.0.0.1:8080/.ory/kratos/public"
+      JWKS_URL: "http://oathkeeper:4456/.well-known/jwks.json"
+      SECURITY_MODE: "jwks"
+      COOKIE_SECRET: "changeme"
+      CSRF_COOKIE_NAME: "ory_csrf_ui"
+      CSRF_COOKIE_SECRET: "changeme"
+    restart: on-failure
+
+#  mailslurper:
+#    image: oryd/mailslurper:latest-smtps
+#    ports:
+#      - '4436:4436'
+#      - '4437:4437'
+
+  oathkeeper:
+    image: oryd/oathkeeper:v0.40.8
+    depends_on:
+      - kratos
+      - auth-ui
+      - dev
+    ports:
+      # Public traffic port
+      - "8080:4455"
+      # Private traffic port, this is not usually exposed
+      # among other things it provides the JWKS url
+      # - "4456:4456"
     command:
-      - opentelemetry-instrument
-      - uvicorn
-      - http_app:create_app
-      - --host
-      - 0.0.0.0
-      - --port
-      - "8000"
-      - --factory
-      # Remember to disable the reloader in order to allow otel instrumentation
-      - --reload
-
-  http:
-    build:
-      dockerfile: Dockerfile
-      context: .
-      target: http_app
-    depends_on:
-      - redis
-      - otel-collector
-    env_file: local.env
-    environment:
-      OTEL_SERVICE_NAME: "bootstrap-fastapi-http"
-    ports:
-      - '8001:8000'
+      serve proxy -c "/etc/config/oathkeeper/oathkeeper.yml"
+    restart: on-failure
     volumes:
-      - './src/sqlite.db:/app/sqlite.db'
+      - ./auth_volumes/oathkeeper:/etc/config/oathkeeper
 
-  # Starting from here there are only single-run commands, we can use `make` here
+  ##########################
+  #### One-off commands ####
+  ##########################
   test:
     build:
       dockerfile: Dockerfile

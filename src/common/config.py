@@ -12,10 +12,16 @@ class DramatiqConfig(BaseModel):
     REDIS_URL: Optional[str] = None
 
 
+class AuthConfig(BaseModel):
+    JWT_ALGORITHM: str = "RS256"
+    JWKS_URL: Optional[str] = None
+
+
 class AppConfig(BaseSettings):
     model_config = SettingsConfigDict(env_nested_delimiter="__")
 
     APP_NAME: str = "bootstrap"
+    AUTH: AuthConfig = AuthConfig()
     DRAMATIQ: DramatiqConfig = DramatiqConfig()
     DEBUG: bool = False
     ENVIRONMENT: TYPE_ENVIRONMENT = "local"

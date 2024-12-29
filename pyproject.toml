@@ -32,11 +32,13 @@ dependencies = [
 
 [dependency-groups]
 http = [
+    "cryptography>=44.0.0",
     "fastapi>=0.99.0",
     "jinja2<4.0.0,>=3.1.2",
     # We use the generic ASGI instrumentation, so that if we decide to change
     # Framework it will still work consistently.
     "opentelemetry-instrumentation-asgi",
+    "pyjwt>=2.10.1",
     "starlette-prometheus<1.0.0,>=0.10.0",
     "strawberry-graphql[debug-server]>=0.204.0",
     "uvicorn[standard]<1.0.0,>=0.34.0",
