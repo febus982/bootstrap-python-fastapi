@@ -7,6 +7,7 @@ from starlette_prometheus import PrometheusMiddleware, metrics
 from structlog import get_logger
 
 from common import AppConfig, application_init
+from http_app import context
 from http_app.routes import init_routes
 
 
@@ -14,6 +15,16 @@ def create_app(
     test_config: Union[AppConfig, None] = None,
 ) -> FastAPI:
     app_config = test_config or AppConfig()
+
+    """
+    The config is submitted here at runtime, this means
+    that we cannot declare a function to be used with
+    FastAPI dependency injection system because Depends
+    is evaluated before this function is called.
+    A context variable will achieve the same purpose.
+    """
+    context.app_config.set(app_config)
+
     application_init(app_config)
     app = FastAPI(
         debug=app_config.DEBUG,
