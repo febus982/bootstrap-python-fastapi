@@ -80,7 +80,4 @@ class JWTBearer(HTTPBearer):
         except Exception as error:
             raise UnauthorizedException(str(error))
 
-        if payload["expires"] < time.time():
-            raise UnauthorizedException("Expired token")
-
         return payload
