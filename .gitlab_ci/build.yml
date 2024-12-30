@@ -7,11 +7,15 @@ build-test:
   variables:
     DOCKER_BUILDKIT: 1
   before_script:
-    - apk add --no-cache qemu bash
+    - apk add --no-cache qemu bash git
   script:
     - docker buildx create --use
     - docker buildx inspect --bootstrap
-    - docker buildx build --load --target=dev --tag=$TEST_TAG --cache-to=type=local,dest=/tmp/.buildx-cache --cache-from=type=local,src=/tmp/.buildx-cache .
+    - |
+      docker buildx build --load --target=dev --tag=$TEST_TAG \
+      --cache-to=type=local,dest=/tmp/.buildx-cache \
+      --cache-from=type=local,src=/tmp/.buildx-cache \
+      .
   artifacts:
     paths:
       - /tmp/.buildx-cache
