@@ -13,7 +13,9 @@ build-test:
 build-http-app-amd64:
   stage: build
   variables:
-    DOCKER_IMAGE_TAG_PREFIX: "http-amd64-"
+    DOCKER_IMAGE_TAG_PREFIX: "http-"
+    DOCKER_IMAGE_TAG_SUFFIX: "-amd64"
+    DOCKER_PLATFORM: "linux/amd64"
     DOCKER_TARGET: http_app
   tags:
     - saas-linux-small-amd64
@@ -27,11 +29,26 @@ build-http-app-amd64:
 build-http-app-arm64:
   stage: build
   variables:
-    DOCKER_IMAGE_TAG_PREFIX: "http-arm64-"
+    DOCKER_IMAGE_TAG_PREFIX: "http-"
+    DOCKER_IMAGE_TAG_SUFFIX: "-arm64"
     DOCKER_PLATFORM: "linux/arm64"
     DOCKER_TARGET: http_app
   tags:
     - saas-linux-small-arm64
+  rules:
+    # We run the pipeline only on merge requests or the `main` branch
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  extends:
+    - .build-and-push-gitlab
+
+aggregate-http-manifests:
+  stage: build
+  needs:
+    - build-http-app-amd64
+    - build-http-app-arm64
+  variables:
+    DOCKER_IMAGE_TAG_PREFIX: "http-"
   rules:
     # We run the pipeline only on merge requests or the `main` branch
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH

@@ -2,7 +2,8 @@ variables:
   DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE
   DOCKER_IMAGE_TAG: $CI_COMMIT_SHA
   DOCKER_IMAGE_TAG_PREFIX: ""
-  DOCKER_IMAGE_FULL_TAG: $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG_PREFIX$DOCKER_IMAGE_TAG
+  DOCKER_IMAGE_TAG_SUFFIX: ""
+  DOCKER_IMAGE_FULL_TAG: $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG_PREFIX$DOCKER_IMAGE_TAG$DOCKER_IMAGE_TAG_SUFFIX
 
 # Build Docker image for test
 # TODO: Sign image using Cosign
@@ -30,6 +31,18 @@ variables:
       --cache-from type=registry,ref=$DOCKER_IMAGE_NAME:cache \
       --cache-to type=registry,ref=$DOCKER_IMAGE_NAME:cache \
       .
+
+# Architectures are hardcoded for multiarch, need to make this better
+.multiarch-manifest-gitlab:
+  image: docker:24.0.2
+  services:
+    - docker:24.0.2-dind
+  script:
+    - docker manifest create $DOCKER_IMAGE_FULL_TAG \
+      --amend $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG_PREFIX$DOCKER_IMAGE_TAG-amd64 \
+      --amend $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG_PREFIX$DOCKER_IMAGE_TAG-arm64
+
+    - docker manifest push $DOCKER_IMAGE_FULL_TAG
 
 .python-typing:
   image: $DOCKER_IMAGE_FULL_TAG
