@@ -6,6 +6,7 @@ variables:
 
 # Build Docker image for test
 # TODO: Sign image using Cosign
+# TODO: Use ARM64 workers and build image without QEMU: https://docs.gitlab.com/ee/ci/runners/hosted_runners/linux.html
 .build-and-push-gitlab:
   image: docker:24.0.2
   services:
