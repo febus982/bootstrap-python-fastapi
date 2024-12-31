@@ -1,10 +1,11 @@
 # Test Docker image
-test:
+typing:
   stage: test
-  image: docker:24.0.2
-  services:
-    - docker:24.0.2-dind
-  before_script:
-    - apk add --no-cache bash
-  script:
-    - docker run --rm $TEST_TAG make ci-test
+  variables:
+    DOCKER_IMAGE_TAG_PREFIX: "test-"
+  rules:
+    # We run the pipeline only on merge requests or the `main` branch
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  extends:
+    - .python-typing

@@ -1,3 +1,9 @@
+variables:
+  DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE
+  DOCKER_IMAGE_TAG: $CI_COMMIT_SHA
+  DOCKER_IMAGE_TAG_PREFIX: ""
+  DOCKER_IMAGE_FULL_TAG: $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG_PREFIX$DOCKER_IMAGE_TAG
+
 # Build Docker image for test
 # TODO: Sign image using Cosign
 .build-and-push-gitlab:
@@ -6,9 +12,6 @@
     - docker:24.0.2-dind
   variables:
     DOCKER_BUILDKIT: 1
-    DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE
-    DOCKER_IMAGE_TAG: $CI_COMMIT_SHA
-    DOCKER_IMAGE_TAG_PREFIX: ""
     DOCKER_PLATFORM: "linux/arm64,linux/amd64"
     DOCKER_TARGET: dev
   before_script:
@@ -17,12 +20,18 @@
     - docker buildx create --use
     - docker buildx inspect --bootstrap
     - echo $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin registry.gitlab.com
-    - echo "Building $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG_PREFIX$DOCKER_IMAGE_TAG - Cache from $DOCKER_IMAGE_NAME:cache"
+    - echo "Building $DOCKER_IMAGE_FULL_TAG - Cache from $DOCKER_IMAGE_NAME:cache"
     - |
       docker buildx build --push \
       --target $DOCKER_TARGET \
-      --tag $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG_PREFIX$DOCKER_IMAGE_TAG \
+      --tag $DOCKER_IMAGE_FULL_TAG \
       --platform $DOCKER_PLATFORM \
       --cache-from type=registry,ref=$DOCKER_IMAGE_NAME:cache \
       --cache-to type=registry,ref=$DOCKER_IMAGE_NAME:cache \
       .
+
+.python-typing:
+  image: $DOCKER_IMAGE_FULL_TAG
+  script:
+    - make typing
+
