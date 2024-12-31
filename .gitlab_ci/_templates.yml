@@ -20,9 +20,9 @@
     - echo "Building $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG$DOCKER_IMAGE_TAG_SUFFIX - Cache from $DOCKER_IMAGE_NAME:cache"
     - |
       docker buildx build --push \
-      --target $DOCKER_TARGET \
-      --tag $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG$DOCKER_IMAGE_TAG_SUFFIX \
-      --platform $DOCKER_PLATFORM \
-      --cache-from type=registry,ref=$DOCKER_IMAGE_NAME:cache \
-      --cache-to type=registry,ref=$DOCKER_IMAGE_NAME:cache \
+      --target=$DOCKER_TARGET \
+      --tag=$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG$DOCKER_IMAGE_TAG_SUFFIX \
+      --platform=$DOCKER_PLATFORM \
+      --cache-from=type=registry,ref=$DOCKER_IMAGE_NAME:cache \
+      --cache-to=type=registry,ref=$DOCKER_IMAGE_NAME:cache \
       .
