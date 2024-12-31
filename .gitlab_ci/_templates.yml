@@ -36,3 +36,18 @@ variables:
   script:
     - make typing
 
+.python-lint:
+  image: $DOCKER_IMAGE_FULL_TAG
+  script:
+    - make lint
+
+.python-format:
+  image: $DOCKER_IMAGE_FULL_TAG
+  script:
+    - make format
+
+.python-tests:
+  image: $DOCKER_IMAGE_FULL_TAG
+  script:
+    - make ci-coverage
+
