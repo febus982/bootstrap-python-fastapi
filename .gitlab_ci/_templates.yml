@@ -8,7 +8,7 @@
     DOCKER_BUILDKIT: 1
     DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE
     DOCKER_IMAGE_TAG: $CI_COMMIT_SHA
-    DOCKER_IMAGE_TAG_SUFFIX: ""
+    DOCKER_IMAGE_TAG_PREFIX: ""
     DOCKER_PLATFORM: "linux/arm64,linux/amd64"
     DOCKER_TARGET: dev
   before_script:
@@ -17,11 +17,11 @@
     - docker buildx create --use
     - docker buildx inspect --bootstrap
     - echo $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin registry.gitlab.com
-    - echo "Building $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG$DOCKER_IMAGE_TAG_SUFFIX - Cache from $DOCKER_IMAGE_NAME:cache"
+    - echo "Building $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG_PREFIX$DOCKER_IMAGE_TAG - Cache from $DOCKER_IMAGE_NAME:cache"
     - |
       docker buildx build --push \
       --target $DOCKER_TARGET \
-      --tag $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG$DOCKER_IMAGE_TAG_SUFFIX \
+      --tag $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG_PREFIX$DOCKER_IMAGE_TAG \
       --platform $DOCKER_PLATFORM \
       --cache-from type=registry,ref=$DOCKER_IMAGE_NAME:cache \
       --cache-to type=registry,ref=$DOCKER_IMAGE_NAME:cache \
