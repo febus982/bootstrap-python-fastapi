@@ -13,10 +13,10 @@ variables:
     - docker:24.0.2-dind
   variables:
     DOCKER_BUILDKIT: 1
-    DOCKER_PLATFORM: "linux/arm64,linux/amd64"
+    DOCKER_PLATFORM: "linux/amd64"
     DOCKER_TARGET: dev
   before_script:
-    - apk add --no-cache qemu bash git
+    - apk add --no-cache bash git
   script:
     - docker buildx create --use
     - docker buildx inspect --bootstrap
