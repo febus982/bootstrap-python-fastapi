@@ -1,24 +1,11 @@
 # Build Docker image for test
 build-test:
   stage: build
-  image: docker:24.0.2
-  services:
-    - docker:24.0.2-dind
   variables:
-    DOCKER_BUILDKIT: 1
-  before_script:
-    - apk add --no-cache qemu bash git
-  script:
-    - docker buildx create --use
-    - docker buildx inspect --bootstrap
-    - |
-      docker buildx build --load --target=dev --tag=$TEST_TAG \
-      --cache-to=type=local,dest=/tmp/.buildx-cache \
-      --cache-from=type=local,src=/tmp/.buildx-cache \
-      .
-  artifacts:
-    paths:
-      - /tmp/.buildx-cache
-    expire_in: 1h
-
-
+    DOCKER_IMAGE_TAG_SUFFIX: "-test"
+  rules:
+    # We run the pipeline only on merge requests or the `main` branch
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  extends:
+    - .build-and-push-gitlab

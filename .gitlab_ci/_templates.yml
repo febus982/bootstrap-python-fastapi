@@ -1,0 +1,29 @@
+# Build Docker image for test
+.build-and-push-gitlab:
+  image: docker:24.0.2
+  services:
+    - docker:24.0.2-dind
+  variables:
+    DOCKER_BUILDKIT: 1
+    DOCKER_IMAGE_NAME: $CI_PROJECT_NAME
+    DOCKER_IMAGE_TAG: $CI_COMMIT_SHA
+    DOCKER_IMAGE_TAG_SUFFIX: ""
+    DOCKER_PLATFORM: "linux/arm64,linux/amd64"
+    DOCKER_TARGET: dev
+  before_script:
+    - apk add --no-cache qemu bash git
+  script:
+    - docker buildx create --use
+    - docker buildx inspect --bootstrap
+    - |
+      docker buildx build --load \
+      --target=$DOCKER_TARGET \
+      --tag=$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG$DOCKER_IMAGE_TAG_SUFFIX \
+      --platform=$DOCKER_PLATFORM \
+      --cache-to=type=local,dest=/tmp/.buildx-cache \
+      --cache-from=type=local,src=/tmp/.buildx-cache \
+      .
+  artifacts:
+    paths:
+      - /tmp/.buildx-cache
+    expire_in: 1h
