@@ -1,4 +1,5 @@
 # Build Docker image for test
+# TODO: Sign image using Cosign
 .build-and-push-gitlab:
   image: docker:24.0.2
   services:
@@ -25,4 +26,3 @@
       --cache-from type=registry,ref=$DOCKER_IMAGE_NAME:cache \
       --cache-to type=registry,ref=$DOCKER_IMAGE_NAME:cache \
       .
-    # TODO: Sign image using Cosign
