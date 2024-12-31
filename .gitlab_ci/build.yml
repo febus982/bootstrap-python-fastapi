@@ -9,3 +9,32 @@ build-test:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   extends:
     - .build-and-push-gitlab
+
+build-http-app-amd64:
+  stage: build
+  variables:
+    DOCKER_IMAGE_TAG_PREFIX: "amd64-http-"
+    DOCKER_TARGET: http_app
+  tags:
+    - saas-linux-small-amd64
+  rules:
+    # We run the pipeline only on merge requests or the `main` branch
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  extends:
+    - .build-and-push-gitlab
+
+build-http-app-arm64:
+  stage: build
+  variables:
+    DOCKER_IMAGE_TAG_PREFIX: "arm64-http-"
+    DOCKER_PLATFORM: "linux/arm64"
+    DOCKER_TARGET: http_app
+  tags:
+    - saas-linux-small-arm64
+  rules:
+    # We run the pipeline only on merge requests or the `main` branch
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  extends:
+    - .build-and-push-gitlab
