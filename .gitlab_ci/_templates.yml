@@ -49,5 +49,5 @@ variables:
 .python-tests:
   image: $DOCKER_IMAGE_FULL_TAG
   script:
-    - make ci-coverage
+    - make test
 
