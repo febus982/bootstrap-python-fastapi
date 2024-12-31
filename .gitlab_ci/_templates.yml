@@ -16,14 +16,13 @@
     - docker buildx create --use
     - docker buildx inspect --bootstrap
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+    - echo "###### Building $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG$DOCKER_IMAGE_TAG_SUFFIX - Cache from $DOCKER_IMAGE_NAME:cache ########"
     - |
-      echo "###### Building $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG$DOCKER_IMAGE_TAG_SUFFIX - Cache from $DOCKER_IMAGE_NAME:cache ########" 
-      docker buildx build \
+      docker buildx build --push \
       --target=$DOCKER_TARGET \
       --tag=$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG$DOCKER_IMAGE_TAG_SUFFIX \
       --platform=$DOCKER_PLATFORM \
       --cache-from type=registry,ref=$DOCKER_IMAGE_NAME:cache \
       --cache-to type=registry,ref=$DOCKER_IMAGE_NAME:cache \
-      --push \
       .
     # TODO: Sign image using Cosign
