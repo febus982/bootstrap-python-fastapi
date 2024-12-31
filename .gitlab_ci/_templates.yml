@@ -16,7 +16,7 @@
   script:
     - docker buildx create --use
     - docker buildx inspect --bootstrap
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+    - echo $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin registry.gitlab.com
     - echo "Building $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG$DOCKER_IMAGE_TAG_SUFFIX - Cache from $DOCKER_IMAGE_NAME:cache"
     - |
       docker buildx build --push \
