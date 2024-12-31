@@ -11,6 +11,7 @@ stages:
   - release
 
 include:
+  - local: /.gitlab_ci/_templates.yml
   - local: /.gitlab_ci/build.yml
   - local: /.gitlab_ci/test.yml
   - local: /.gitlab_ci/release.yml
