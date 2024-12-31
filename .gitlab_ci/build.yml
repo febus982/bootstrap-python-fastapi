@@ -13,7 +13,7 @@ build-test:
 build-http-app-amd64:
   stage: build
   variables:
-    DOCKER_IMAGE_TAG_PREFIX: "amd64-http-"
+    DOCKER_IMAGE_TAG_PREFIX: "http-amd64-"
     DOCKER_TARGET: http_app
   tags:
     - saas-linux-small-amd64
@@ -27,7 +27,7 @@ build-http-app-amd64:
 build-http-app-arm64:
   stage: build
   variables:
-    DOCKER_IMAGE_TAG_PREFIX: "arm64-http-"
+    DOCKER_IMAGE_TAG_PREFIX: "http-arm64-"
     DOCKER_PLATFORM: "linux/arm64"
     DOCKER_TARGET: http_app
   tags:
