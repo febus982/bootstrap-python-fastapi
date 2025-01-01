@@ -61,7 +61,7 @@ variables:
       --annotation "index:org.opencontainers.image.source=$CI_PROJECT_URL" \
       --annotation "index:org.opencontainers.image.created=$CI_JOB_STARTED_AT" \
       --tag $DOCKER_IMAGE_NAME:$PROMOTED_ENVIRONMENT-$CI_COMMIT_TIMESTAMP \
-      - $DOCKER_IMAGE_FULL_TAG
+      $DOCKER_IMAGE_FULL_TAG
 
 .python-typing:
   image: $DOCKER_IMAGE_FULL_TAG
