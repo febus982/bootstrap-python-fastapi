@@ -61,7 +61,7 @@ variables:
   script:
     - *docker-gitlab-login
     # Remove the UTC offset, not supported by `date` in docker image (busybox)
-    - export CLEAN_DATETIME=$(echo "$CI_COMMIT_TIMESTAMP" | sed 's/+00:00//' | sed 's/Z//')
+    - export CLEAN_DATETIME=$(echo "$CI_JOB_STARTED_AT" | sed 's/+00:00//' | sed 's/Z//')
     # Transform in unix timestamp
     - export UNIX_TIMESTAMP=$(date -d "$CLEAN_DATETIME" -D "%Y-%m-%dT%H:%M:%S" +%s)
     - echo "Unix timestamp - $UNIX_TIMESTAMP"
