@@ -1,0 +1,44 @@
+# Test Docker image
+typing:
+  stage: test
+  variables:
+    DOCKER_IMAGE_NAME: $CI_PROJECT_NAME-test
+  rules:
+    # We run the pipeline only on merge requests or the `main` branch
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  extends:
+    - .python-typing
+
+lint:
+  stage: test
+  variables:
+    DOCKER_IMAGE_NAME: $CI_PROJECT_NAME-test
+  rules:
+    # We run the pipeline only on merge requests or the `main` branch
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  extends:
+    - .python-lint
+
+format:
+  stage: test
+  variables:
+    DOCKER_IMAGE_NAME: $CI_PROJECT_NAME-test
+  rules:
+    # We run the pipeline only on merge requests or the `main` branch
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  extends:
+    - .python-format
+
+tests:
+  stage: test
+  variables:
+    DOCKER_IMAGE_NAME: $CI_PROJECT_NAME-test
+  rules:
+    # We run the pipeline only on merge requests or the `main` branch
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  extends:
+    - .python-tests
