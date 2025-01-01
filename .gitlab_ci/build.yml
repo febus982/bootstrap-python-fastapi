@@ -10,6 +10,7 @@ build-test:
   extends:
     - .build-and-push-gitlab
 
+# TODO: Group the multi-arch bild (perhaps with a nested workflow)
 build-http-app-amd64:
   stage: build
   variables:
