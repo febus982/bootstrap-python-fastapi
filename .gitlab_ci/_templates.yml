@@ -4,14 +4,15 @@ variables:
   DOCKER_IMAGE_TAG_PREFIX: ""
   DOCKER_IMAGE_TAG_SUFFIX: ""
   DOCKER_IMAGE_FULL_TAG: $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG_PREFIX$DOCKER_IMAGE_TAG$DOCKER_IMAGE_TAG_SUFFIX
+  DOCKER_VERSION: 27.4
 
 # Build Docker image for test
 # TODO: Sign image using Cosign
 # TODO: Use ARM64 workers and build image without QEMU: https://docs.gitlab.com/ee/ci/runners/hosted_runners/linux.html
 .build-and-push-gitlab:
-  image: docker:27.4
+  image: docker:$DOCKER_VERSION
   services:
-    - docker:27.4-dind
+    - docker:$DOCKER_VERSION-dind
   variables:
     DOCKER_BUILDKIT: 1
     DOCKER_PLATFORM: "linux/amd64"
@@ -34,9 +35,9 @@ variables:
 
 # Architectures are hardcoded for multiarch, need to make this better
 .multiarch-manifest-gitlab:
-  image: docker:27.4
+  image: docker:$DOCKER_VERSION
   services:
-    - docker:27.4-dind
+    - docker:$DOCKER_VERSION-dind
   script:
     - docker manifest create $DOCKER_IMAGE_FULL_TAG \
       --amend $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG_PREFIX$DOCKER_IMAGE_TAG-amd64 \
@@ -45,12 +46,12 @@ variables:
     - docker manifest push $DOCKER_IMAGE_FULL_TAG
 
 .promote-image:
-  image: docker:27.4
+  image: docker:$DOCKER_VERSION
   variables:
     PROMOTED_ENVIRONMENT: "dev"
     DOCKER_BUILDKIT: 1
   services:
-    - docker:27.4-dind
+    - docker:$DOCKER_VERSION-dind
   script:
 #    - desired_format="%s"
 #    - export UNIX_TIMESTAMP=$(date -d "$CI_COMMIT_TIMESTAMP" + "$desired_format")
