@@ -54,3 +54,4 @@ aggregate-http-manifests:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   extends:
     - .multiarch-manifest-gitlab
+

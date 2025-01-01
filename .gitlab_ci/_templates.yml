@@ -46,10 +46,9 @@ variables:
   script:
     - *docker-gitlab-login
     - echo "Building $DOCKER_IMAGE_FULL_TAG multiarch manifest"
-    - docker manifest create $DOCKER_IMAGE_FULL_TAG
-      --amend $DOCKER_IMAGE_FULL_TAG-linuxamd64
-      --amend $DOCKER_IMAGE_FULL_TAG-linuxarm64
-    - docker manifest push $DOCKER_IMAGE_FULL_TAG
+    - docker buildx imagetools create $DOCKER_IMAGE_FULL_TAG
+      $DOCKER_IMAGE_FULL_TAG-linuxamd64
+      $DOCKER_IMAGE_FULL_TAG-linuxarm64
 
 .promote-image:
   image: docker:$DOCKER_VERSION
