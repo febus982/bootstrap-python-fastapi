@@ -52,7 +52,7 @@ variables:
   services:
     - docker:24.0.2-dind
   script:
-    - desired_format="%s" # This format will output the Unix timestamp
+    - desired_format="%s"
     - export UNIX_TIMESTAMP=$(date -d "$CI_COMMIT_TIMESTAMP" +"$desired_format")
     - echo "Unix timestamp: $UNIX_TIMESTAMP"
     - docker buildx imagetools create \
