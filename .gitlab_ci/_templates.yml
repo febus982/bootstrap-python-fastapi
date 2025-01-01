@@ -52,15 +52,15 @@ variables:
   services:
     - docker:24.0.2-dind
   script:
-    - desired_format="%s"
-    - export UNIX_TIMESTAMP=$(date -d "$CI_COMMIT_TIMESTAMP" + "$desired_format")
-    - echo "Unix timestamp - $UNIX_TIMESTAMP"
+#    - desired_format="%s"
+#    - export UNIX_TIMESTAMP=$(date -d "$CI_COMMIT_TIMESTAMP" + "$desired_format")
+#    - echo "Unix timestamp - $UNIX_TIMESTAMP"
     - docker buildx imagetools create \
       --annotation "index:org.opencontainers.image.version=$CI_COMMIT_SHORT_SHA" \
       --annotation "index:org.opencontainers.image.revision=$CI_COMMIT_SHA" \
       --annotation "index:org.opencontainers.image.source=$CI_PROJECT_URL" \
       --annotation "index:org.opencontainers.image.created=$CI_JOB_STARTED_AT" \
-      --tag $DOCKER_IMAGE_NAME:$PROMOTED_ENVIRONMENT-$UNIX_TIMESTAMP \
+      --tag $DOCKER_IMAGE_NAME:$PROMOTED_ENVIRONMENT-$CI_COMMIT_TIMESTAMP \
       - $DOCKER_IMAGE_FULL_TAG
 
 .python-typing:
