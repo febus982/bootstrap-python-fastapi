@@ -1,9 +1,7 @@
 variables:
-  DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE
   DOCKER_IMAGE_TAG: $CI_COMMIT_SHA
-  DOCKER_IMAGE_TAG_PREFIX: ""
-  DOCKER_IMAGE_TAG_SUFFIX: ""
-  DOCKER_IMAGE_FULL_TAG: $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG_PREFIX$DOCKER_IMAGE_TAG$DOCKER_IMAGE_TAG_SUFFIX
+  DOCKER_IMAGE_NAME: $CI_PROJECT_NAME
+  DOCKER_IMAGE_FULL_TAG: $CI_REGISTRY_IMAGE/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
   DOCKER_VERSION: 27.4
 
 # Build Docker image for test
@@ -15,6 +13,7 @@ variables:
   variables:
     DOCKER_BUILDKIT: 1
     DOCKER_PLATFORM: "linux/amd64"
+    # TODO: Make target optional
     DOCKER_TARGET: dev
   before_script:
     - apk add --no-cache bash git
@@ -23,10 +22,12 @@ variables:
     - docker buildx inspect --bootstrap
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_PASSWORD --password-stdin $CI_REGISTRY
     - echo "Building $DOCKER_IMAGE_FULL_TAG - Cache from $DOCKER_IMAGE_NAME:cache"
+    # remove \ from platform to
+    - export SUFFIX=$(echo $DOCKER_PLATFORM | sed 's/\///')
     - |
       docker buildx build --push \
       --target $DOCKER_TARGET \
-      --tag $DOCKER_IMAGE_FULL_TAG \
+      --tag $DOCKER_IMAGE_FULL_TAG-$SUFFIX \
       --platform $DOCKER_PLATFORM \
       --cache-from type=registry,ref=$DOCKER_IMAGE_NAME:cache \
       --cache-to type=registry,ref=$DOCKER_IMAGE_NAME:cache \
@@ -39,9 +40,8 @@ variables:
     - docker:$DOCKER_VERSION-dind
   script:
     - docker manifest create $DOCKER_IMAGE_FULL_TAG \
-      --amend $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG_PREFIX$DOCKER_IMAGE_TAG-amd64 \
-      --amend $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG_PREFIX$DOCKER_IMAGE_TAG-arm64
-
+      --amend $DOCKER_IMAGE_FULL_TAG-linuxamd64 \
+      --amend $DOCKER_IMAGE_FULL_TAG-linuxarm64
     - docker manifest push $DOCKER_IMAGE_FULL_TAG
 
 .promote-image:
