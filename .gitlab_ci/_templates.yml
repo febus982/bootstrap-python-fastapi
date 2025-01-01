@@ -4,6 +4,9 @@ variables:
   DOCKER_IMAGE_FULL_TAG: $CI_REGISTRY_IMAGE/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
   DOCKER_VERSION: 27.4
 
+.docker-gitlab-login: &docker-gitlab-login
+  - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+
 # Build Docker image for test
 # TODO: Sign image using Cosign
 .build-and-push-gitlab:
@@ -19,7 +22,7 @@ variables:
   script:
     - docker buildx create --use
     - docker buildx inspect --bootstrap
-    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - *docker-gitlab-login
     - echo "Building $DOCKER_IMAGE_FULL_TAG - Cache from $DOCKER_IMAGE_NAME:cache"
     - if [[ -n "$DOCKER_TARGET" ]]; then export TARGET_ARG="--target $DOCKER_TARGET"; fi;
     - if [[ -n "$DOCKER_PLATFORM" ]]; then export PLATFORM_ARG="--platform $DOCKER_PLATFORM"; fi;
@@ -41,7 +44,7 @@ variables:
   services:
     - docker:$DOCKER_VERSION-dind
   script:
-    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - *docker-gitlab-login
     - docker manifest create $DOCKER_IMAGE_FULL_TAG \
       --amend $DOCKER_IMAGE_FULL_TAG-linuxamd64 \
       --amend $DOCKER_IMAGE_FULL_TAG-linuxarm64
@@ -55,7 +58,7 @@ variables:
   services:
     - docker:$DOCKER_VERSION-dind
   script:
-    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - *docker-gitlab-login
     # Remove the UTC offset, not supported by `date` in docker image (busybox)
     - export CLEAN_DATETIME=$(echo "$CI_COMMIT_TIMESTAMP" | sed 's/+00:00//' | sed 's/Z//')
     # Transform in unix timestamp
