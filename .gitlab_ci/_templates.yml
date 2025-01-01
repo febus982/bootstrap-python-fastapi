@@ -53,8 +53,8 @@ variables:
     - docker:24.0.2-dind
   script:
     - desired_format="%s"
-    - export UNIX_TIMESTAMP=$(date -d "$CI_COMMIT_TIMESTAMP" +"$desired_format")
-    - echo "Unix timestamp: $UNIX_TIMESTAMP"
+    - export UNIX_TIMESTAMP=$(date -d "$CI_COMMIT_TIMESTAMP" + "$desired_format")
+    - echo "Unix timestamp - $UNIX_TIMESTAMP"
     - docker buildx imagetools create \
       --annotation "index:org.opencontainers.image.version=$CI_COMMIT_SHORT_SHA" \
       --annotation "index:org.opencontainers.image.revision=$CI_COMMIT_SHA" \
