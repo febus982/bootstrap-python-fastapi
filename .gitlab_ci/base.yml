@@ -8,9 +8,10 @@ variables:
 stages:
   - build
   - test
-  - release
+  - deploy
 
 include:
   - local: /.gitlab_ci/_templates.yml
   - local: /.gitlab_ci/build.yml
   - local: /.gitlab_ci/test.yml
+  - local: /.gitlab_ci/deploy.yml
