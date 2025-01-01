@@ -52,15 +52,18 @@ variables:
   services:
     - docker:$DOCKER_VERSION-dind
   script:
-#    - export UNIX_TIMESTAMP=$(date -d "$CI_COMMIT_TIMESTAMP" -D "%Y-%m-%dT%H:%M:%SZ"+%s)
-#    - echo "Unix timestamp - $UNIX_TIMESTAMP"
-    - echo "Tagging $DOCKER_IMAGE_NAME:$PROMOTED_ENVIRONMENT-$CI_COMMIT_TIMESTAMP from $DOCKER_IMAGE_FULL_TAG"
+    # Remove the UTC offset, not supported by `date` in docker image (busybox)
+    - export CLEAN_DATETIME=$(echo "$CI_COMMIT_TIMESTAMP" | sed 's/+00:00//' | sed 's/Z//')
+    # Transform in unix timestamp
+    - export UNIX_TIMESTAMP=$(date -d "$CLEAN_DATETIME" -D "%Y-%m-%dT%H:%M:%SZ"+%s)
+    - echo "Unix timestamp - $UNIX_TIMESTAMP"
+    - echo "Tagging $DOCKER_IMAGE_NAME:$PROMOTED_ENVIRONMENT-$UNIX_TIMESTAMP from $DOCKER_IMAGE_FULL_TAG"
     - docker buildx imagetools create
       --annotation "index:org.opencontainers.image.version=$CI_COMMIT_SHORT_SHA"
       --annotation "index:org.opencontainers.image.revision=$CI_COMMIT_SHA"
       --annotation "index:org.opencontainers.image.source=$CI_PROJECT_URL"
       --annotation "index:org.opencontainers.image.created=$CI_JOB_STARTED_AT"
-      --tag "$DOCKER_IMAGE_NAME:$PROMOTED_ENVIRONMENT-$CI_COMMIT_TIMESTAMP"
+      --tag "$DOCKER_IMAGE_NAME:$PROMOTED_ENVIRONMENT-$UNIX_TIMESTAMP"
       "$DOCKER_IMAGE_FULL_TAG"
 
 .python-typing:
