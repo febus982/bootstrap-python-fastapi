@@ -28,15 +28,14 @@ variables:
     - if [[ -n "$DOCKER_TARGET" ]]; then export TARGET_ARG="--target $DOCKER_TARGET"; fi;
     - if [[ -n "$DOCKER_PLATFORM" ]]; then export PLATFORM_ARG="--platform $DOCKER_PLATFORM"; fi;
     - if [[ -n "$DOCKER_PLATFORM" ]]; then export PLATFORM_SUFFIX="-$(echo $DOCKER_PLATFORM | sed 's/\///')"; fi;
-    # remove \ from platform to
+    # remove \ from platform variable
     - export SUFFIX=$(echo $DOCKER_PLATFORM | sed 's/\///')
-    - |
-      docker buildx build --push \
-      $TARGET_ARG \
-      --tag $DOCKER_IMAGE_FULL_TAG$PLATFORM_SUFFIX \
-      $PLATFORM_ARG \
-      --cache-from type=registry,ref=$DOCKER_CACHE_FULL_TAG \
-      --cache-to type=registry,ref=$DOCKER_CACHE_FULL_TAG \
+    - docker buildx build --push
+      $TARGET_ARG
+      --tag $DOCKER_IMAGE_FULL_TAG$PLATFORM_SUFFIX
+      $PLATFORM_ARG
+      --cache-from type=registry,ref=$DOCKER_CACHE_FULL_TAG
+      --cache-to type=registry,ref=$DOCKER_CACHE_FULL_TAG
       .
 
 # Architectures are hardcoded for multiarch, need to make this better
@@ -47,8 +46,8 @@ variables:
   script:
     - *docker-gitlab-login
     - echo "Building $DOCKER_IMAGE_FULL_TAG multiarch manifest"
-    - docker manifest create $DOCKER_IMAGE_FULL_TAG \
-      --amend $DOCKER_IMAGE_FULL_TAG-linuxamd64 \
+    - docker manifest create $DOCKER_IMAGE_FULL_TAG
+      --amend $DOCKER_IMAGE_FULL_TAG-linuxamd64
       --amend $DOCKER_IMAGE_FULL_TAG-linuxarm64
     - docker manifest push $DOCKER_IMAGE_FULL_TAG
 
