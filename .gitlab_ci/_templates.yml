@@ -12,9 +12,8 @@ variables:
     - docker:$DOCKER_VERSION-dind
   variables:
     DOCKER_BUILDKIT: 1
-    DOCKER_PLATFORM: "linux/amd64"
-    # TODO: Make target optional
-    DOCKER_TARGET: dev
+    DOCKER_PLATFORM: ""
+    DOCKER_TARGET: ""
   before_script:
     - apk add --no-cache bash git
   script:
@@ -22,13 +21,16 @@ variables:
     - docker buildx inspect --bootstrap
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
     - echo "Building $DOCKER_IMAGE_FULL_TAG - Cache from $DOCKER_IMAGE_NAME:cache"
+    - if [[ -n "$DOCKER_TARGET" ]]; then export TARGET_ARG="--target $DOCKER_TARGET"; fi;
+    - if [[ -n "$DOCKER_PLATFORM" ]]; then export PLATFORM_ARG="--platform $DOCKER_PLATFORM"; fi;
+    - if [[ -n "$DOCKER_PLATFORM" ]]; then export PLATFORM_SUFFIX="-$(echo $DOCKER_PLATFORM | sed 's/\///')"; fi;
     # remove \ from platform to
     - export SUFFIX=$(echo $DOCKER_PLATFORM | sed 's/\///')
     - |
       docker buildx build --push \
-      --target $DOCKER_TARGET \
-      --tag $DOCKER_IMAGE_FULL_TAG-$SUFFIX \
-      --platform $DOCKER_PLATFORM \
+      $TARGET_ARG \
+      --tag $DOCKER_IMAGE_FULL_TAG$PLATFORM_SUFFIX \
+      $PLATFORM_ARG \
       --cache-from type=registry,ref=$DOCKER_IMAGE_NAME:cache \
       --cache-to type=registry,ref=$DOCKER_IMAGE_NAME:cache \
       .
