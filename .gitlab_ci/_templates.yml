@@ -46,6 +46,7 @@ variables:
     - docker:$DOCKER_VERSION-dind
   script:
     - *docker-gitlab-login
+    - echo "Building $DOCKER_IMAGE_FULL_TAG multiarch manifest"
     - docker manifest create $DOCKER_IMAGE_FULL_TAG \
       --amend $DOCKER_IMAGE_FULL_TAG-linuxamd64 \
       --amend $DOCKER_IMAGE_FULL_TAG-linuxarm64
