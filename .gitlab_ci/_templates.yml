@@ -52,6 +52,7 @@ variables:
   services:
     - docker:$DOCKER_VERSION-dind
   script:
+    - echo $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin registry.gitlab.com
     # Remove the UTC offset, not supported by `date` in docker image (busybox)
     - export CLEAN_DATETIME=$(echo "$CI_COMMIT_TIMESTAMP" | sed 's/+00:00//' | sed 's/Z//')
     # Transform in unix timestamp
