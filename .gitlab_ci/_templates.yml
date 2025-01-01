@@ -56,7 +56,7 @@ variables:
     # Remove the UTC offset, not supported by `date` in docker image (busybox)
     - export CLEAN_DATETIME=$(echo "$CI_COMMIT_TIMESTAMP" | sed 's/+00:00//' | sed 's/Z//')
     # Transform in unix timestamp
-    - export UNIX_TIMESTAMP=$(date -d "$CLEAN_DATETIME" -D "%Y-%m-%dT%H:%M:%SZ"+%s)
+    - export UNIX_TIMESTAMP=$(date -d "$CLEAN_DATETIME" -D "%Y-%m-%dT%H:%M:%S"+%s)
     - echo "Unix timestamp - $UNIX_TIMESTAMP"
     - echo "Tagging $DOCKER_IMAGE_NAME:$PROMOTED_ENVIRONMENT-$UNIX_TIMESTAMP from $DOCKER_IMAGE_FULL_TAG"
     - docker buildx imagetools create
