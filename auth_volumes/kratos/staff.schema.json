@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Person",
+  "title": "Staff",
   "type": "object",
   "properties": {
     "traits": {
@@ -11,6 +11,7 @@
           "format": "email",
           "title": "E-Mail",
           "minLength": 3,
+          "pattern": "^.*@staffdomain\\.com$",
           "ory.sh/kratos": {
             "credentials": {
               "password": {

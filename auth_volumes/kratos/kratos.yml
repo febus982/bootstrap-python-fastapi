@@ -107,8 +107,10 @@ hashers:
     cost: 8
 
 identity:
-  default_schema_id: default
+  default_schema_id: staff
   schemas:
+    - id: staff
+      url: file:///etc/config/kratos/staff.schema.json
     - id: default
       url: file:///etc/config/kratos/identity.schema.json
 
