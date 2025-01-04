@@ -73,13 +73,14 @@
       config:
         to: http://127.0.0.1:8080/login
 
-# Dev container access to protected /hello endpoint
+# Dev container access to protected /api/* endpoints, to the dev container
 - id: "http_app:protected"
   upstream:
     preserve_host: true
     url: "http://dev:8000"
+    strip_path: /api
   match:
-    url: "http://127.0.0.1:8080/hello<{,/,/**}>"
+    url: "http://127.0.0.1:8080/<{,api/,api/**,openapi.json}>"
     methods:
       - GET
   authenticators:
