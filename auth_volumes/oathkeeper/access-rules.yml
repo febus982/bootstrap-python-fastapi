@@ -80,7 +80,7 @@
     url: "http://dev:8000"
     strip_path: /api
   match:
-    url: "http://127.0.0.1:8080/<{,api/,api/**,openapi.json}>"
+    url: "http://127.0.0.1:8080/<{api/,api/**,openapi.json}>"
     methods:
       - GET
   authenticators:
