@@ -37,8 +37,11 @@ def init_dramatiq(config: AppConfig):
     else:
         broker = StubBroker()
         # broker.emit_after("process_boot")
-        if config.ENVIRONMENT != "test":
-            logging.critical("Running a non-test environment without Redis URL set")
+        if config.ENVIRONMENT not in ["test", "local"]:
+            logging.critical(
+                "Running a non-test/non-local environment without Redis URL set",
+                extra={"ENVIRONMENT": config.ENVIRONMENT}
+            )
     broker.add_middleware(AsyncIO())
     set_broker(broker)
     set_encoder(ORJSONEncoder())
