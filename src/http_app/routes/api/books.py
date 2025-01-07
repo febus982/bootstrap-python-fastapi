@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, RootModel, ConfigDict
 
 from domains.books import BookService, dto
 
@@ -16,6 +16,27 @@ class CreateBookResponse(BaseModel):
                 "author_name": "Douglas Adams",
                 "book_id": 123,
             }
+        }
+    )
+
+
+class ListBooksResponse(RootModel):
+    root: list[dto.Book]
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example":
+            [
+                {
+                    "title": "The Hitchhiker's Guide to the Galaxy",
+                    "author_name": "Douglas Adams",
+                    "book_id": 123,
+                },
+                {
+                    "title": "Clean Architecture: A Craftsman's Guide to Software Structure and Design",
+                    "author_name": "Robert C. 'Uncle Bob' Martin",
+                    "book_id": 321,
+                },
+            ]
         }
     )
 
@@ -43,6 +64,12 @@ The views defined here have the functionalities of two components:
 - Presenter:  transforms the data coming from the application logic
               into the format needed for the proper HTTP Response
 """
+
+@router_v1.get("/", status_code=status.HTTP_200_OK)
+async def list_books() -> ListBooksResponse:
+    book_service = BookService()
+    books = await book_service.list_books()
+    return ListBooksResponse(root=books)
 
 
 @router_v1.post("/", status_code=status.HTTP_201_CREATED)
