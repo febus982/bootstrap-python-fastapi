@@ -50,7 +50,7 @@ subgraph dn["Internal Docker Network (intranet)"]
     OO-->|"Proxies /auth/login, /auth/registration, /dashboard, ... to"|SA
     SA-->|Talks to|OK
     OO-->|Validates auth sessions using|OK
-    OO-->|"Proxies /hello to"|DEV
+    OO-->|"Proxies /api/* requests (authenticated only)"|DEV
     OK[Ory Kratos]
     OO["Reverse Proxy (Ory Oathkeeper)"]
     SA["SecureApp (Ory Kratos SelfService UI Node Example)"]
