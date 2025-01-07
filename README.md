@@ -41,6 +41,10 @@ Create your GitHub repository using this template (The big green `Use this templ
 Optionally tweak name and authors in the `pyproject.toml` file, however the metadata
 are not used when building the application, nor are referenced anywhere in the code.
 
+Before running any commands, install `uv`:
+
+- On Mac (using `brew`): `brew install uv`
+
 Using Docker:
 
 * `make containers`: Build containers
