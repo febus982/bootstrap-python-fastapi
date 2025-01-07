@@ -40,7 +40,7 @@ def init_dramatiq(config: AppConfig):
         if config.ENVIRONMENT not in ["test", "local"]:
             logging.critical(
                 "Running a non-test/non-local environment without Redis URL set",
-                extra={"ENVIRONMENT": config.ENVIRONMENT}
+                extra={"ENVIRONMENT": config.ENVIRONMENT},
             )
     broker.add_middleware(AsyncIO())
     set_broker(broker)
