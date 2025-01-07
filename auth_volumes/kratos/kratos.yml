@@ -81,11 +81,18 @@ selfservice:
     registration:
       lifespan: 10m
       ui_url: http://127.0.0.1:8080/registration
+
       after:
         password:
           hooks:
+            - hook: web_hook
+              config:
+                url: http://dev:8000/user_registered/
+                method: "POST"
+                body: file:///etc/config/kratos/user_registered.jsonnet
+                can_interrupt: true
+                emit_analytics_event: true
             - hook: session
-#            - hook: show_verification_ui
 
 log:
   level: info

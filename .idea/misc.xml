@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Black">
-    <option name="sdkName" value="Poetry (bootstrap-python-fastapi)" />
+    <option name="sdkName" value="Python 3.13 (bootstrap-python-fastapi)" />
   </component>
-  <component name="BlackConnectSettings" triggerOnEachSave="true" />
-  <component name="ProjectRootManager" version="2" project-jdk-name="bootstrap-python-fastapi virtualenv Python 3.13" project-jdk-type="Python SDK" />
-  <component name="PythonCompatibilityInspectionAdvertiser">
-    <option name="version" value="3" />
-  </component>
-  <component name="com.github.timo_reymann.ansible_vault_integration.settings.AnsibleVaultSettings">
-    <option name="vaultExecutable" value="/usr/bin/ansible-vault" />
-  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.13 (bootstrap-python-fastapi)" project-jdk-type="Python SDK" />
 </project>

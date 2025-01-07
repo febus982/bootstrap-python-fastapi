@@ -96,5 +96,8 @@ mutators:
       jwks_url: file:///etc/config/oathkeeper/id_token.jwks.json
       claims: |
         {
+          {{ if .MatchContext.Header.Get "x-impersonate" }}
+          "impersonate": {{ .MatchContext.Header.Get "x-impersonate" | toJson }},
+          {{ end }}
           "session": {{ .Extra | toJson }}
         }
