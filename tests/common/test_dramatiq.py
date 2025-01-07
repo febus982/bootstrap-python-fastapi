@@ -70,4 +70,6 @@ def test_init_dramatiq_without_redis_url(caplog):
     with caplog.at_level(logging.CRITICAL):
         init_dramatiq(config)
 
-    assert "Running a non-test environment without Redis URL set" in caplog.text
+    assert (
+        "Running a non-test/non-local environment without Redis URL set" in caplog.text
+    )

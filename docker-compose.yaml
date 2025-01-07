@@ -13,7 +13,6 @@ services:
     volumes:
       - '.:/app'
     depends_on:
-      - dramatiq-worker
       - otel-collector
     command:
       - opentelemetry-instrument
@@ -34,7 +33,6 @@ services:
       context: .
       target: http_app
     depends_on:
-      - dramatiq-worker
       - otel-collector
     env_file: local.env
     environment:
