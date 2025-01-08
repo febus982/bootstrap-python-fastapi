@@ -54,7 +54,7 @@ jobs:
       # https://github.com/docker/build-push-action
       - name: Build test image
         id: build-test
-        uses: docker/build-push-action@v6.10.0
+        uses: docker/build-push-action@v6.11.0
         with:
           context: .
           load: true
@@ -86,7 +86,7 @@ jobs:
       # https://github.com/docker/build-push-action
       - name: Build and push production image
         id: build-and-push
-        uses: docker/build-push-action@v6.10.0
+        uses: docker/build-push-action@v6.11.0
         with:
           context: .
           target: http_app
