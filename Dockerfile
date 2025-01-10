@@ -31,7 +31,7 @@ RUN apt-get update \
     build-essential gcc git \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=ghcr.io/astral-sh/uv:0.5.15 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.5.16 /uv /uvx /bin/
 
 # From here we shouldn't need anymore a root user
 # Switch to nonroot and config uv
