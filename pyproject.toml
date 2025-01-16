@@ -27,7 +27,7 @@ dependencies = [
     "rich<14.0.0,>=13.2.0",
     "SQLAlchemy[asyncio,mypy]<3.0.0,>=2.0.0",
     "sqlalchemy-bind-manager",
-    "structlog<25.0.0,>=24.0.0",
+    "structlog<25.1.1,>=25.1.0",
 ]
 
 [dependency-groups]
