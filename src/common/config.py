@@ -17,11 +17,19 @@ class AuthConfig(BaseModel):
     JWKS_URL: Optional[str] = None
 
 
+class EventConfig(BaseModel):
+    REDIS_BROKER_URL: str = ""
+    TOPIC: Optional[str] = None
+    IS_PUBLISHER: bool = False
+    IS_SUBSCRIBER: bool = False
+
+
 class AppConfig(BaseSettings):
     model_config = SettingsConfigDict(env_nested_delimiter="__")
 
     APP_NAME: str = "bootstrap"
     AUTH: AuthConfig = AuthConfig()
+    EVENTS: EventConfig = EventConfig()
     DRAMATIQ: DramatiqConfig = DramatiqConfig()
     DEBUG: bool = False
     ENVIRONMENT: TYPE_ENVIRONMENT = "local"

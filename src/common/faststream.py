@@ -10,8 +10,9 @@ from faststream.redis import RedisRouter, RedisBroker, fastapi
 # from faststream.redis.publisher.asyncapi import AsyncAPIPublisher
 from opentelemetry.instrumentation.faststream import RedisOtelMiddleware
 
-from bootstrap.config import EventConfig
+from common.config import EventConfig
 from domains import event_registry
+from event_consumer import register_subscribers
 
 logger = structlog.getLogger(__name__)
 

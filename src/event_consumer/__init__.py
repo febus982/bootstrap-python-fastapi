@@ -17,7 +17,7 @@ from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
 from alembic.env import logger
-from bootstrap import AppConfig, application_init
+from common import AppConfig, application_init
 from domains import event_registry
 from domains.books.events import BookCreatedV1, BookCreatedV1Data
 
