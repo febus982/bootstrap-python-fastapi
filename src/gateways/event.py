@@ -26,3 +26,8 @@ class HttpEventGateway:
             "Event emitted via HTTP request",
             cloudevent=event.model_dump(),
         )
+
+
+# https://www.confluent.io/blog/kafka-python-asyncio-integration/
+class KafkaEventGateway:
+    pass
