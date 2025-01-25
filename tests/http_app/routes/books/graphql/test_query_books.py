@@ -1,14 +1,14 @@
 from fastapi import status
-from httpx import AsyncClient
+from fastapi.testclient import TestClient
 
 
 async def test_create_book(testapp):
     query = "{books{authorName, title, bookId}}"
-    async with AsyncClient(app=testapp, base_url="http://test") as ac:
-        response = await ac.post(
-            "/graphql",
-            json=dict(query=query),
-        )
+    ac = TestClient(app=testapp, base_url="http://test")
+    response = ac.post(
+        "/graphql",
+        json=dict(query=query),
+    )
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == {
         "data": {

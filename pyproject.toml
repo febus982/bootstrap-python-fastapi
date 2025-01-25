@@ -1,79 +1,73 @@
-[tool.poetry]
+[project]
+authors = [
+    {name = "Federico Busetti", email = "729029+febus982@users.noreply.github.com"},
+]
+requires-python = "<3.14,>=3.9"
 name = "bootstrap-fastapi-service"
 version = "0.1.0"
 description = ""
-authors = ["Federico Busetti <729029+febus982@users.noreply.github.com>"]
 readme = "README.md"
-packages = [
-    { include = "**/*.py", from = "src" }
+dependencies = [
+    "aiosqlite>=0.18.0",
+    "alembic<2.0.0,>=1.11.1",
+    "asgiref<4.0.0,>=3.7.2",
+    "cloudevents-pydantic<1.0.0,>=0.0.3",
+    "dependency-injector[pydantic]<5.0.0,>=4.41.0",
+    "dramatiq[redis,watch]<2.0.0,>=1.17.1",
+    "hiredis<4.0.0,>=3.1.0",  # Recommended by dramatiq
+    "httpx>=0.23.0",
+    "opentelemetry-distro[otlp]",
+    "opentelemetry-instrumentation",
+    "opentelemetry-instrumentation-httpx",
+    "opentelemetry-instrumentation-sqlalchemy",
+    "opentelemetry-instrumentor-dramatiq",
+    "orjson<4.0.0,>=3.10.12",
+    "pydantic<3.0.0,>=2.2.1",
+    "pydantic-settings<3.0.0,>=2.0.3",
+    "rich<14.0.0,>=13.2.0",
+    "SQLAlchemy[asyncio,mypy]<3.0.0,>=2.0.0",
+    "sqlalchemy-bind-manager",
+    "structlog<25.1.1,>=25.1.0",
+]
+
+[dependency-groups]
+http = [
+    "cryptography>=44.0.0",
+    "fastapi>=0.99.0",
+    "jinja2<4.0.0,>=3.1.2",
+    # We use the generic ASGI instrumentation, so that if we decide to change
+    # Framework it will still work consistently.
+    "opentelemetry-instrumentation-asgi",
+    "pyjwt>=2.10.1",
+    "starlette-prometheus<1.0.0,>=0.10.0",
+    "strawberry-graphql[debug-server]>=0.204.0",
+    "uvicorn[standard]<1.0.0,>=0.34.0",
+]
+dev = [
+    "asynctest",
+    "coverage",
+    "mkdocs",
+    "mkdocs-awesome-pages-plugin",
+    "mkdocs-macros-adr-summary",
+    "mkdocs-material",
+    "mkdocs-mermaid2-plugin",
+    "mypy",
+    "mypy-protobuf",
+    "pytest",
+    "pytest-cov",
+    "pytest-factoryboy",
+    "pytest-xdist",
+    "ruff",
+    "strawberry-graphql[debug-server,fastapi]",
+    "pymdown-extensions",
 ]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
 
-
-
-############################
-### Package requirements ###
-############################
-# https://python-poetry.org/docs/dependency-specification
-[tool.poetry.dependencies]
-aiosqlite = ">=0.18.0"
-alembic = "^1.11.1"
-asgiref = "^3.7.2"
-celery =  { version = "^5.3.1", extras = ["redis"] }
-cloudevents-pydantic = { git = "https://github.com/febus982/cloudevents-pydantic", branch = "main" }
-#cloudevents-pydantic = "^0.0.2"
-dependency-injector = { version = "^4.41.0", extras = ["pydantic"] }
-faststream = { version = "^0.5.25", extras = ["redis"] }
-httpx = ">=0.23.0"
-opentelemetry-distro = { version = "*", extras = ["otlp"] }
-opentelemetry-instrumentation = "*"
-opentelemetry-instrumentation-celery = "*"
-opentelemetry-instrumentation-faststream = "*"
-opentelemetry-instrumentation-httpx = "*"
-opentelemetry-instrumentation-sqlalchemy = "*"
-pydantic = "^2.2.1"
-pydantic-settings = "^2.0.3"
-python = ">=3.11,<3.13"
-rich = "^13.2.0"
-SQLAlchemy = { version = "^2.0.0", extras = ["asyncio", "mypy"] }
-sqlalchemy-bind-manager = "*"
-structlog = "^24.0.0"
-
-[tool.poetry.group.http]
-optional = true
-
-[tool.poetry.group.http.dependencies]
-fastapi = ">=0.99.0"
-jinja2 = "^3.1.2"
-opentelemetry-instrumentation-fastapi = "*"
-starlette-prometheus = "^0.10.0"
-strawberry-graphql = { version = ">=0.204.0", extras = ["debug-server"] }
-uvicorn = { version = "^0.31.0", extras = ["standard"] }
-
-[tool.poetry.group.dev]
-optional = true
-
-[tool.poetry.group.dev.dependencies]
-asynctest = "*"
-coverage = "*"
-mkdocs = "*"
-mkdocs-awesome-pages-plugin = "*"
-mkdocs-macros-adr-summary = "*"
-mkdocs-material = "*"
-mkdocs-mermaid2-plugin = "*"
-mypy = "*"
-mypy-protobuf = "*"
-pytest = "*"
-pytest-cov = "*"
-pytest-factoryboy = "*"
-pytest-xdist = "*"
-ruff = "*"
-strawberry-graphql = { version = "*", extras = ["debug-server", "fastapi"] }
-pymdown-extensions = "*"
-
+[tool.pdm.build]
+includes = ["src/**/*.py"]
 
 ############################
 ### Tools configuration  ###
@@ -83,8 +77,9 @@ branch = true
 source = ["src"]
 omit = [
     "src/alembic/*",
-    "src/bootstrap/config.py",
-    "src/bootstrap/logs/*",
+    "src/common/config.py",
+    "src/common/logs/*",
+    "src/dramatiq_worker/__init__.py",
 ]
 # It's not necessary to configure concurrency here
 # because pytest-cov takes care of that
@@ -100,14 +95,14 @@ exclude_also = [
 [tool.mypy]
 files = ["src", "tests"]
 exclude = ["alembic"]
-plugins = "pydantic.mypy,strawberry.ext.mypy_plugin"
+# Pydantic plugin causes some issues: https://github.com/pydantic/pydantic-settings/issues/403
+#plugins = "pydantic.mypy,strawberry.ext.mypy_plugin"
+plugins = "strawberry.ext.mypy_plugin"
 python_version = "3.9"
 
-# We can remove celery by installing `celery-types` but needs
-# at least python 3.10. For now we maintain the override.
 [[tool.mypy.overrides]]
 module = [
-    "celery.*"
+    "opentelemetry_instrumentor_dramatiq.*"
 ]
 ignore_missing_imports = true
 

@@ -1,0 +1,96 @@
+variables:
+  DOCKER_IMAGE_TAG: $CI_COMMIT_SHA
+  DOCKER_IMAGE_NAME: $CI_PROJECT_NAME
+  DOCKER_IMAGE_FULL_TAG: $CI_REGISTRY_IMAGE/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
+  DOCKER_VERSION: 27.4
+
+.docker-gitlab-login: &docker-gitlab-login
+  - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+
+# Build Docker image for test
+# TODO: Sign image using Cosign
+.build-and-push-gitlab:
+  image: docker:$DOCKER_VERSION
+  services:
+    - docker:$DOCKER_VERSION-dind
+  variables:
+    DOCKER_BUILDKIT: 1
+    DOCKER_PLATFORM: ""
+    DOCKER_TARGET: ""
+    DOCKER_CACHE_FULL_TAG: $CI_REGISTRY_IMAGE/$DOCKER_IMAGE_NAME:cache
+  before_script:
+    - apk add --no-cache bash git
+  script:
+    - docker buildx create --use
+    - docker buildx inspect --bootstrap
+    - *docker-gitlab-login
+    - echo "Building $DOCKER_IMAGE_FULL_TAG - Cache from $DOCKER_CACHE_FULL_TAG"
+    - if [[ -n "$DOCKER_TARGET" ]]; then export TARGET_ARG="--target $DOCKER_TARGET"; fi;
+    - if [[ -n "$DOCKER_PLATFORM" ]]; then export PLATFORM_ARG="--platform $DOCKER_PLATFORM"; fi;
+    - if [[ -n "$DOCKER_PLATFORM" ]]; then export PLATFORM_SUFFIX="-$(echo $DOCKER_PLATFORM | sed 's/\///')"; fi;
+    # remove \ from platform variable
+    - export SUFFIX=$(echo $DOCKER_PLATFORM | sed 's/\///')
+    - docker buildx build --push
+      $TARGET_ARG
+      --tag $DOCKER_IMAGE_FULL_TAG$PLATFORM_SUFFIX
+      $PLATFORM_ARG
+      --cache-from type=registry,ref=$DOCKER_CACHE_FULL_TAG
+      --cache-to type=registry,ref=$DOCKER_CACHE_FULL_TAG
+      .
+
+# Architectures are hardcoded for multiarch, need to make this better
+.multiarch-manifest-gitlab:
+  image: docker:$DOCKER_VERSION
+  services:
+    - docker:$DOCKER_VERSION-dind
+  script:
+    - *docker-gitlab-login
+    - echo "Building $DOCKER_IMAGE_FULL_TAG multiarch manifest"
+    - docker buildx imagetools create
+      --tag $DOCKER_IMAGE_FULL_TAG
+      $DOCKER_IMAGE_FULL_TAG-linuxamd64
+      $DOCKER_IMAGE_FULL_TAG-linuxarm64
+
+.promote-image:
+  image: docker:$DOCKER_VERSION
+  variables:
+    PROMOTED_ENVIRONMENT: "dev"
+    DOCKER_BUILDKIT: 1
+  services:
+    - docker:$DOCKER_VERSION-dind
+  script:
+    - *docker-gitlab-login
+    # Remove the UTC offset, not supported by `date` in docker image (busybox)
+    - export CLEAN_DATETIME=$(echo "$CI_JOB_STARTED_AT" | sed 's/+00:00//' | sed 's/Z//')
+    # Transform in unix timestamp
+    - export UNIX_TIMESTAMP=$(date -d "$CLEAN_DATETIME" -D "%Y-%m-%dT%H:%M:%S" +%s)
+    - echo "Unix timestamp - $UNIX_TIMESTAMP"
+    - echo "Tagging $CI_REGISTRY_IMAGE/$DOCKER_IMAGE_NAME:$PROMOTED_ENVIRONMENT-$UNIX_TIMESTAMP from $DOCKER_IMAGE_FULL_TAG"
+    - docker buildx imagetools create
+      --annotation index:org.opencontainers.image.version=$CI_COMMIT_SHORT_SHA
+      --annotation index:org.opencontainers.image.revision=$CI_COMMIT_SHA
+      --annotation index:org.opencontainers.image.source=$CI_PROJECT_URL
+      --annotation index:org.opencontainers.image.created=$CI_JOB_STARTED_AT
+      --tag $CI_REGISTRY_IMAGE/$DOCKER_IMAGE_NAME:$PROMOTED_ENVIRONMENT-$UNIX_TIMESTAMP
+      $DOCKER_IMAGE_FULL_TAG
+
+.python-typing:
+  image: $DOCKER_IMAGE_FULL_TAG
+  script:
+    - make typing
+
+.python-lint:
+  image: $DOCKER_IMAGE_FULL_TAG
+  script:
+    - make lint
+
+.python-format:
+  image: $DOCKER_IMAGE_FULL_TAG
+  script:
+    - make format
+
+.python-tests:
+  image: $DOCKER_IMAGE_FULL_TAG
+  script:
+    - make test
+

@@ -10,62 +10,15 @@ services:
     ports:
       - "6379:6379"
 
-  celery-worker:
-    build:
-      dockerfile: Dockerfile
-      context: .
-      target: celery_app
-    environment:
-      OTEL_SERVICE_NAME: "bootstrap-fastapi-worker"
-      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
-      CELERY__broker_url: "redis://redis:6379/0"
-      CELERY__result_backend: "redis://redis:6379/1"
-      EVENTS__REDIS_BROKER_URL: "redis://redis:6379/2"
-    working_dir: "/app/src"
-    volumes:
-      - '.:/app'
-    depends_on:
-      - redis
-      - otel-collector
-      - celery-beat
-
-  celery-beat:
-    build:
-      dockerfile: Dockerfile
-      context: .
-      target: celery_app
-    environment:
-      OTEL_SERVICE_NAME: "bootstrap-fastapi-worker"
-      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
-      CELERY__broker_url: "redis://redis:6379/0"
-      CELERY__result_backend: "redis://redis:6379/1"
-      EVENTS__REDIS_BROKER_URL: "redis://redis:6379/2"
-    working_dir: "/app/src"
-    volumes:
-      - '.:/app'
-    depends_on:
-      - redis
-      - otel-collector
-    command:
-      - opentelemetry-instrument
-      - celery
-      - -A
-      - celery_worker:app
-      - beat
-      - -l
-      - INFO
-
   dev:
     build:
       dockerfile: Dockerfile
       context: .
       target: dev
+    env_file: local.env
     environment:
-      WATCHFILES_FORCE_POLLING: true
       OTEL_SERVICE_NAME: "bootstrap-fastapi-dev"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
-      CELERY__broker_url: "redis://redis:6379/0"
-      CELERY__result_backend: "redis://redis:6379/1"
       EVENTS__REDIS_BROKER_URL: "redis://redis:6379/2"
       EVENTS__IS_PUBLISHER: "True"
       EVENTS__IS_SUBSCRIBER: "False"
@@ -75,7 +28,6 @@ services:
     volumes:
       - '.:/app'
     depends_on:
-      - redis
       - otel-collector
     command:
       - opentelemetry-instrument
@@ -146,26 +98,132 @@ services:
       - --host
       - 0.0.0.0
 
+  # Production image
   http:
     build:
       dockerfile: Dockerfile
       context: .
       target: http_app
     depends_on:
-      - redis
       - otel-collector
+    env_file: local.env
     environment:
       OTEL_SERVICE_NAME: "bootstrap-fastapi-http"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
-      CELERY__broker_url: "redis://redis:6379/0"
-      CELERY__result_backend: "redis://redis:6379/1"
       EVENTS__REDIS_BROKER_URL: "redis://redis:6379/2"
     ports:
       - '8001:8000'
     volumes:
-      - './sqlite.db:/app/sqlite.db'
+      - './src/sqlite.db:/app/sqlite.db'
 
-  # Starting from here there are only single-run commands, we can use `make` here
+  #########################
+  #### Helper services ####
+  #########################
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
+
+  redis:
+    image: redis
+
+  dramatiq-worker:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: dramatiq_app
+    env_file: local.env
+    environment:
+      OTEL_SERVICE_NAME: "bootstrap-fastapi-dramatiq-worker"
+    working_dir: "/app/src"
+    volumes:
+      - '.:/app'
+    depends_on:
+      - redis
+      - otel-collector
+    command:
+      - opentelemetry-instrument
+      - dramatiq
+      - --watch
+      - .
+      - -p
+      - "1"
+      - -t
+      - "1"
+      - dramatiq_worker
+
+  #################################
+  #### Authentication services ####
+  #################################
+
+  kratos-migrate:
+    image: oryd/kratos:v1.3.1
+    environment:
+      DSN: "sqlite:///etc/config/kratos/db.sqlite?_fk=true&mode=rwc"
+    volumes:
+      - ./auth_volumes/kratos:/etc/config/kratos
+    command: -c /etc/config/kratos/kratos.yml migrate sql -e --yes
+    restart: on-failure
+
+  kratos:
+    depends_on:
+      - kratos-migrate
+    image: oryd/kratos:v1.3.1
+    # It's not needed to expose these, leaving for documentation
+#    ports:
+#      - '4433:4433' # public API
+#      - '4434:4434' # admin API
+    restart: unless-stopped
+    environment:
+      DSN: "sqlite:///etc/config/kratos/db.sqlite?_fk=true&mode=rwc"
+      LOG_LEVEL: "trace"
+    volumes:
+      - ./auth_volumes/kratos:/etc/config/kratos
+    command: serve -c /etc/config/kratos/kratos.yml --dev --watch-courier
+
+  auth-ui:
+    image: oryd/kratos-selfservice-ui-node:v1.3.1
+    environment:
+      PORT: 3000
+      # Internal access URL for the BFF instance
+      KRATOS_PUBLIC_URL: "http://kratos:4433/"
+      # External access URL for the browser
+      KRATOS_BROWSER_URL: "http://127.0.0.1:8080/.ory/kratos/public"
+      JWKS_URL: "http://oathkeeper:4456/.well-known/jwks.json"
+      SECURITY_MODE: "jwks"
+      COOKIE_SECRET: "changeme"
+      CSRF_COOKIE_NAME: "ory_csrf_ui"
+      CSRF_COOKIE_SECRET: "changeme"
+    restart: on-failure
+
+#  mailslurper:
+#    image: oryd/mailslurper:latest-smtps
+#    ports:
+#      - '4436:4436'
+#      - '4437:4437'
+
+  oathkeeper:
+    image: oryd/oathkeeper:v0.40.8
+    depends_on:
+      - kratos
+      - auth-ui
+      - dev
+    ports:
+      # Public traffic port
+      - "8080:4455"
+      # Private traffic port, this is not usually exposed
+      # among other things it provides the JWKS url
+      # - "4456:4456"
+    command:
+      serve proxy -c "/etc/config/oathkeeper/oathkeeper.yml"
+    restart: on-failure
+    volumes:
+      - ./auth_volumes/oathkeeper:/etc/config/oathkeeper
+
+  ##########################
+  #### One-off commands ####
+  ##########################
   test:
     build:
       dockerfile: Dockerfile

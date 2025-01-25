@@ -216,7 +216,7 @@ def book_repository_factory() -> BookRepositoryInterface:
 
 # file `domains/books/_service.py`
 from domains.books._gateway_interfaces import BookRepositoryInterface
-from bootstrap.factories import book_repository_factory
+from common.factories import book_repository_factory
 
 
 class BookService:
@@ -274,7 +274,7 @@ def inject_book_repository(f):
     def wrapper(*args, **kwds):
         # This allows overriding the decorator
         if "book_repository" not in kwds.keys():
-            from bootstrap.storage import BookRepository
+            from common.storage import BookRepository
             kwds["book_repository"] = BookRepository()
         elif not isinstance(kwds["book_repository"], BookRepositoryInterface):
             import warnings

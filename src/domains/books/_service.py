@@ -4,6 +4,9 @@ from anyio import to_thread
 from dependency_injector.wiring import Provide, inject
 from structlog import get_logger
 
+from common.tracing import trace_function
+from common.utils import apply_decorator_to_methods
+
 from ._gateway_interfaces import BookEventGatewayInterface, BookRepositoryInterface
 from ._models import BookModel
 from ._tasks import book_cpu_intensive_task
@@ -11,6 +14,7 @@ from .dto import Book, BookData
 from .events import BookCreatedV1, BookCreatedV1Data
 
 
+@apply_decorator_to_methods(trace_function())
 class BookService:
     _book_repository: BookRepositoryInterface
     _event_gateway: BookEventGatewayInterface
@@ -42,10 +46,11 @@ class BookService:
             await self._book_repository.save(book_model), from_attributes=True
         )
 
-        # Example of CPU intensive task ran in a celery task. We should not rely on
-        # celery if we need to wait the operation result. The worker could be terminated
-        # (e.g. during deployments) and this function would time out or raise an error.
-        book_cpu_intensive_task.delay(book_id=book.book_id)
+        # Example of CPU intensive task ran in a dramatiq task. We should not rely on
+        # dramatiq if we need to wait the operation result.
+        # The worker could be terminated (e.g. during deployments) and this function
+        # would time out or raise an error.
+        book_cpu_intensive_task.send(book_id=str(book.book_id))
 
         await self._event_gateway.emit(
             BookCreatedV1.event_factory(

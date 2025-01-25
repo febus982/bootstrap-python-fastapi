@@ -11,7 +11,7 @@ and the persistence layer.
 This is a high level list of the packages in this application template:
 
 * `alembic` (database migration manager)
-* `celery_worker` (async tasks runner)
+* `dramatiq_worker` (async tasks runner)
 * `common` (some common boilerplate initialisation shared by all applications )
 * `http_app` (http presentation layer)
 * `gateways` (database connection manager, repository implementation, event emitter, etc.)
@@ -31,7 +31,7 @@ This is a high level representation of the nested layers in the application:
 flowchart TD
     subgraph "Framework & Drivers + Interface Adapters" 
         alembic
-        celery_worker
+        dramatiq_worker
         http_app
         gateways
         subgraph domains.books["Use Cases"]
@@ -52,7 +52,7 @@ flowchart TD
     end
     
     alembic ~~~ domains.books
-    celery_worker ~~~ domains.books
+    dramatiq_worker ~~~ domains.books
     http_app ~~~ domains.books
     gateways ~~~ domains.books
     
@@ -69,7 +69,7 @@ A more detailed view showing the class dependencies and the absence of cyclical 
 
 ```mermaid
 flowchart TD
-    celery_worker
+    dramatiq_worker
     http_app
     subgraph gateways
       SQLAlchemyRepository
@@ -99,8 +99,8 @@ flowchart TD
       end
     end
 
-    celery_worker-->domain_boundary
-    celery_worker-->dto
+    dramatiq_worker-->domain_boundary
+    dramatiq_worker-->dto
     http_app-->domain_boundary
     http_app-->dto
     domain_boundary-->domain_logic

@@ -43,6 +43,6 @@ and can be used to bootstrap the application:
   to bootstrap the SQLAlchemy imperative mapping in `bootstrap.storage.SQLAlchemy`
   package.
 * The `domains.book._service` contains the `BookService` implementation.
-* The `domains.book._tasks` contains the implementation of celery tasks
+* The `domains.book._tasks` contains the implementation of dramatiq tasks
   for operations that can be queued without waiting for a result (e.g.
   send an email, invalidate cache).

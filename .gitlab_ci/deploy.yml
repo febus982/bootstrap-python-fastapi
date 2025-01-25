@@ -1,0 +1,11 @@
+promote-dev:
+  stage: deploy
+  variables:
+    DOCKER_IMAGE_NAME: $CI_PROJECT_NAME-http
+  rules:
+    # We run the pipeline only on merge requests or the `main` branch
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  extends:
+    - .promote-image
+  when: manual

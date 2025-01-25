@@ -4,8 +4,8 @@ from asyncio import get_event_loop
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from alembic import context
-from bootstrap.bootstrap import application_init
-from bootstrap.config import AppConfig
+from common.bootstrap import application_init
+from common.config import AppConfig
 
 USE_TWOPHASE = False
 

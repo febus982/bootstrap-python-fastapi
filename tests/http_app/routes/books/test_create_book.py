@@ -1,5 +1,5 @@
 from fastapi import status
-from httpx import AsyncClient
+from fastapi.testclient import TestClient
 
 
 async def test_create_book(testapp):
@@ -7,11 +7,11 @@ async def test_create_book(testapp):
         title="test",
         author_name="another",
     )
-    async with AsyncClient(app=testapp, base_url="http://test") as ac:
-        response = await ac.post(
-            "/api/books/v1/",
-            json=new_book_data,
-        )
+    ac = TestClient(app=testapp, base_url="http://test")
+    response = ac.post(
+        "/api/books/v1/",
+        json=new_book_data,
+    )
     assert response.status_code == status.HTTP_201_CREATED
     """
     Check new_book_data is a subset of response.json()["book"]
@@ -25,11 +25,11 @@ async def test_create_book_v2(testapp):
         title="test",
         author_name="another",
     )
-    async with AsyncClient(app=testapp, base_url="http://test") as ac:
-        response = await ac.post(
-            "/api/books/v2/",
-            json=new_book_data,
-        )
+    ac = TestClient(app=testapp, base_url="http://test")
+    response = ac.post(
+        "/api/books/v2/",
+        json=new_book_data,
+    )
     assert response.status_code == status.HTTP_201_CREATED
     """
     Check new_book_data is a subset of response.json()["book"]

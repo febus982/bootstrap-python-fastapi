@@ -1,0 +1,17 @@
+variables:
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: registry.gitlab.com
+  # IMAGE_NAME is defined as <account>/<repo> in GitLab CI/CD
+  IMAGE_NAME: $CI_REGISTRY_IMAGE
+  TEST_TAG: $REGISTRY/$CI_PROJECT_PATH:test
+
+stages:
+  - build
+  - test
+  - deploy
+
+include:
+  - local: /.gitlab_ci/_templates.yml
+  - local: /.gitlab_ci/build.yml
+  - local: /.gitlab_ci/test.yml
+  - local: /.gitlab_ci/deploy.yml
