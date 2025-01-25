@@ -19,9 +19,9 @@ class AuthConfig(BaseModel):
 
 class EventConfig(BaseModel):
     REDIS_BROKER_URL: str = ""
-    TOPIC: Optional[str] = None
-    IS_PUBLISHER: bool = False
-    IS_SUBSCRIBER: bool = False
+    SUBSCRIBER_TOPIC: Optional[str] = None
+    REGISTER_PUBLISHERS: bool = False
+    REGISTER_SUBSCRIBERS: bool = False
 
 
 class AppConfig(BaseSettings):

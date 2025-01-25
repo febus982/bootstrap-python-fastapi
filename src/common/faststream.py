@@ -2,37 +2,29 @@
 from typing import Optional
 
 import structlog
-from faststream import Logger
-
-# from domains.events import get_topic_registry
-from faststream.redis import RedisRouter, RedisBroker, fastapi
-
-# from faststream.redis.publisher.asyncapi import AsyncAPIPublisher
+from faststream.redis import RedisBroker, RedisRouter
 from opentelemetry.instrumentation.faststream import RedisOtelMiddleware
 
-from common.config import EventConfig
 from domains import event_registry
-from event_consumer import register_subscribers
+
+from .config import EventConfig
 
 logger = structlog.getLogger(__name__)
 
 
-def init_router(config: EventConfig) -> RedisRouter:
+def init_broker(config: EventConfig) -> RedisBroker:
     broker = RedisBroker(
         config.REDIS_BROKER_URL,
         middlewares=(RedisOtelMiddleware,),
         logger=structlog.getLogger("faststream.broker"),
     )
 
-    router = RedisRouter()
-    register_publishers(router, config.TOPIC)
-    if config.IS_SUBSCRIBER:
-        register_subscribers(router, config.TOPIC)
+    if config.REGISTER_PUBLISHERS:
+        router = RedisRouter()
+        register_publishers(router, config.SUBSCRIBER_TOPIC)
+        broker.include_router(router)
 
-    broker.include_router(router)
-    return router
-
-
+    return broker
 
 
 def register_publishers(router: RedisRouter, topic: Optional[str] = None):

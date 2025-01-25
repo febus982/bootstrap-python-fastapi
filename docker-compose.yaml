@@ -36,12 +36,11 @@ services:
       context: .
       target: dev
     environment:
-      WATCHFILES_FORCE_POLLING: true
       OTEL_SERVICE_NAME: "bootstrap-fastapi-dev"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
       EVENTS__REDIS_BROKER_URL: "redis://redis:6379/2"
-      EVENTS__IS_PUBLISHER: "True"
-      EVENTS__IS_SUBSCRIBER: "True"
+      EVENTS__REGISTER_PUBLISHERS: "True"
+      EVENTS__REGISTER_SUBSCRIBERS: "True"
     working_dir: "/app/src"
     volumes:
       - '.:/app'
@@ -51,8 +50,9 @@ services:
     command:
       - faststream
       - run
-      - event_consumer:create_app
+#      - --help
       - --factory
+      - event_consumer:create_app
 
   event-docs:
     build:
@@ -64,8 +64,8 @@ services:
       OTEL_SERVICE_NAME: "bootstrap-fastapi-dev"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
       EVENTS__REDIS_BROKER_URL: "redis://redis:6379/2"
-      EVENTS__IS_PUBLISHER: "True"
-      EVENTS__IS_SUBSCRIBER: "True"
+      EVENTS__REGISTER_PUBLISHERS: "True"
+      EVENTS__REGISTER_SUBSCRIBERS: "True"
     ports:
       - '8000:8000'
     working_dir: "/app/src"
@@ -96,6 +96,7 @@ services:
       OTEL_SERVICE_NAME: "bootstrap-fastapi-http"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
       EVENTS__REDIS_BROKER_URL: "redis://redis:6379/2"
+      EVENTS__REGISTER_PUBLISHERS: "True"
     ports:
       - '8001:8000'
     volumes:

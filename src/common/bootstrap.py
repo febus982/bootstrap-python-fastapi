@@ -2,7 +2,7 @@ from typing import cast
 
 from dependency_injector.containers import DynamicContainer
 from dependency_injector.providers import Object
-from faststream.redis import RedisBroker, RedisRouter
+from faststream.redis import RedisBroker
 
 # from gateways.event import FastStreamRedisGateway
 from pydantic import BaseModel, ConfigDict
@@ -10,14 +10,14 @@ from pydantic import BaseModel, ConfigDict
 from .config import AppConfig
 from .di_container import Container
 from .dramatiq import init_dramatiq
-from .faststream import init_router
+from .faststream import init_broker
 from .logs import init_logger
 from .storage import init_storage
 
 
 class InitReference(BaseModel):
     di_container: DynamicContainer
-    faststream_broker: RedisRouter
+    faststream_broker: RedisBroker
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
@@ -32,7 +32,7 @@ def application_init(app_config: AppConfig) -> InitReference:
     init_logger(app_config)
     init_storage()
     init_dramatiq(app_config)
-    broker = init_router(app_config.EVENTS)
+    router = init_broker(app_config.EVENTS)
     # This is temporary, has to go directly in the Container
     # container.BookEventGatewayInterface.override(
     #     Object(FastStreamRedisGateway(broker=broker))
@@ -40,5 +40,5 @@ def application_init(app_config: AppConfig) -> InitReference:
 
     return InitReference(
         di_container=container,
-        faststream_broker=broker,
+        faststream_broker=router,
     )

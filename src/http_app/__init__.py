@@ -1,4 +1,4 @@
-from typing import Union, Any
+from typing import Any, Union
 
 from fastapi import FastAPI, Request
 from faststream.broker.core.usecase import BrokerUsecase
@@ -36,7 +36,7 @@ def create_app(
     init_exception_handlers(app)
 
     init_routes(app)
-    add_faststream_router(app, ref.faststream_broker)
+    # add_faststream_router(app, ref.faststream_broker)
 
     """
     OpenTelemetry prometheus exporter does not work together with automatic
