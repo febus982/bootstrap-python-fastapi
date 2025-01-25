@@ -1,3 +1,4 @@
+import httpx
 from cloudevents_pydantic.events import CloudEvent
 from structlog import get_logger
 
@@ -9,5 +10,19 @@ class NullEventGateway:
         logger = get_logger()
         await logger.ainfo(
             "Event emitted",
+            cloudevent=event.model_dump(),
+        )
+
+
+class HttpEventGateway:
+    def __init__(self):
+        self.client = httpx.AsyncClient()
+
+    async def emit(
+        self, event: CloudEvent
+    ) -> None:
+        logger = get_logger()
+        await logger.ainfo(
+            "Event emitted via HTTP request",
             cloudevent=event.model_dump(),
         )
