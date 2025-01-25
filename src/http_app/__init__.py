@@ -1,8 +1,6 @@
 from typing import Any, Union
 
 from fastapi import FastAPI, Request
-from faststream.broker.core.usecase import BrokerUsecase
-from faststream.redis import RedisRouter, fastapi
 from opentelemetry.instrumentation.asgi import OpenTelemetryMiddleware
 from starlette.responses import JSONResponse
 from starlette_prometheus import PrometheusMiddleware, metrics
@@ -69,9 +67,3 @@ def init_exception_handlers(app: FastAPI) -> None:
             logger = get_logger(__name__)
             await logger.aexception(e)
             return JSONResponse({"error": "Internal server error"}, status_code=500)
-
-
-def add_faststream_router(app: FastAPI, router: RedisRouter) -> None:
-    f_router = fastapi.RedisRouter()
-    f_router.include_router(router)
-    app.include_router(f_router)

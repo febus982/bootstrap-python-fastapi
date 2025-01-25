@@ -109,12 +109,10 @@ dependencies = [
     { name = "cloudevents-pydantic" },
     { name = "dependency-injector", extra = ["pydantic"] },
     { name = "dramatiq", extra = ["redis", "watch"] },
-    { name = "faststream" },
     { name = "hiredis" },
     { name = "httpx" },
     { name = "opentelemetry-distro", extra = ["otlp"] },
     { name = "opentelemetry-instrumentation" },
-    { name = "opentelemetry-instrumentation-faststream" },
     { name = "opentelemetry-instrumentation-httpx" },
     { name = "opentelemetry-instrumentation-sqlalchemy" },
     { name = "opentelemetry-instrumentor-dramatiq" },
@@ -165,12 +163,10 @@ requires-dist = [
     { name = "cloudevents-pydantic", specifier = ">=0.0.3,<1.0.0" },
     { name = "dependency-injector", extras = ["pydantic"], specifier = ">=4.41.0,<5.0.0" },
     { name = "dramatiq", extras = ["redis", "watch"], specifier = ">=1.17.1,<2.0.0" },
-    { name = "faststream", specifier = ">=0.5.34" },
     { name = "hiredis", specifier = ">=3.1.0,<4.0.0" },
     { name = "httpx", specifier = ">=0.23.0" },
     { name = "opentelemetry-distro", extras = ["otlp"] },
     { name = "opentelemetry-instrumentation" },
-    { name = "opentelemetry-instrumentation-faststream" },
     { name = "opentelemetry-instrumentation-httpx" },
     { name = "opentelemetry-instrumentation-sqlalchemy" },
     { name = "opentelemetry-instrumentor-dramatiq" },
@@ -584,19 +580,6 @@ wheels = [
 ]
 
 [[package]]
-name = "fast-depends"
-version = "2.4.12"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "anyio" },
-    { name = "pydantic" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/85/f5/8b42b7588a67ad78991e5e7ca0e0c6a1ded535a69a725e4e48d3346a20c1/fast_depends-2.4.12.tar.gz", hash = "sha256:9393e6de827f7afa0141e54fa9553b737396aaf06bd0040e159d1f790487b16d", size = 16682 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/1d/08/4adb160d8394053289fdf3b276e93b53271fd463e54fff8911b23c1db4ed/fast_depends-2.4.12-py3-none-any.whl", hash = "sha256:9e5d110ddc962329e46c9b35e5fe65655984247a13ee3ca5a33186db7d2d75c2", size = 17651 },
-]
-
-[[package]]
 name = "fastapi"
 version = "0.115.7"
 source = { registry = "https://pypi.org/simple" }
@@ -608,20 +591,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/a2/f5/3f921e59f189e513adb9aef826e2841672d50a399fead4e69afdeb808ff4/fastapi-0.115.7.tar.gz", hash = "sha256:0f106da6c01d88a6786b3248fb4d7a940d071f6f488488898ad5d354b25ed015", size = 293177 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e6/7f/bbd4dcf0faf61bc68a01939256e2ed02d681e9334c1a3cef24d5f77aba9f/fastapi-0.115.7-py3-none-any.whl", hash = "sha256:eb6a8c8bf7f26009e8147111ff15b5177a0e19bb4a45bc3486ab14804539d21e", size = 94777 },
-]
-
-[[package]]
-name = "faststream"
-version = "0.5.34"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "anyio" },
-    { name = "fast-depends" },
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/8a/e8/cbfb97a85245c849e77ef628b5fd279b55ad6d94cdab4b2f5cb1d5934123/faststream-0.5.34.tar.gz", hash = "sha256:84615968c5768ebaa89b72ae66b53e5302c08e7d18b341ef5193e54cb6ba8623", size = 287921 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b5/36/d20d3e45e95f9cf8d2684cf1cc201e1738e8d4f4ad61a1debeec7ecc646d/faststream-0.5.34-py3-none-any.whl", hash = "sha256:aa7f61d6968a68f13ebf755cce9e8bf11b00717c28b2ef66e896b5d652a6c6a2", size = 386689 },
 ]
 
 [[package]]
@@ -1420,20 +1389,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/49/cc/a7b2fd243c6d2621803092eba62e450071b6752dfe4f64f530bbfd91a328/opentelemetry_instrumentation_asgi-0.50b0.tar.gz", hash = "sha256:3ca4cb5616ae6a3e8ce86e7d5c360a8d8cc8ed722cf3dc8a5e44300774e87d49", size = 24105 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d2/81/0899c6b56b1023835f266d909250d439174afa0c34ed5944c5021d3da263/opentelemetry_instrumentation_asgi-0.50b0-py3-none-any.whl", hash = "sha256:2ba1297f746e55dec5a17fe825689da0613662fb25c004c3965a6c54b1d5be22", size = 16304 },
-]
-
-[[package]]
-name = "opentelemetry-instrumentation-faststream"
-version = "0.1.3"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "opentelemetry-api" },
-    { name = "opentelemetry-instrumentation" },
-    { name = "wrapt" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/84/95/a1009dec6b4980957315d4ef136b24d18c55d8d7cda4e6fab3d37b01d177/opentelemetry_instrumentation_faststream-0.1.3.tar.gz", hash = "sha256:cb56d3ab3d39977a9ee43be48e24c67ee7e3db102295dd20221116bb45ae1538", size = 5990 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/68/21/9a69eaa366265c76a6dbf05b3069b315e355cc4cd768147d9c06d0c012ba/opentelemetry_instrumentation_faststream-0.1.3-py3-none-any.whl", hash = "sha256:bfeea723453e6553873962744a9d74c636eb590b030573844ca6b1be4fa0938a", size = 6737 },
 ]
 
 [[package]]

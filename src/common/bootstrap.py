@@ -2,7 +2,6 @@ from typing import cast
 
 from dependency_injector.containers import DynamicContainer
 from dependency_injector.providers import Object
-from faststream.redis import RedisBroker
 
 # from gateways.event import FastStreamRedisGateway
 from pydantic import BaseModel, ConfigDict
@@ -10,14 +9,13 @@ from pydantic import BaseModel, ConfigDict
 from .config import AppConfig
 from .di_container import Container
 from .dramatiq import init_dramatiq
-from .faststream import init_broker
+from .event_publisher import init_broker
 from .logs import init_logger
 from .storage import init_storage
 
 
 class InitReference(BaseModel):
     di_container: DynamicContainer
-    faststream_broker: RedisBroker
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
