@@ -155,7 +155,7 @@ async def run_migrations_online() -> None:
 
                 await rec["connection"].run_sync(migration_callable)
             else:
-                do_run_migration(name, rec)
+                do_run_migration(rec["connection"], name)
 
         if USE_TWOPHASE:
             for rec in engines.values():
