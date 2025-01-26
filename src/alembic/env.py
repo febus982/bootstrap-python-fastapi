@@ -1,7 +1,10 @@
 import logging
 from asyncio import get_event_loop
+from datetime import datetime
 
+from sqlalchemy import Table, Column, String, DateTime
 from sqlalchemy.ext.asyncio import AsyncEngine
+from sqlalchemy.orm import registry
 
 from alembic import context
 from common.bootstrap import application_init
@@ -31,6 +34,19 @@ sa_manager = di_container.SQLAlchemyBindManager()
 target_metadata = sa_manager.get_bind_mappers_metadata()
 db_names = target_metadata.keys()
 config.set_main_option("databases", ",".join(db_names))
+
+def inject_fixture_tables(registry_mapper: registry):
+    Table(
+        "alembic_fixtures",
+        registry_mapper.metadata,
+        Column("filename", String(), primary_key=True),
+        Column("signature", String(), nullable=False),
+        Column("processed_at", DateTime(timezone=True), nullable=False, default=datetime.now),
+    )
+
+for name in db_names:
+    inject_fixture_tables(sa_manager.get_bind(name).registry_mapper)
+
 
 # add your model's MetaData objects here
 # for 'autogenerate' support.  These must be set
