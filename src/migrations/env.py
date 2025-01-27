@@ -50,7 +50,9 @@ def generate_fixture_migration_model(declarative_base: type):
         bind: Mapped[str] = mapped_column(String(), primary_key=True)
         module_name: Mapped[str] = mapped_column(String(), primary_key=True)
         signature: Mapped[str] = mapped_column(String(), nullable=False)
-        alembic_revision: Mapped[str] = mapped_column(String(), nullable=True, default=str(context.get_head_revision()))
+        alembic_head_revisions: Mapped[str] = mapped_column(
+            String(), nullable=True, default=str(context.get_head_revision())
+        )
 
         processed_at: Mapped[datetime] = mapped_column(
             DateTime(), nullable=False, default=datetime.now
@@ -260,9 +262,10 @@ class FixtureHandler:
                     cls.logger.info(
                         f"`{fixture_module.__name__}` fixtures correctly created for `{bind_name}` bind"
                     )
-                except Exception as e:
+                except Exception:
                     cls.logger.error(
-                        f"`{fixture_module.__name__}` fixtures failed to apply to `{bind_name}` bind", exc_info=True
+                        f"`{fixture_module.__name__}` fixtures failed to apply to `{bind_name}` bind",
+                        exc_info=True,
                     )
                     await session.rollback()
 
@@ -397,8 +400,10 @@ async def run_migrations_online() -> None:
         for name, rec in engines.items():
             logger.info(f"Migrating database {name}")
             if isinstance(rec["engine"], AsyncEngine):
+
                 def migration_callable(*args, **kwargs):
                     return do_run_migration(*args, name=name, **kwargs)
+
                 await rec["connection"].run_sync(migration_callable)
             else:
                 do_run_migration(rec["connection"], name)
@@ -420,7 +425,8 @@ async def run_migrations_online() -> None:
             for name, rec in engines.items():
                 if isinstance(rec["engine"], AsyncEngine):
                     await FixtureHandler.a_migrate_fixtures(
-                        bind_name=name, session=async_sessionmaker(bind=rec["connection"])
+                        bind_name=name,
+                        session=async_sessionmaker(bind=rec["connection"]),
                     )
                 else:
                     FixtureHandler.migrate_fixtures(
