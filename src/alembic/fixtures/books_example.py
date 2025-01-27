@@ -3,6 +3,7 @@
 
 "BIND_NAME": "LIST_OF_FACTORIES"
 """
+
 from typing import Dict, List
 
 from factory import Factory
