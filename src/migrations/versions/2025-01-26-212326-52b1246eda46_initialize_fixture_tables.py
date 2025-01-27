@@ -28,10 +28,10 @@ def upgrade_default() -> None:
     op.create_table(
         "alembic_fixtures",
         sa.Column("bind", sa.String(), nullable=False),
-        sa.Column("filename", sa.String(), nullable=False),
+        sa.Column("module_name", sa.String(), nullable=False),
         sa.Column("signature", sa.String(), nullable=False),
         sa.Column("processed_at", sa.DateTime(timezone=True), nullable=False),
-        sa.PrimaryKeyConstraint("bind", "filename"),
+        sa.PrimaryKeyConstraint("bind", "module_name"),
     )
 
 

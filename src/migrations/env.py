@@ -48,8 +48,9 @@ def generate_fixture_migration_model(declarative_base: type):
         __tablename__ = "alembic_fixtures"
 
         bind: Mapped[str] = mapped_column(String(), primary_key=True)
-        filename: Mapped[str] = mapped_column(String(), primary_key=True)
+        module_name: Mapped[str] = mapped_column(String(), primary_key=True)
         signature: Mapped[str] = mapped_column(String(), nullable=False)
+
         processed_at: Mapped[datetime] = mapped_column(
             DateTime(), nullable=False, default=datetime.now
         )
@@ -162,13 +163,13 @@ class FixtureHandler:
         if fixture_migration:
             if signature != fixture_migration.signature:
                 cls.logger.warning(
-                    f"Signature mismatch for `{fixture_migration.filename}` fixture."
+                    f"Signature mismatch for `{fixture_migration.module_name}` fixture."
                     f" The file has been already processed but has been modified"
                     f" since then. It will not be processed again."
                 )
             else:
                 cls.logger.debug(
-                    f"`{fixture_migration.filename}` fixtures already processed for `{fixture_migration.bind}` bind"
+                    f"`{fixture_migration.module_name}` fixtures already processed for `{fixture_migration.bind}` bind"
                 )
             return True
         return False
@@ -207,7 +208,7 @@ class FixtureHandler:
         session.add(
             fixture_migration_models[bind_name](
                 bind=bind_name,
-                filename=f"{fixture_module.__name__}",
+                module_name=f"{fixture_module.__name__}",
                 signature=signature,
             )
         )
@@ -395,20 +396,11 @@ async def run_migrations_online() -> None:
         for name, rec in engines.items():
             logger.info(f"Migrating database {name}")
             if isinstance(rec["engine"], AsyncEngine):
-
                 def migration_callable(*args, **kwargs):
                     return do_run_migration(*args, name=name, **kwargs)
-
                 await rec["connection"].run_sync(migration_callable)
-                await FixtureHandler.a_migrate_fixtures(
-                    bind_name=name, session=async_sessionmaker(bind=rec["connection"])
-                )
-
             else:
                 do_run_migration(rec["connection"], name)
-                FixtureHandler.migrate_fixtures(
-                    bind_name=name, session=sessionmaker(bind=rec["connection"])
-                )
 
         if USE_TWOPHASE:
             for rec in engines.values():
@@ -422,6 +414,17 @@ async def run_migrations_online() -> None:
                 await rec["transaction"].commit()
             else:
                 rec["transaction"].commit()
+
+        if context.config.cmd_opts.cmd[0].__name__ == "upgrade":
+            for name, rec in engines.items():
+                if isinstance(rec["engine"], AsyncEngine):
+                    await FixtureHandler.a_migrate_fixtures(
+                        bind_name=name, session=async_sessionmaker(bind=rec["connection"])
+                    )
+                else:
+                    FixtureHandler.migrate_fixtures(
+                        bind_name=name, session=sessionmaker(bind=rec["connection"])
+                    )
     except:
         for rec in engines.values():
             if isinstance(rec["engine"], AsyncEngine):
