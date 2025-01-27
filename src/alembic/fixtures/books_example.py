@@ -3,6 +3,7 @@
 
 "BIND_NAME": "LIST_OF_FACTORIES"
 """
+
 from factory import Factory
 
 from domains.books._models import BookModel
