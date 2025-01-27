@@ -24,9 +24,10 @@ This template provides out of the box some commonly used functionalities:
 * Async tasks execution using [Dramatiq](https://dramatiq.io/index.html)
 * Repository pattern for databases using [SQLAlchemy](https://www.sqlalchemy.org/) and [SQLAlchemy bind manager](https://febus982.github.io/sqlalchemy-bind-manager/stable/)
 * Database migrations using [Alembic](https://alembic.sqlalchemy.org/en/latest/) (configured supporting both sync and async SQLAlchemy engines)
+* Database fixtures support using customized [Alembic](https://alembic.sqlalchemy.org/en/latest/) configuration
 * Authentication and Identity Provider using [ORY Zero Trust architecture](https://www.ory.sh/docs/kratos/guides/zero-trust-iap-proxy-identity-access-proxy)
 * Example CI/CD deployment pipeline for GitLab (The focus for this repository is still GitHub but, in case you want to use GitLab 🤷)
-* [TODO] Producer and consumer to emit and consume events using [CloudEvents](https://cloudevents.io/) format on [Confluent Kafka](https://docs.confluent.io/kafka-clients/python/current/overview.html)
+* [TODO] Producer and consumer to emit and consume events using [CloudEvents](https://cloudevents.io/) format using HTTP, to be used with [Knative Eventing](https://knative.dev/docs/eventing/)
 
 ## Documentation
 
