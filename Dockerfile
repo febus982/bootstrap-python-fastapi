@@ -64,7 +64,7 @@ RUN --mount=type=cache,target=~/.cache/uv \
 # Create the base app with the common python packages
 FROM base AS base_app
 USER nonroot
-COPY --chown=nonroot:nonroot src/alembic ./alembic
+COPY --chown=nonroot:nonroot src/migrations ./migrations
 COPY --chown=nonroot:nonroot src/domains ./domains
 COPY --chown=nonroot:nonroot src/gateways ./gateways
 COPY --chown=nonroot:nonroot src/common ./common
