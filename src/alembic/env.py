@@ -6,10 +6,12 @@ from asyncio import get_event_loop
 from datetime import datetime
 from os import listdir, path
 from os.path import isfile, join
+from types import ModuleType
+from typing import List, Union
 
 from sqlalchemy import DateTime, String
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, Session, mapped_column, sessionmaker
 
 from alembic import context
 from common.bootstrap import application_init
@@ -81,61 +83,234 @@ for name in db_names:
 # ... etc.
 
 
-def calculate_signature(file_path):
-    hasher = hashlib.sha256()
-    with open(file_path, "rb") as file:
-        hasher.update(file.read())
-    return hasher.hexdigest()
-
-
-async def a_migrate_fixtures(
-    bind_name: str, session: async_sessionmaker[AsyncSession]
-) -> str:
+class FixtureHandler:
     alembic_path = path.dirname(path.realpath(__file__))
     fixtures_path = alembic_path + "/fixtures"
-    sys.path.append(alembic_path)
-    module_names = [
-        f[:-3]
-        for f in listdir(fixtures_path)
-        if isfile(join(fixtures_path, f)) and f.endswith(".py") and f != "__init__.py"
-    ]
-    async with session() as session:
-        for module_name in module_names:
-            logging.debug(f"Creating {module_name} fixtures for {bind_name}")
-            m = importlib.import_module(f"fixtures.{module_name}")
-            fixture_migration = await session.get(
-                fixture_migration_models[bind_name], (bind_name, f"{module_name}.py")
-            )
-            signature = calculate_signature(f"{fixtures_path}/{module_name}.py")
-            if fixture_migration:
-                if signature != fixture_migration.signature:
-                    logging.warning(
-                        f"Signature mismatch for {fixture_migration.filename} fixture."
-                        f" The file has been already processed but has been modified"
-                        f" since then. It will not be processed again."
-                    )
-                else:
-                    logging.debug(
-                        f"{module_name} fixtures already processed for {bind_name}"
-                    )
-                continue
+    logger = logging.getLogger("alembic.runtime.fixtures")
 
-            session.add_all(m.fixtures().get(bind_name, []))
-            session.add(
-                fixture_migration_models[bind_name](
-                    bind=bind_name,
-                    filename=f"{module_name}.py",
-                    signature=signature,
+    @classmethod
+    def _calculate_signature(cls, fixture_module: ModuleType) -> str:
+        """
+        Calculate the SHA-256 signature for a fixture module's corresponding file.
+
+        This method computes a unique hash for the content of a specific Python source
+        file associated with a given fixture module. The hash is calculated using the
+        SHA-256 algorithm, ensuring a consistent and secure checksum.
+
+        Args:
+            fixture_module (ModuleType): The module whose associated file's signature
+                needs to be calculated.
+
+        Returns:
+            str: The hexadecimal SHA-256 hash of the file content.
+        """
+        file_path = f"{cls.fixtures_path}/{fixture_module.__name__[9:]}.py"
+        hasher = hashlib.sha256()
+        with open(file_path, "rb") as file:
+            hasher.update(file.read())
+        return hasher.hexdigest()
+
+    @classmethod
+    def _get_fixture_modules(cls) -> List[ModuleType]:
+        """
+        This private class method is responsible for retrieving modules from the fixtures
+        directory defined by the class attributes. It dynamically imports Python modules
+        located in the specified fixtures directory and filters out non-Python files
+        or the __init__.py file. It adds the Alembic path to the system path to ensure
+        successful imports.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        List[ModuleType]
+            A list of imported module objects dynamically loaded from the fixtures
+            directory.
+        """
+        sys.path.append(cls.alembic_path)
+        return [
+            importlib.import_module(f"fixtures.{f[:-3]}")
+            for f in listdir(cls.fixtures_path)
+            if isfile(join(cls.fixtures_path, f))
+            and f.endswith(".py")
+            and f != "__init__.py"
+        ]
+
+    @classmethod
+    def _fixture_already_migrated(cls, fixture_migration, signature) -> bool:
+        """
+        Determines if a fixture has already been migrated based on the given fixture
+        migration and its signature.
+
+        The method examines the provided fixture migration data and its signature to
+        decide whether the fixture has already been processed. If the signatures do not
+        match, a warning is logged to indicate potential modifications. Otherwise, a debug
+        message is logged to confirm prior processing. The return value indicates whether
+        the fixture should be skipped.
+
+        Args:
+        fixture_migration (FixtureMigration | None): An object representing the migration
+            details of a fixture. Can be None.
+        signature (str): A unique string indicating the signature of the current fixture.
+
+        Returns:
+        bool: True if the fixture has already been migrated and should not be processed
+            again; False otherwise.
+        """
+        if fixture_migration:
+            if signature != fixture_migration.signature:
+                cls.logger.warning(
+                    f"Signature mismatch for `{fixture_migration.filename}` fixture."
+                    f" The file has been already processed but has been modified"
+                    f" since then. It will not be processed again."
                 )
+            else:
+                cls.logger.debug(
+                    f"`{fixture_migration.filename}` fixtures already processed for `{fixture_migration.bind}` bind"
+                )
+            return True
+        return False
+
+    @classmethod
+    def _add_fixture_data_to_session(
+        cls,
+        bind_name: str,
+        fixture_module: ModuleType,
+        session: Union[Session, AsyncSession],
+        signature: str,
+    ):
+        """
+        Adds fixture data and migration model to the given session.
+
+        This method interacts with the database session to add predefined fixture data
+        and creates a corresponding migration model for tracking purposes. The fixture
+        data is retrieved from the specified fixture module, based on the provided bind
+        name. The migration model contains metadata about the fixture module and its
+        signature.
+
+        Args:
+            bind_name (str): The binding name used to fetch fixture data from the
+                fixture module.
+            fixture_module (ModuleType): The module containing fixture data and fixture
+                metadata definitions.
+            session (Union[Session, AsyncSession]): A database session where fixture
+                data and migration models are added.
+            signature (str): A unique signature representing the state of the fixture
+                module.
+
+        Returns:
+            None
+        """
+        session.add_all(fixture_module.fixtures().get(bind_name, []))
+        session.add(
+            fixture_migration_models[bind_name](
+                bind=bind_name,
+                filename=f"{fixture_module.__name__}",
+                signature=signature,
             )
-            try:
-                await session.commit()
-                logging.info(
-                    f"{module_name} fixtures correctly created for {bind_name}"
+        )
+
+    @classmethod
+    async def a_migrate_fixtures(
+        cls, bind_name: str, session: async_sessionmaker[AsyncSession]
+    ):
+        """
+        Perform asynchronous migration of fixture data modules for a specific database bind.
+
+        This method iterates over fixture data modules, calculates their signatures, and determines
+        whether fixtures have already been migrated for a specific database bind. If not, it migrates
+        them by adding the data to the session and commits the changes. If an error occurs during
+        the commit, it rolls back the session. Logs are produced at each significant step.
+
+        Args:
+            bind_name: The name of the database bind for which the fixtures are being migrated.
+            session: An instance of `async_sessionmaker[AsyncSession]` used for interacting with
+                     the database.
+
+        Raises:
+            Exception: If a commit to the database fails.
+
+        Returns:
+            None
+        """
+        modules = cls._get_fixture_modules()
+        async with session() as session:
+            for fixture_module in modules:
+                cls.logger.debug(
+                    f"Creating `{fixture_module.__name__}` fixtures for `{bind_name}` bind"
                 )
-            except Exception:
-                await session.rollback()
-                logging.error(f"{module_name} fixtures failed to apply to {bind_name}")
+                fixture_migration = await session.get(
+                    fixture_migration_models[bind_name],
+                    (bind_name, f"{fixture_module.__name__}"),
+                )
+
+                signature = cls._calculate_signature(fixture_module)
+                if cls._fixture_already_migrated(fixture_migration, signature):
+                    continue
+
+                cls._add_fixture_data_to_session(
+                    bind_name, fixture_module, session, signature
+                )
+                try:
+                    await session.commit()
+                    cls.logger.info(
+                        f"`{fixture_module.__name__}` fixtures correctly created for `{bind_name}` bind"
+                    )
+                except Exception:
+                    await session.rollback()
+                    cls.logger.error(
+                        f"`{fixture_module.__name__}` fixtures failed to apply to `{bind_name}` bind"
+                    )
+
+    @classmethod
+    def migrate_fixtures(cls, bind_name: str, session: sessionmaker[Session]):
+        """
+        Migrate fixture data for a specified bind to the database session. This process involves identifying
+        fixture modules, calculating their signatures, checking if a module's data is already migrated, and
+        applying the fixture data if necessary. The migration process is committed to the session or rolled back
+        in case of failure.
+
+        Parameters:
+        cls: Type[CurrentClassType]
+            The class on which the method is being called.
+        bind_name: str
+            The name of the database bind to which the fixtures are being migrated.
+        session: sessionmaker[Session]
+            The SQLAlchemy session maker instance used for initiating the session.
+
+        Raises:
+        None explicitly raised but may propagate exceptions during database operations.
+        """
+        modules = cls._get_fixture_modules()
+        with session() as session:
+            for fixture_module in modules:
+                cls.logger.debug(
+                    f"Creating `{fixture_module.__name__}` fixtures for `{bind_name}` bind"
+                )
+                fixture_migration = session.get(
+                    fixture_migration_models[bind_name],
+                    (bind_name, f"{fixture_module.__name__}"),
+                )
+
+                signature = cls._calculate_signature(fixture_module)
+                if cls._fixture_already_migrated(fixture_migration, signature):
+                    continue
+
+                cls._add_fixture_data_to_session(
+                    bind_name, fixture_module, session, signature
+                )
+                try:
+                    session.commit()
+                    cls.logger.info(
+                        f"`{fixture_module.__name__}` fixtures correctly created for `{bind_name}` bind"
+                    )
+                except Exception:
+                    session.rollback()
+                    cls.logger.error(
+                        f"`{fixture_module.__name__}` fixtures failed to apply to `{bind_name}` bind"
+                    )
 
 
 def run_migrations_offline() -> None:
@@ -225,14 +400,15 @@ async def run_migrations_online() -> None:
                     return do_run_migration(*args, name=name, **kwargs)
 
                 await rec["connection"].run_sync(migration_callable)
-                await a_migrate_fixtures(
+                await FixtureHandler.a_migrate_fixtures(
                     bind_name=name, session=async_sessionmaker(bind=rec["connection"])
                 )
 
             else:
                 do_run_migration(rec["connection"], name)
-                # Session = sessionmaker(bind=rec["connection"])
-                # session = Session()
+                FixtureHandler.migrate_fixtures(
+                    bind_name=name, session=sessionmaker(bind=rec["connection"])
+                )
 
         if USE_TWOPHASE:
             for rec in engines.values():
