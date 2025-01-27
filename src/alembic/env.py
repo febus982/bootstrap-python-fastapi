@@ -102,8 +102,11 @@ async def a_migrate_fixtures(bind_name: str, Session: async_sessionmaker[AsyncSe
             signature = calculate_md5(f"{fixtures_path}/{module_name}.py")
             if fixture_migration:
                 if signature != fixture_migration.signature:
-                    logging.warning(f"Signature mismatch for {fixture_migration.filename} fixture. The file has been modified after being processed.")
-                logging.debug(f"{module_name} fixtures already migrated for {bind_name}")
+                    logging.warning(f"Signature mismatch for {fixture_migration.filename} fixture."
+                                    f" The file has been already processed but has been modified since then."
+                                    f" It will not be processed again.")
+                else:
+                    logging.debug(f"{module_name} fixtures already processed for {bind_name}")
                 continue
 
             session.add_all(m.fixtures().get(bind_name, []))
