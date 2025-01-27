@@ -30,6 +30,7 @@ def upgrade_default() -> None:
         sa.Column("bind", sa.String(), nullable=False),
         sa.Column("module_name", sa.String(), nullable=False),
         sa.Column("signature", sa.String(), nullable=False),
+        sa.Column("alembic_revision", sa.String(), nullable=False),
         sa.Column("processed_at", sa.DateTime(timezone=True), nullable=False),
         sa.PrimaryKeyConstraint("bind", "module_name"),
     )

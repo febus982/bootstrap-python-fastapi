@@ -50,6 +50,7 @@ def generate_fixture_migration_model(declarative_base: type):
         bind: Mapped[str] = mapped_column(String(), primary_key=True)
         module_name: Mapped[str] = mapped_column(String(), primary_key=True)
         signature: Mapped[str] = mapped_column(String(), nullable=False)
+        alembic_revision: Mapped[str] = mapped_column(String(), nullable=True, default=str(context.get_head_revision()))
 
         processed_at: Mapped[datetime] = mapped_column(
             DateTime(), nullable=False, default=datetime.now
@@ -259,11 +260,11 @@ class FixtureHandler:
                     cls.logger.info(
                         f"`{fixture_module.__name__}` fixtures correctly created for `{bind_name}` bind"
                     )
-                except Exception:
-                    await session.rollback()
+                except Exception as e:
                     cls.logger.error(
-                        f"`{fixture_module.__name__}` fixtures failed to apply to `{bind_name}` bind"
+                        f"`{fixture_module.__name__}` fixtures failed to apply to `{bind_name}` bind", exc_info=True
                     )
+                    await session.rollback()
 
     @classmethod
     def migrate_fixtures(cls, bind_name: str, session: sessionmaker[Session]):
