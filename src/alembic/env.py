@@ -203,7 +203,7 @@ class FixtureHandler:
         Returns:
             None
         """
-        session.add_all(fixture_module.fixtures().get(bind_name, []))
+        session.add_all(fixture_module.fixtures.get(bind_name, []))
         session.add(
             fixture_migration_models[bind_name](
                 bind=bind_name,
