@@ -9,11 +9,11 @@ from os.path import isfile, join
 from types import ModuleType
 from typing import List, Union
 
+from alembic import context
 from sqlalchemy import DateTime, String
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 from sqlalchemy.orm import Mapped, Session, mapped_column, sessionmaker
 
-from alembic import context
 from common.bootstrap import application_init
 from common.config import AppConfig
 
