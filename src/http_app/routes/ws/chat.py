@@ -1,8 +1,44 @@
-from fastapi import APIRouter
+from typing import Optional, Sequence, Callable
+
+from fastapi.types import DecoratedCallable
+from typing_extensions import Annotated, Doc
+
+from fastapi import APIRouter, params
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
-router = APIRouter(prefix="/chat")
 
+class AsyncAPIEnabledRouter(APIRouter):
+    def websocket(self, path: Annotated[
+        str,
+        Doc(
+            """
+            WebSocket path.
+            """
+        ),
+    ], name: Annotated[
+        Optional[str],
+        Doc(
+            """
+            A name for the WebSocket. Only used internally.
+            """
+        ),
+    ] = None, *, dependencies: Annotated[
+        Optional[Sequence[params.Depends]],
+        Doc(
+            """
+            A list of dependencies (using `Depends()`) to be used for this
+            WebSocket.
+
+            Read more about it in the
+            [FastAPI docs for WebSockets](https://fastapi.tiangolo.com/advanced/websockets/).
+            """
+        ),
+    ] = None) -> Callable[[DecoratedCallable], DecoratedCallable]:
+        route = super().websocket(path, name, dependencies=dependencies)
+        return route
+
+
+router = AsyncAPIEnabledRouter(prefix="/chat")
 
 class ConnectionManager:
     def __init__(self):
