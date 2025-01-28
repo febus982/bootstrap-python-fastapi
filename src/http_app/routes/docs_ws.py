@@ -16,6 +16,7 @@ channel_messages = {}
 # Prepare some data from a map
 for channel, messages in message_map.items():
     channel_messages[channel] = {}
+    # TODO: Check for overlapping model schemas, if they are different log a warning!
     for message in messages:
         components_schemas[message.__name__] = message.model_json_schema(ref_template="#/components/schemas/{model}")
         components_schemas.update(message.model_json_schema(ref_template="#/components/schemas/{model}")["$defs"])
