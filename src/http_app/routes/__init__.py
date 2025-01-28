@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from http_app.routes import api, events, graphql, hello, ping, user_registered_hook, asyncapi_docs
+from . import websocket
 
 
 def init_routes(app: FastAPI) -> None:
@@ -11,3 +12,4 @@ def init_routes(app: FastAPI) -> None:
     app.include_router(events.router)
     app.include_router(user_registered_hook.router)
     app.include_router(graphql.router, prefix="/graphql")
+    app.include_router(websocket.router)
