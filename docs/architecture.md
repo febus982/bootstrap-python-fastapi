@@ -10,7 +10,7 @@ and the persistence layer.
 
 This is a high level list of the packages in this application template:
 
-* `alembic` (database migration manager)
+* `migrations` (database migration manager)
 * `dramatiq_worker` (async tasks runner)
 * `common` (some common boilerplate initialisation shared by all applications )
 * `http_app` (http presentation layer)
@@ -30,7 +30,7 @@ This is a high level representation of the nested layers in the application:
 ```mermaid
 flowchart TD
     subgraph "Framework & Drivers + Interface Adapters" 
-        alembic
+        migrations
         dramatiq_worker
         http_app
         gateways
@@ -51,7 +51,7 @@ flowchart TD
         end
     end
     
-    alembic ~~~ domains.books
+    migrations ~~~ domains.books
     dramatiq_worker ~~~ domains.books
     http_app ~~~ domains.books
     gateways ~~~ domains.books
