@@ -1,13 +1,16 @@
 import json
+import logging
 
 import pydantic_asyncapi as pa
 from fastapi import APIRouter
+from pydantic.json_schema import models_json_schema
 from starlette.responses import HTMLResponse
 
-from domains.books.events import BookCreatedV1
+from domains.books.events import BookCreatedV1, BookUpdatedV1
 
 message_map = {
-    "chat_channel": [BookCreatedV1]
+    # Use validation if receiving message, serialization if sending message
+    "chat_channel": [(BookCreatedV1, "validation"), (BookUpdatedV1, "validation")]
 }
 
 components_schemas = {}
@@ -16,12 +19,24 @@ channel_messages = {}
 # Prepare some data from a map
 for channel, messages in message_map.items():
     channel_messages[channel] = {}
+    a, b = models_json_schema(models=messages, ref_template="#/components/schemas/{model}")
+
+    logging.error(a)
+    """
+    {(<class 'domains.books.events.BookCreatedV1'>, 'validation'): {'$ref': '#/components/schemas/BookCreatedV1'}, (<class 'domains.books.events.BookUpdatedV1'>, 'validation'): {'$ref': '#/components/schemas/BookUpdatedV1'}}
+    """
+    logging.error(b)
+
+    components_schemas = b["$defs"]
     # TODO: Check for overlapping model schemas, if they are different log a warning!
     for message in messages:
-        components_schemas[message.__name__] = message.model_json_schema(ref_template="#/components/schemas/{model}")
-        components_schemas.update(message.model_json_schema(ref_template="#/components/schemas/{model}")["$defs"])
-        channel_messages[channel][message.__name__] = pa.v3.Message(
-            payload=pa.v3.Reference(ref=f"#/components/schemas/{message.__name__}")
+        # components_schemas[message.__name__] = message.model_json_schema(ref_template="#/components/schemas/{model}")
+        # components_schemas.update(message.model_json_schema(ref_template="#/components/schemas/{model}")["$defs"])
+        # channel_messages[channel][message.__name__] = pa.v3.Message(
+        #     payload=pa.v3.Reference(ref=f"#/components/schemas/{message.__name__}")
+        # )
+        channel_messages[channel][message[0].__name__] = pa.v3.Message(
+            payload=pa.v3.Reference(ref=f"#/components/schemas/{message[0].__name__}")
         )
 
 
@@ -92,7 +107,7 @@ def get_asyncapi_html(
         messages: bool = True,
         schemas: bool = True,
         errors: bool = True,
-        expand_message_examples: bool = True,
+        expand_message_examples: bool = False,
         title: str = "Websocket",
 ) -> HTMLResponse:
 
