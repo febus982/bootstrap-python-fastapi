@@ -1,43 +1,51 @@
 import json
-import logging
+from typing import Dict, Literal, List
 
 import pydantic_asyncapi as pa
 from fastapi import APIRouter
-from pydantic.json_schema import models_json_schema
 from starlette.responses import HTMLResponse
 
 from domains.books.events import BookCreatedV1, BookUpdatedV1
 
-message_map = {
-    # Use validation if receiving message, serialization if sending message
-    "chat_channel": [(BookCreatedV1, "validation"), (BookUpdatedV1, "validation")]
+asyncapi_registry: Dict[str, Dict[Literal["receive", "send"], List]] = {
+    "chat_channel": {
+        "receive": [BookCreatedV1],
+        "send": [BookUpdatedV1],
+    }
 }
 
 components_schemas = {}
-channel_messages = {}
 
-# Prepare some data from a map
-for channel, messages in message_map.items():
-    channel_messages[channel] = {}
-    a, b = models_json_schema(models=messages, ref_template="#/components/schemas/{model}")
+channels = {}
+operations = {}
 
-    logging.error(a)
-    """
-    {(<class 'domains.books.events.BookCreatedV1'>, 'validation'): {'$ref': '#/components/schemas/BookCreatedV1'}, (<class 'domains.books.events.BookUpdatedV1'>, 'validation'): {'$ref': '#/components/schemas/BookUpdatedV1'}}
-    """
-    logging.error(b)
-
-    components_schemas = b["$defs"]
-    # TODO: Check for overlapping model schemas, if they are different log a warning!
-    for message in messages:
-        # components_schemas[message.__name__] = message.model_json_schema(ref_template="#/components/schemas/{model}")
-        # components_schemas.update(message.model_json_schema(ref_template="#/components/schemas/{model}")["$defs"])
-        # channel_messages[channel][message.__name__] = pa.v3.Message(
-        #     payload=pa.v3.Reference(ref=f"#/components/schemas/{message.__name__}")
-        # )
-        channel_messages[channel][message[0].__name__] = pa.v3.Message(
-            payload=pa.v3.Reference(ref=f"#/components/schemas/{message[0].__name__}")
+for channel, channel_operations in asyncapi_registry.items():
+    _channel_messages = {}
+    for operation, messages in channel_operations.items():
+        _operation_message_refs = []
+        for message in messages:
+            # TODO: Check for overlapping model schemas, if they are different log a warning!
+            components_schemas[message.__name__] = message.model_json_schema(
+                mode="validation" if operation == "receive" else "serialization",
+                ref_template="#/components/schemas/{model}"
+            )
+            components_schemas.update(message.model_json_schema(mode="serialization", ref_template="#/components/schemas/{model}")["$defs"])
+            _channel_messages[message.__name__] = pa.v3.Message(
+                payload=pa.v3.Reference(ref=f"#/components/schemas/{message.__name__}")
+            )
+            # Cannot point to the /components path
+            _operation_message_refs.append(pa.v3.Reference(ref=f"#/channels/chat_channel/messages/{message.__name__}"))
+        operations[operation] = pa.v3.Operation(
+            action=operation,
+            channel=pa.v3.Reference(ref=f"#/channels/{channel}"),
+            messages=_operation_message_refs,
         )
+    channels[channel] = pa.v3.Channel(
+        title=channel,
+        servers=[pa.v3.Reference(ref="#/servers/chat")],
+        messages=_channel_messages,
+    )
+
 
 
 schema = pa.AsyncAPIV3(
@@ -56,20 +64,8 @@ schema = pa.AsyncAPIV3(
             protocol="websocket",
         )
     },
-    channels={
-        "chat_channel": pa.v3.Channel(
-            title="chat_channel_title",
-            servers=[pa.v3.Reference(ref="#/servers/chat")],
-            messages=channel_messages["chat_channel"],
-        )
-    },
-    operations={
-        "chat_operation": pa.v3.Operation(
-            action="receive",
-            channel=pa.v3.Reference(ref="#/channels/chat_channel"),
-        )
-    },
-
+    channels=channels,
+    operations=operations,
 )
 
 router = APIRouter(prefix="/docs/ws")
