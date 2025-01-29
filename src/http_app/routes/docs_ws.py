@@ -1,72 +1,12 @@
 import json
-from typing import Dict, Literal, List
 
 import pydantic_asyncapi as pa
 from fastapi import APIRouter
 from starlette.responses import HTMLResponse
 
+from common.asyncapi import add_channel_to_asyncapi_schema, get_asyncapi_schema
 from domains.books.events import BookCreatedV1, BookUpdatedV1
 
-asyncapi_registry: Dict[str, Dict[Literal["receive", "send"], List]] = {
-    "chat_channel": {
-        "receive": [BookCreatedV1],
-        "send": [BookUpdatedV1],
-    }
-}
-
-components_schemas = {}
-
-channels = {}
-operations = {}
-
-for channel, channel_operations in asyncapi_registry.items():
-    _channel_messages = {}
-    for operation, messages in channel_operations.items():
-        _operation_message_refs = []
-        for message in messages:
-            # TODO: Check for overlapping model schemas, if they are different log a warning!
-            components_schemas[message.__name__] = message.model_json_schema(
-                mode="validation" if operation == "receive" else "serialization",
-                ref_template="#/components/schemas/{model}"
-            )
-            components_schemas.update(message.model_json_schema(mode="serialization", ref_template="#/components/schemas/{model}")["$defs"])
-            _channel_messages[message.__name__] = pa.v3.Message(
-                payload=pa.v3.Reference(ref=f"#/components/schemas/{message.__name__}")
-            )
-            # Cannot point to the /components path
-            _operation_message_refs.append(pa.v3.Reference(ref=f"#/channels/chat_channel/messages/{message.__name__}"))
-        operations[operation] = pa.v3.Operation(
-            action=operation,
-            channel=pa.v3.Reference(ref=f"#/channels/{channel}"),
-            messages=_operation_message_refs,
-        )
-    channels[channel] = pa.v3.Channel(
-        title=channel,
-        servers=[pa.v3.Reference(ref="#/servers/chat")],
-        messages=_channel_messages,
-    )
-
-
-
-schema = pa.AsyncAPIV3(
-    asyncapi="3.0.0",
-    info=pa.v3.Info(
-        title="Bookstore API",
-        version="1.0.0",
-        description="A bookstore aysncapi specification",
-    ),
-    components=pa.v3.Components(
-        schemas=components_schemas,
-    ),
-    servers={
-        "chat": pa.v3.Server(
-            host="localhost",
-            protocol="websocket",
-        )
-    },
-    channels=channels,
-    operations=operations,
-)
 
 router = APIRouter(prefix="/docs/ws")
 
@@ -76,8 +16,9 @@ router = APIRouter(prefix="/docs/ws")
     response_model_exclude_unset=True,
     include_in_schema=False,
 )
-def asyncapi_raw() -> pa.AsyncAPIV3:
-    return schema
+@add_channel_to_asyncapi_schema(send=[BookUpdatedV1])
+def asyncapi_raw() -> pa.v3.AsyncAPI:
+    return get_asyncapi_schema()
 
 
 ASYNCAPI_COMPONENT_VERSION = "latest"
@@ -95,21 +36,21 @@ ASYNCAPI_CSS_DEFAULT_URL = (
 
 # https://github.com/asyncapi/asyncapi-react/blob/v2.5.0/docs/usage/standalone-bundle.md
 @router.get("", include_in_schema=False)
-def get_asyncapi_html(
-        sidebar: bool = True,
-        info: bool = True,
-        servers: bool = True,
-        operations: bool = True,
-        messages: bool = True,
-        schemas: bool = True,
-        errors: bool = True,
-        expand_message_examples: bool = False,
-        title: str = "Websocket",
+@add_channel_to_asyncapi_schema(receive=[BookCreatedV1], send=[BookUpdatedV1])
+async def get_asyncapi_html(
+    sidebar: bool = True,
+    info: bool = True,
+    servers: bool = True,
+    operations: bool = True,
+    messages: bool = True,
+    schemas: bool = True,
+    errors: bool = True,
+    expand_message_examples: bool = False,
+    title: str = "Websocket",
 ) -> HTMLResponse:
 
     """Generate HTML for displaying an AsyncAPI document."""
     config = {
-        # "schema": schema_json,
         "schema": {
             "url": "/docs/ws/asyncapi.json",
         },
