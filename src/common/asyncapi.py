@@ -155,16 +155,19 @@ def register_channel_operation(
     _operation_message_refs = []
     for message in messages:
         # TODO: Check for overlapping model schemas, if they are different log a warning!
-        _components_schemas[message.__name__] = message.model_json_schema(
+        _message_json_schema = message.model_json_schema(
             mode="validation" if operation_type == "receive" else "serialization",
             ref_template="#/components/schemas/{model}",
         )
-        _components_schemas.update(
-            message.model_json_schema(mode="serialization", ref_template="#/components/schemas/{model}")["$defs"]
-        )
+
+        _components_schemas[message.__name__] = _message_json_schema
+
+        if _message_json_schema.get("$defs"):
+            _components_schemas.update(_message_json_schema["$defs"])
         _channels[channel_id].messages[message.__name__] = pa.Message(  # type: ignore
             payload=pa.Reference(ref=f"#/components/schemas/{message.__name__}")
         )
+
         # Cannot point to the /components path
         _operation_message_refs.append(pa.Reference(ref=f"#/channels/{channel_id}/messages/{message.__name__}"))
 
