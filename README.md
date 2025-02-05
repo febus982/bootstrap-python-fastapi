@@ -20,7 +20,7 @@ and [SOLID principles](https://en.wikipedia.org/wiki/SOLID).
 
 This template provides out of the box some commonly used functionalities:
 
-* API Documentation using [FastAPI](https://fastapi.tiangolo.com/)
+* Sync and Async API Documentation using [FastAPI](https://fastapi.tiangolo.com/) and [AsyncAPI](https://www.asyncapi.com/en)
 * Async tasks execution using [Dramatiq](https://dramatiq.io/index.html)
 * Repository pattern for databases using [SQLAlchemy](https://www.sqlalchemy.org/) and [SQLAlchemy bind manager](https://febus982.github.io/sqlalchemy-bind-manager/stable/)
 * Database migrations using [Alembic](https://alembic.sqlalchemy.org/en/latest/) (configured supporting both sync and async SQLAlchemy engines)
