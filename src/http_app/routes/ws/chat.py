@@ -1,44 +1,15 @@
-from typing import Optional, Sequence, Callable
-
-from fastapi.types import DecoratedCallable
-from typing_extensions import Annotated, Doc
-
-from fastapi import APIRouter, params
+from fastapi import APIRouter
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
+from common.asyncapi import (
+    register_channel,
+    register_channel_operation,
+    register_server,
+)
+from domains.books.events import BookUpdatedV1
 
-class AsyncAPIEnabledRouter(APIRouter):
-    def websocket(self, path: Annotated[
-        str,
-        Doc(
-            """
-            WebSocket path.
-            """
-        ),
-    ], name: Annotated[
-        Optional[str],
-        Doc(
-            """
-            A name for the WebSocket. Only used internally.
-            """
-        ),
-    ] = None, *, dependencies: Annotated[
-        Optional[Sequence[params.Depends]],
-        Doc(
-            """
-            A list of dependencies (using `Depends()`) to be used for this
-            WebSocket.
+router = APIRouter(prefix="/chat")
 
-            Read more about it in the
-            [FastAPI docs for WebSockets](https://fastapi.tiangolo.com/advanced/websockets/).
-            """
-        ),
-    ] = None) -> Callable[[DecoratedCallable], DecoratedCallable]:
-        route = super().websocket(path, name, dependencies=dependencies)
-        return route
-
-
-router = AsyncAPIEnabledRouter(prefix="/chat")
 
 class ConnectionManager:
     def __init__(self):
@@ -60,6 +31,36 @@ class ConnectionManager:
 
 
 manager = ConnectionManager()
+
+"""
+In websocket case we create a server per route.
+If we create other routes we can create more servers
+"""
+register_server(
+    id="chat",
+    # TODO: Inject host using config?
+    host="localhost/endpoint",
+    protocol="ws",
+)
+register_channel(
+    id="ChatChannel",
+    address="chat",
+    title="Chat channel",
+    description="A channel supporting send and receive chat messages between clients",
+    server_id="chat",
+)
+register_channel_operation(
+    channel_id="ChatChannel",
+    operation_type="send",
+    messages=[BookUpdatedV1],
+    operation_name="SendMessage",
+)
+register_channel_operation(
+    channel_id="ChatChannel",
+    operation_type="receive",
+    messages=[BookUpdatedV1],
+    operation_name="ReceiveMessage",
+)
 
 
 @router.websocket("/{client_id}")

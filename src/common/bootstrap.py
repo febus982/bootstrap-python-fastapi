@@ -4,6 +4,7 @@ from dependency_injector.containers import DynamicContainer
 from dependency_injector.providers import Object
 from pydantic import BaseModel, ConfigDict
 
+from .asyncapi import init_asyncapi_info
 from .config import AppConfig
 from .di_container import Container
 from .dramatiq import init_dramatiq
@@ -27,6 +28,7 @@ def application_init(app_config: AppConfig) -> InitReference:
     init_logger(app_config)
     init_storage()
     init_dramatiq(app_config)
+    init_asyncapi_info(app_config.APP_NAME)
 
     return InitReference(
         di_container=container,
