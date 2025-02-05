@@ -105,6 +105,29 @@ def register_server(
         _servers[id].pathname = pathname
 
 
+def _create_base_channel(address: str, channel_id: str) -> pa.Channel:
+    """Create a basic channel with minimum required parameters."""
+    return pa.Channel(
+        address=address,
+        servers=[],
+        messages={},
+    )
+
+
+def _add_channel_metadata(channel: pa.Channel, description: Optional[str], title: Optional[str]) -> None:
+    """Add optional metadata to the channel."""
+    if description is not None:
+        channel.description = description
+    if title is not None:
+        channel.title = title
+
+
+def _add_server_reference(channel: pa.Channel, server_id: Optional[str]) -> None:
+    """Add server reference to the channel if server exists."""
+    if server_id is not None and server_id in _servers:
+        channel.servers.append(pa.Reference(ref=f"#/servers/{server_id}"))  # type: ignore
+
+
 def register_channel(
     address: str,
     id: Optional[str] = None,
@@ -113,34 +136,44 @@ def register_channel(
     server_id: Optional[str] = None,
 ) -> None:
     """
-    Registers a communication channel with the specified parameters and updates the
-    internal dictionary holding channel metadata. The function allows optional
-    parameters to set additional properties such as description and title, and
-    optionally associates the channel with a predefined server.
+    Registers a communication channel with the specified parameters.
 
     Args:
         address (str): The address of the channel.
         id (Optional[str]): Unique identifier for the channel. Defaults to None.
         description (Optional[str]): Description of the channel. Defaults to None.
         title (Optional[str]): Title to be associated with the channel. Defaults to None.
-        server_id (Optional[str]): Server identifier to link this channel to.
-            Must exist in the internal server registry. Defaults to None.
+        server_id (Optional[str]): Server identifier to link this channel to. Defaults to None.
 
     Returns:
         None
     """
-    # TODO: Define channel metadata in decorator
-    _channels[id or address] = pa.Channel(
-        address=address,
-        servers=[],
-        messages={},
+    channel_id = id or address
+    channel = _create_base_channel(address, channel_id)
+    _add_channel_metadata(channel, description, title)
+    _add_server_reference(channel, server_id)
+    _channels[channel_id] = channel
+
+
+def _register_message_schema(message: Type[BaseModel], operation_type: Literal["receive", "send"]) -> None:
+    """Register message schema in components schemas."""
+    message_json_schema = message.model_json_schema(
+        mode="validation" if operation_type == "receive" else "serialization",
+        ref_template="#/components/schemas/{model}",
     )
-    if description is not None:
-        _channels[id or address].description = description
-    if title is not None:
-        _channels[id or address].title = title
-    if server_id is not None and server_id in _servers:
-        _channels[id or address].servers.append(pa.Reference(ref=f"#/servers/{server_id}"))  # type: ignore
+
+    _components_schemas[message.__name__] = message_json_schema
+
+    if message_json_schema.get("$defs"):
+        _components_schemas.update(message_json_schema["$defs"])
+
+
+def _create_channel_message(channel_id: str, message: Type[BaseModel]) -> pa.Reference:
+    """Create channel message and return reference to it."""
+    _channels[channel_id].messages[message.__name__] = pa.Message(  # type: ignore
+        payload=pa.Reference(ref=f"#/components/schemas/{message.__name__}")
+    )
+    return pa.Reference(ref=f"#/channels/{channel_id}/messages/{message.__name__}")
 
 
 def register_channel_operation(
@@ -148,35 +181,37 @@ def register_channel_operation(
     operation_type: Literal["receive", "send"],
     messages: List[Type[BaseModel]],
     operation_name: Optional[str] = None,
-):
+) -> None:
+    """
+    Registerm a channel operation with associated messages.
+
+    Args:
+        channel_id: Channel identifier
+        operation_type: Type of operation ("receive" or "send")
+        messages: List of message models
+        operation_name: Optional operation name
+
+    Raises:
+        ValueError: If channel_id doesn't exist
+    """
     if not _channels.get(channel_id):
         raise ValueError(f"Channel {channel_id} does not exist.")
 
-    _operation_message_refs = []
+    operation_message_refs = []
+
     for message in messages:
-        # TODO: Check for overlapping model schemas, if they are different log a warning!
-        _message_json_schema = message.model_json_schema(
-            mode="validation" if operation_type == "receive" else "serialization",
-            ref_template="#/components/schemas/{model}",
-        )
+        _register_message_schema(message, operation_type)
+        message_ref = _create_channel_message(channel_id, message)
+        operation_message_refs.append(message_ref)
 
-        _components_schemas[message.__name__] = _message_json_schema
-
-        if _message_json_schema.get("$defs"):
-            _components_schemas.update(_message_json_schema["$defs"])
-        _channels[channel_id].messages[message.__name__] = pa.Message(  # type: ignore
-            payload=pa.Reference(ref=f"#/components/schemas/{message.__name__}")
-        )
-
-        # Cannot point to the /components path
-        _operation_message_refs.append(pa.Reference(ref=f"#/channels/{channel_id}/messages/{message.__name__}"))
-
-    _operations[operation_name or f"{channel_id}-{operation_type}"] = pa.Operation(
+    operation_id = operation_name or f"{channel_id}-{operation_type}"
+    _operations[operation_id] = pa.Operation(
         action=operation_type,
         channel=pa.Reference(ref=f"#/channels/{channel_id}"),
-        messages=_operation_message_refs,
+        messages=operation_message_refs,
         traits=[],
     )
+
     # TODO: Define operation traits
     # if operation_name is not None:
     #     _operations[operation_name or f"{channel_id}-{operation_type}"].traits.append(
