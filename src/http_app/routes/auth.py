@@ -5,7 +5,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer, SecurityScopes
 
 from common import AppConfig
-from http_app.dependencies import app_config
+from http_app.dependencies import get_app_config
 
 
 class MissingAuthorizationServerException(HTTPException):
@@ -26,7 +26,7 @@ class UnauthenticatedException(HTTPException):
         super().__init__(status_code=status.HTTP_401_UNAUTHORIZED, detail="Requires authentication")
 
 
-def _jwks_client(config: Annotated[AppConfig, Depends(app_config)]) -> jwt.PyJWKClient:
+def _jwks_client(config: Annotated[AppConfig, Depends(get_app_config)]) -> jwt.PyJWKClient:
     if not config.AUTH.JWKS_URL:
         raise MissingAuthorizationServerException()
     return jwt.PyJWKClient(config.AUTH.JWKS_URL)
@@ -34,7 +34,7 @@ def _jwks_client(config: Annotated[AppConfig, Depends(app_config)]) -> jwt.PyJWK
 
 async def decode_jwt(
     security_scopes: SecurityScopes,
-    config: AppConfig = Depends(app_config),
+    config: AppConfig = Depends(get_app_config),
     jwks_client: jwt.PyJWKClient = Depends(_jwks_client),
     token: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer()),
 ):

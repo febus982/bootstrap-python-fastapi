@@ -1,10 +1,14 @@
 import json
+from typing import Annotated
 
 import pydantic_asyncapi as pa
 from fastapi import APIRouter
+from fastapi.params import Depends
 from starlette.responses import HTMLResponse
 
+from common import AppConfig
 from common.asyncapi import get_schema
+from http_app.dependencies import get_app_config
 
 router = APIRouter(prefix="/docs/ws")
 
@@ -32,6 +36,7 @@ ASYNCAPI_CSS_DEFAULT_URL = (
 # https://github.com/asyncapi/asyncapi-react/blob/v2.5.0/docs/usage/standalone-bundle.md
 @router.get("", include_in_schema=False)
 async def get_asyncapi_html(
+    app_config: Annotated[AppConfig, Depends(get_app_config)],
     sidebar: bool = True,
     info: bool = True,
     servers: bool = True,
@@ -40,7 +45,6 @@ async def get_asyncapi_html(
     schemas: bool = True,
     errors: bool = True,
     expand_message_examples: bool = False,
-    title: str = "Websocket",
 ) -> HTMLResponse:
     """Generate HTML for displaying an AsyncAPI document."""
     config = {
@@ -74,7 +78,7 @@ async def get_asyncapi_html(
         <head>
     """
         f"""
-        <title>{title} AsyncAPI</title>
+        <title>{app_config.APP_NAME} AsyncAPI</title>
     """
         """
         <link rel="icon" href="https://www.asyncapi.com/favicon.ico">
