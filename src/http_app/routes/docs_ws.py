@@ -34,7 +34,7 @@ ASYNCAPI_CSS_DEFAULT_URL = (
 
 
 # https://github.com/asyncapi/asyncapi-react/blob/v2.5.0/docs/usage/standalone-bundle.md
-@router.get("", include_in_schema=False)
+@router.get("")
 async def get_asyncapi_html(
     app_config: Annotated[AppConfig, Depends(get_app_config)],
     sidebar: bool = True,
