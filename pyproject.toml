@@ -2,7 +2,7 @@
 authors = [
     {name = "Federico Busetti", email = "729029+febus982@users.noreply.github.com"},
 ]
-requires-python = "<3.14,>=3.9"
+requires-python = "<3.14,>=3.10"
 name = "bootstrap-fastapi-service"
 version = "0.1.0"
 description = ""
@@ -14,7 +14,7 @@ dependencies = [
     "cloudevents-pydantic<1.0.0,>=0.0.3",
     "dependency-injector[pydantic]<5.0.0,>=4.41.0",
     "dramatiq[redis,watch]<2.0.0,>=1.17.1",
-    "hiredis<4.0.0,>=3.1.0",  # Recommended by dramatiq
+    "hiredis<4.0.0,>=3.1.0", # Recommended by dramatiq
     "httpx>=0.23.0",
     "opentelemetry-distro[otlp]",
     "opentelemetry-instrumentation",
@@ -28,6 +28,7 @@ dependencies = [
     "SQLAlchemy[asyncio,mypy]<3.0.0,>=2.0.0",
     "sqlalchemy-bind-manager",
     "structlog<25.1.1,>=25.1.0",
+    "pydantic-asyncapi>=0.2.1",
 ]
 
 [dependency-groups]
@@ -115,6 +116,7 @@ testpaths = [
 
 [tool.ruff]
 target-version = "py39"
+line-length = 120
 extend-exclude = [
     "docs",
 ]

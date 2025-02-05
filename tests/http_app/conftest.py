@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from http_app import create_app
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="session")
 def testapp(test_config) -> Iterator[FastAPI]:
     # We don't need the storage to test the HTTP app
     with patch("common.bootstrap.init_storage", return_value=None):

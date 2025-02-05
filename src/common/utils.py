@@ -1,6 +1,4 @@
-def apply_decorator_to_methods(
-    decorator, protected_methods: bool = False, private_methods: bool = False
-):
+def apply_decorator_to_methods(decorator, protected_methods: bool = False, private_methods: bool = False):
     """
     Class decorator to apply a given function or coroutine decorator
     to all functions and coroutines within a class.

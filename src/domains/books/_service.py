@@ -22,12 +22,8 @@ class BookService:
     @inject
     def __init__(
         self,
-        book_repository: BookRepositoryInterface = Provide[
-            BookRepositoryInterface.__name__
-        ],
-        event_gateway: BookEventGatewayInterface = Provide[
-            BookEventGatewayInterface.__name__
-        ],
+        book_repository: BookRepositoryInterface = Provide[BookRepositoryInterface.__name__],
+        event_gateway: BookEventGatewayInterface = Provide[BookEventGatewayInterface.__name__],
     ) -> None:
         super().__init__()
         self._book_repository = book_repository
@@ -37,14 +33,10 @@ class BookService:
         # Example of CPU intensive task ran in a different thread
         # Using processes could be better, but it would bring technical complexity
         # https://anyio.readthedocs.io/en/3.x/subprocesses.html#running-functions-in-worker-processes
-        book_data_altered: dict = await to_thread.run_sync(
-            self._some_cpu_intensive_blocking_task, book.model_dump()
-        )
+        book_data_altered: dict = await to_thread.run_sync(self._some_cpu_intensive_blocking_task, book.model_dump())
 
         book_model = BookModel(**book_data_altered)
-        book = Book.model_validate(
-            await self._book_repository.save(book_model), from_attributes=True
-        )
+        book = Book.model_validate(await self._book_repository.save(book_model), from_attributes=True)
 
         # Example of CPU intensive task ran in a dramatiq task. We should not rely on
         # dramatiq if we need to wait the operation result.
@@ -53,9 +45,7 @@ class BookService:
         book_cpu_intensive_task.send(book_id=str(book.book_id))
 
         await self._event_gateway.emit(
-            BookCreatedV1.event_factory(
-                data=BookCreatedV1Data.model_validate(book_model, from_attributes=True)
-            )
+            BookCreatedV1.event_factory(data=BookCreatedV1Data.model_validate(book_model, from_attributes=True))
         )
         return book
 

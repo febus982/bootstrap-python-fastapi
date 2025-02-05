@@ -84,9 +84,7 @@ def test_disable_function_attributes_sync(mock_tracer):
     assert result == 4
     mock_tracer.start_as_current_span.assert_called_once_with("sync_func")
     mock_span.set_attribute.assert_any_call("function.result", "4")
-    assert (
-        call("function.args", "(10, 6)") not in mock_span.set_attribute.call_args_list
-    )
+    assert call("function.args", "(10, 6)") not in mock_span.set_attribute.call_args_list
 
 
 async def test_disable_function_attributes_async(mock_tracer):
@@ -107,9 +105,7 @@ async def test_disable_function_attributes_async(mock_tracer):
     assert result == 4
     mock_tracer.start_as_current_span.assert_called_once_with("async_func")
     mock_span.set_attribute.assert_any_call("function.result", "4")
-    assert (
-        call("function.args", "(10, 6)") not in mock_span.set_attribute.call_args_list
-    )
+    assert call("function.args", "(10, 6)") not in mock_span.set_attribute.call_args_list
 
 
 def test_disable_result_in_span_sync(mock_tracer):

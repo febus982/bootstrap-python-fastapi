@@ -15,9 +15,7 @@ class FakeEvent(CloudEvent):
 
 
 async def test_event_schema_returns_data_if_present_in_registry(testapp):
-    with patch.dict(
-        "http_app.routes.events._EVENT_REGISTRY", {"test_event": FakeEvent}, clear=True
-    ):
+    with patch.dict("http_app.routes.events._EVENT_REGISTRY", {"test_event": FakeEvent}, clear=True):
         ac = TestClient(app=testapp, base_url="http://test")
         response = ac.get("/events/dataschemas/test_event")
     assert response.status_code == 200
@@ -30,9 +28,7 @@ async def test_event_schema_returns_404_when_not_present_in_registry(testapp):
 
 
 async def test_event_schema_list_returns_data_from_registry(testapp):
-    with patch.dict(
-        "http_app.routes.events._EVENT_REGISTRY", {"test_event": FakeEvent}, clear=True
-    ):
+    with patch.dict("http_app.routes.events._EVENT_REGISTRY", {"test_event": FakeEvent}, clear=True):
         ac = TestClient(app=testapp, base_url="http://test")
         response = ac.get("/events/dataschemas")
     assert response.status_code == 200
@@ -64,9 +60,7 @@ async def test_event_endpoints_returns_204(testapp, batch):
         response = ac.post(
             url,
             headers={"content-type": content_type},
-            content=fake_event.model_dump_json()
-            if not batch
-            else f"[{fake_event.model_dump_json()}]",
+            content=fake_event.model_dump_json() if not batch else f"[{fake_event.model_dump_json()}]",
         )
     svc.book_created_event_handler.assert_called_once()
     assert response.status_code == 204
@@ -98,9 +92,7 @@ async def test_malformed_event_returns_422(testapp, batch):
     response = ac.post(
         url,
         headers={"content-type": content_type},
-        content=fake_event.model_dump_json()
-        if not batch
-        else f"[{fake_event.model_dump_json()}]",
+        content=fake_event.model_dump_json() if not batch else f"[{fake_event.model_dump_json()}]",
     )
     assert response.status_code == 422
 
@@ -122,8 +114,6 @@ async def test_wrong_content_type_returns_422(testapp, batch):
     response = ac.post(
         url,
         headers={"content-type": "application/json"},
-        content=fake_event.model_dump_json()
-        if not batch
-        else f"[{fake_event.model_dump_json()}]",
+        content=fake_event.model_dump_json() if not batch else f"[{fake_event.model_dump_json()}]",
     )
     assert response.status_code == 422

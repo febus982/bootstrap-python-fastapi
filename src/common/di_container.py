@@ -65,6 +65,4 @@ class Container(DeclarativeContainer):
         bind=SQLAlchemyBindManager.provided.get_bind.call(),
         model_class=BookModel,
     )
-    BookEventGatewayInterface: Factory[BookEventGatewayInterface] = Factory(
-        NullEventGateway
-    )
+    BookEventGatewayInterface: Factory[BookEventGatewayInterface] = Factory(NullEventGateway)

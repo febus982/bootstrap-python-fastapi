@@ -3,6 +3,10 @@
 API documentation is rendered by [FastAPI](https://fastapi.tiangolo.com/features/)
 on `/docs` and `/redoc` paths using OpenAPI format.
 
+AsyncAPI documentation is rendered using the
+[AsyncAPI react components](https://github.com/asyncapi/asyncapi-react).
+It is available on `/docs/ws` path.
+
 ## API versioning
 
 Versioning an API at resource level provides a much more

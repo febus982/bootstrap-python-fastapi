@@ -22,9 +22,7 @@ router = APIRouter(prefix="/events")
 In a real application these events would be the events the app RECEIVES and
 not the ones our application SENDS. This is only an example to illustrate
 how to handle different CloudEvent classes in FastAPI"""
-_EVENTS_UNION_TYPE = Annotated[
-    Union[BookCreatedV1, BookUpdatedV1], Field(discriminator="type")
-]
+_EVENTS_UNION_TYPE = Annotated[Union[BookCreatedV1, BookUpdatedV1], Field(discriminator="type")]
 
 
 def _parse_event_registry() -> Dict[str, Type[_EVENTS_UNION_TYPE]]:
@@ -48,16 +46,11 @@ def _event_schema_examples(mode: Literal["single", "batch"]) -> dict[str, Exampl
         " message!)"
     )
     examples: Dict[str, Union[dict, str]] = {
-        k: getattr(v, "model_config", {})
-        .get("json_schema_extra", {})
-        .get("examples", [missing_example_message])[0]
+        k: getattr(v, "model_config", {}).get("json_schema_extra", {}).get("examples", [missing_example_message])[0]
         for k, v in _EVENT_REGISTRY.items()
     }
 
-    return {
-        k: Example(value=v if (mode == "single" or isinstance(v, str)) else [v])
-        for k, v in examples.items()
-    }
+    return {k: Example(value=v if (mode == "single" or isinstance(v, str)) else [v]) for k, v in examples.items()}
 
 
 @router.get(
@@ -103,9 +96,7 @@ async def submit_event(
             discriminator="type",
         ),
     ],
-    content_type: Annotated[
-        Literal["application/cloudevents+json; charset=UTF-8"], Header()
-    ],
+    content_type: Annotated[Literal["application/cloudevents+json; charset=UTF-8"], Header()],
 ) -> None:
     # Some routing will be necessary when multiple event types will be supported
     await BookService().book_created_event_handler(event_data.data.book_id)
@@ -128,9 +119,7 @@ async def submit_event_batch(
             openapi_examples=_event_schema_examples(mode="batch"),
         ),
     ],
-    content_type: Annotated[
-        Literal["application/cloudevents-batch+json; charset=UTF-8"], Header()
-    ],
+    content_type: Annotated[Literal["application/cloudevents-batch+json; charset=UTF-8"], Header()],
 ) -> None:
     for event in event_batch:
         await BookService().book_created_event_handler(event.data.book_id)
