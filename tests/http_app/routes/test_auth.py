@@ -45,9 +45,7 @@ async def test_decode_jwt_raises_if_jwks_client_fails(exception):
             security_scopes=SecurityScopes(),
             config=AppConfig(),
             jwks_client=mock_jwks_client,
-            token=HTTPAuthorizationCredentials(
-                scheme="bearer", credentials="some_token"
-            ),
+            token=HTTPAuthorizationCredentials(scheme="bearer", credentials="some_token"),
         )
 
 

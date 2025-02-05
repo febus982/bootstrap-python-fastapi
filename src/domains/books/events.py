@@ -23,9 +23,7 @@ class BookCreatedV1(CloudEvent):
         Field(default="/book_service", validate_default=True),
         metadata.FieldSource,
     ]
-    type: Annotated[
-        Literal["book.created.v1"], Field(default="book.created.v1"), metadata.FieldType
-    ]
+    type: Annotated[Literal["book.created.v1"], Field(default="book.created.v1"), metadata.FieldType]
     dataschema: Annotated[
         URI,
         Field(default=_dataschema_url("book.created.v1"), validate_default=True),
@@ -61,9 +59,7 @@ class BookUpdatedV1(CloudEvent):
         Field(default="/book_service", validate_default=True),
         metadata.FieldSource,
     ]
-    type: Annotated[
-        Literal["book.updated.v1"], Field(default="book.updated.v1"), metadata.FieldType
-    ]
+    type: Annotated[Literal["book.updated.v1"], Field(default="book.updated.v1"), metadata.FieldType]
     dataschema: Annotated[
         URI,
         Field(default=_dataschema_url("book.updated.v1"), validate_default=True),

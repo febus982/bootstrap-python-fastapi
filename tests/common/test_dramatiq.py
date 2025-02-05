@@ -52,9 +52,7 @@ def test_init_dramatiq_with_test_env():
 def test_init_dramatiq_with_redis():
     """Test if the RedisBroker is set with a valid Redis URL."""
     redis_url = "redis://localhost:6379/0"
-    config = AppConfig(
-        ENVIRONMENT="production", DRAMATIQ=DramatiqConfig(REDIS_URL=redis_url)
-    )  # Mock config
+    config = AppConfig(ENVIRONMENT="production", DRAMATIQ=DramatiqConfig(REDIS_URL=redis_url))  # Mock config
     with patch("common.dramatiq.RedisBroker") as mock_redis_broker:
         init_dramatiq(config)
         mock_redis_broker.assert_called_once_with(url=redis_url)
@@ -64,12 +62,8 @@ def test_init_dramatiq_with_redis():
 
 def test_init_dramatiq_without_redis_url(caplog):
     """Test if an exception is raised when in non-test environment without Redis URL."""
-    config = AppConfig(
-        ENVIRONMENT="production", DRAMATIQ=DramatiqConfig(REDIS_URL=None)
-    )  # Mock config
+    config = AppConfig(ENVIRONMENT="production", DRAMATIQ=DramatiqConfig(REDIS_URL=None))  # Mock config
     with caplog.at_level(logging.CRITICAL):
         init_dramatiq(config)
 
-    assert (
-        "Running a non-test/non-local environment without Redis URL set" in caplog.text
-    )
+    assert "Running a non-test/non-local environment without Redis URL set" in caplog.text

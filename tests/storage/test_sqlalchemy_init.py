@@ -56,9 +56,7 @@ def test_init_tables_calls_only_supported_bind_initialisation():
 
 
 def test_init_storage_calls_sqlalchemy_init_tables():
-    with patch(
-        "common.storage.SQLAlchemy.init_tables", return_value=None
-    ) as mocked_init_tables:
+    with patch("common.storage.SQLAlchemy.init_tables", return_value=None) as mocked_init_tables:
         init_storage()
 
     mocked_init_tables.assert_called_once()

@@ -12,7 +12,7 @@ def anyio_backend():
     return "asyncio"
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="session")
 def test_config() -> AppConfig:
     return AppConfig(
         SQLALCHEMY_CONFIG={},

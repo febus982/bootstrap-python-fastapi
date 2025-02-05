@@ -12,9 +12,7 @@ from http_app import create_app
 @pytest.fixture
 def book_service() -> Iterator[MagicMock]:
     svc = MagicMock(autospec=BookService)
-    svc.create_book = AsyncMock(
-        side_effect=lambda book: dto.Book(book_id=randbelow(1000), **book.model_dump())
-    )
+    svc.create_book = AsyncMock(side_effect=lambda book: dto.Book(book_id=randbelow(1000), **book.model_dump()))
     svc.list_books = AsyncMock(
         return_value=[
             dto.Book(

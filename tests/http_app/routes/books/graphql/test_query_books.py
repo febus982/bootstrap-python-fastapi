@@ -11,11 +11,7 @@ async def test_create_book(testapp):
     )
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == {
-        "data": {
-            "books": [
-                {"authorName": "Stephen King", "bookId": 123, "title": "The Shining"}
-            ]
-        }
+        "data": {"books": [{"authorName": "Stephen King", "bookId": 123, "title": "The Shining"}]}
     }
 
     """

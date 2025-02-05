@@ -44,9 +44,7 @@ def init_logger(config: AppConfig) -> None:
 
     log_level = logging.DEBUG if config.DEBUG else logging.INFO
     if config.ENVIRONMENT in ["local", "test"]:
-        shared_processors.append(
-            structlog.processors.TimeStamper(fmt="%d-%m-%Y %H:%M:%S", utc=True)
-        )
+        shared_processors.append(structlog.processors.TimeStamper(fmt="%d-%m-%Y %H:%M:%S", utc=True))
         stdlib_processors.append(structlog.dev.ConsoleRenderer())
     else:
         shared_processors.append(structlog.processors.TimeStamper(fmt="iso", utc=True))

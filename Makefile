@@ -37,6 +37,7 @@ dev-dependencies:
 
 update-dependencies:
 	uv lock --upgrade
+	uv sync --all-groups --frozen
 
 migrate:
 	uv run alembic upgrade heads
