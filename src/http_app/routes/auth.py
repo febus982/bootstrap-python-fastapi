@@ -23,9 +23,7 @@ class UnauthorizedException(HTTPException):
 
 class UnauthenticatedException(HTTPException):
     def __init__(self):
-        super().__init__(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Requires authentication"
-        )
+        super().__init__(status_code=status.HTTP_401_UNAUTHORIZED, detail="Requires authentication")
 
 
 def _jwks_client(config: Annotated[AppConfig, Depends(app_config)]) -> jwt.PyJWKClient:

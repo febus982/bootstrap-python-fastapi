@@ -22,9 +22,7 @@ class ORJSONEncoder(Encoder):
         try:
             return orjson.loads(data)
         except orjson.JSONDecodeError as e:
-            raise DecodeError(
-                "failed to decode message %r" % (data,), data, e
-            ) from None
+            raise DecodeError("failed to decode message %r" % (data,), data, e) from None
 
 
 def init_dramatiq(config: AppConfig):

@@ -54,18 +54,14 @@ def generate_fixture_migration_model(declarative_base: type):
             String(), nullable=True, default=str(context.get_head_revision())
         )
 
-        processed_at: Mapped[datetime] = mapped_column(
-            DateTime(), nullable=False, default=datetime.now
-        )
+        processed_at: Mapped[datetime] = mapped_column(DateTime(), nullable=False, default=datetime.now)
 
     return FixtureMigration
 
 
 fixture_migration_models = {}
 for name in db_names:
-    fixture_migration_models[name] = generate_fixture_migration_model(
-        sa_manager.get_bind(name).declarative_base
-    )
+    fixture_migration_models[name] = generate_fixture_migration_model(sa_manager.get_bind(name).declarative_base)
 
 
 # add your model's MetaData objects here
@@ -137,9 +133,7 @@ class FixtureHandler:
         return [
             importlib.import_module(f"fixtures.{f[:-3]}")
             for f in listdir(cls.fixtures_path)
-            if isfile(join(cls.fixtures_path, f))
-            and f.endswith(".py")
-            and f != "__init__.py"
+            if isfile(join(cls.fixtures_path, f)) and f.endswith(".py") and f != "__init__.py"
         ]
 
     @classmethod
@@ -217,9 +211,7 @@ class FixtureHandler:
         )
 
     @classmethod
-    async def a_migrate_fixtures(
-        cls, bind_name: str, session: async_sessionmaker[AsyncSession]
-    ):
+    async def a_migrate_fixtures(cls, bind_name: str, session: async_sessionmaker[AsyncSession]):
         """
         Perform asynchronous migration of fixture data modules for a specific database bind.
 
@@ -242,9 +234,7 @@ class FixtureHandler:
         modules = cls._get_fixture_modules()
         async with session() as session:
             for fixture_module in modules:
-                cls.logger.debug(
-                    f"Creating `{fixture_module.__name__}` fixtures for `{bind_name}` bind"
-                )
+                cls.logger.debug(f"Creating `{fixture_module.__name__}` fixtures for `{bind_name}` bind")
                 fixture_migration = await session.get(
                     fixture_migration_models[bind_name],
                     (bind_name, f"{fixture_module.__name__}"),
@@ -254,14 +244,10 @@ class FixtureHandler:
                 if cls._fixture_already_migrated(fixture_migration, signature):
                     continue
 
-                cls._add_fixture_data_to_session(
-                    bind_name, fixture_module, session, signature
-                )
+                cls._add_fixture_data_to_session(bind_name, fixture_module, session, signature)
                 try:
                     await session.commit()
-                    cls.logger.info(
-                        f"`{fixture_module.__name__}` fixtures correctly created for `{bind_name}` bind"
-                    )
+                    cls.logger.info(f"`{fixture_module.__name__}` fixtures correctly created for `{bind_name}` bind")
                 except Exception:
                     cls.logger.error(
                         f"`{fixture_module.__name__}` fixtures failed to apply to `{bind_name}` bind",
@@ -291,9 +277,7 @@ class FixtureHandler:
         modules = cls._get_fixture_modules()
         with session() as session:
             for fixture_module in modules:
-                cls.logger.debug(
-                    f"Creating `{fixture_module.__name__}` fixtures for `{bind_name}` bind"
-                )
+                cls.logger.debug(f"Creating `{fixture_module.__name__}` fixtures for `{bind_name}` bind")
                 fixture_migration = session.get(
                     fixture_migration_models[bind_name],
                     (bind_name, f"{fixture_module.__name__}"),
@@ -303,19 +287,13 @@ class FixtureHandler:
                 if cls._fixture_already_migrated(fixture_migration, signature):
                     continue
 
-                cls._add_fixture_data_to_session(
-                    bind_name, fixture_module, session, signature
-                )
+                cls._add_fixture_data_to_session(bind_name, fixture_module, session, signature)
                 try:
                     session.commit()
-                    cls.logger.info(
-                        f"`{fixture_module.__name__}` fixtures correctly created for `{bind_name}` bind"
-                    )
+                    cls.logger.info(f"`{fixture_module.__name__}` fixtures correctly created for `{bind_name}` bind")
                 except Exception:
                     session.rollback()
-                    cls.logger.error(
-                        f"`{fixture_module.__name__}` fixtures failed to apply to `{bind_name}` bind"
-                    )
+                    cls.logger.error(f"`{fixture_module.__name__}` fixtures failed to apply to `{bind_name}` bind")
 
 
 def run_migrations_offline() -> None:
@@ -429,9 +407,7 @@ async def run_migrations_online() -> None:
                         session=async_sessionmaker(bind=rec["connection"]),
                     )
                 else:
-                    FixtureHandler.migrate_fixtures(
-                        bind_name=name, session=sessionmaker(bind=rec["connection"])
-                    )
+                    FixtureHandler.migrate_fixtures(bind_name=name, session=sessionmaker(bind=rec["connection"]))
     except:
         for rec in engines.values():
             if isinstance(rec["engine"], AsyncEngine):

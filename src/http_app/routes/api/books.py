@@ -34,8 +34,7 @@ class ListBooksResponse(BaseModel):
                         "book_id": 123,
                     },
                     {
-                        "title": "Clean Architecture: "
-                        "A Craftsman's Guide to Software Structure and Design",
+                        "title": "Clean Architecture: A Craftsman's Guide to Software Structure and Design",
                         "author_name": "Robert C. 'Uncle Bob' Martin",
                         "book_id": 321,
                     },
@@ -82,9 +81,7 @@ async def create_book(
     data: CreateBookRequest,
 ) -> CreateBookResponse:
     book_service = BookService()
-    created_book = await book_service.create_book(
-        book=dto.BookData.model_validate(data, from_attributes=True)
-    )
+    created_book = await book_service.create_book(book=dto.BookData.model_validate(data, from_attributes=True))
     return CreateBookResponse(book=created_book)
 
 
@@ -94,7 +91,5 @@ async def create_book_v2(
     some_optional_query_param: bool = False,
 ) -> CreateBookResponse:
     book_service = BookService()
-    created_book = await book_service.create_book(
-        book=dto.BookData.model_validate(data, from_attributes=True)
-    )
+    created_book = await book_service.create_book(book=dto.BookData.model_validate(data, from_attributes=True))
     return CreateBookResponse(book=created_book)
