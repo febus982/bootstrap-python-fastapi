@@ -28,7 +28,9 @@ class ORJSONEncoder(Encoder):
 def init_dramatiq(config: AppConfig):
     broker: Broker
 
-    DramatiqInstrumentor().instrument()
+    dramatiq_instrumentor = DramatiqInstrumentor()
+    if not dramatiq_instrumentor.is_instrumented_by_opentelemetry:
+        dramatiq_instrumentor.instrument()
 
     if config.DRAMATIQ.REDIS_URL is not None:
         broker = RedisBroker(url=config.DRAMATIQ.REDIS_URL)
