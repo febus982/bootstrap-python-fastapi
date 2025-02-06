@@ -109,7 +109,7 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "-n auto --dist loadscope --cov-report=term-missing"
+addopts = "-n auto --cov-report=term-missing"
 testpaths = [
     "tests",
 ]
