@@ -99,7 +99,7 @@ exclude = ["migrations"]
 # Pydantic plugin causes some issues: https://github.com/pydantic/pydantic-settings/issues/403
 #plugins = "pydantic.mypy,strawberry.ext.mypy_plugin"
 plugins = "strawberry.ext.mypy_plugin"
-python_version = "3.9"
+python_version = "3.10"
 
 [[tool.mypy.overrides]]
 module = [

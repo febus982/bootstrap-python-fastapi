@@ -43,7 +43,6 @@ def test_sync_function_default_params(mock_tracer):
     mock_span.set_attribute.assert_any_call("function.result", "5")
 
 
-@pytest.mark.asyncio
 async def test_async_function_default_params(mock_tracer):
     """
     Test an asynchronous function with default decorator parameters.
@@ -129,7 +128,6 @@ def test_disable_result_in_span_sync(mock_tracer):
     assert call("function.result") not in mock_span.set_attribute.call_args_list
 
 
-@pytest.mark.asyncio
 async def test_disable_result_in_span(mock_tracer):
     """
     Test an asynchronous function with `add_result_to_span` set to False.

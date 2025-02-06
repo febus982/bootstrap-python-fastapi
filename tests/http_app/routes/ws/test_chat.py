@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -15,44 +17,49 @@ def connection_manager():
 
 
 def test_websocket_connection(test_client):
-    with test_client.websocket_connect("/ws/chat/1") as websocket:
-        websocket.send_text("Hello!")
-        data = websocket.receive_text()
+    manager = ConnectionManager()
+    with patch("http_app.routes.ws.chat.manager", manager):
+        with test_client.websocket_connect("/ws/chat/1") as websocket:
+            websocket.send_text("Hello!")
+            data = websocket.receive_text()
 
-        assert data == "You wrote: Hello!"
-        broadcast = websocket.receive_text()
-        assert broadcast == "Client #1 says: Hello!"
+            assert data == "You wrote: Hello!"
+            broadcast = websocket.receive_text()
+            assert broadcast == "Client #1 says: Hello!"
 
 
 def test_multiple_clients(test_client):
-    with test_client.websocket_connect("/ws/chat/1") as websocket1:
-        with test_client.websocket_connect("/ws/chat/2") as websocket2:
-            # Client 1 sends message
-            websocket1.send_text("Hello from client 1")
+    manager = ConnectionManager()
+    with patch("http_app.routes.ws.chat.manager", manager):
+        with test_client.websocket_connect("/ws/chat/1") as websocket1:
+            with test_client.websocket_connect("/ws/chat/2") as websocket2:
+                # Client 1 sends message
+                websocket1.send_text("Hello from client 1")
 
-            # Client 1 receives personal message
-            data1 = websocket1.receive_text()
-            assert data1 == "You wrote: Hello from client 1"
+                # Client 1 receives personal message
+                data1 = websocket1.receive_text()
+                assert data1 == "You wrote: Hello from client 1"
 
-            # Both clients receive broadcast
-            broadcast1 = websocket1.receive_text()
-            broadcast2 = websocket2.receive_text()
-            assert broadcast1 == "Client #1 says: Hello from client 1"
-            assert broadcast2 == "Client #1 says: Hello from client 1"
+                # Both clients receive broadcast
+                broadcast1 = websocket1.receive_text()
+                broadcast2 = websocket2.receive_text()
+                assert broadcast1 == "Client #1 says: Hello from client 1"
+                assert broadcast2 == "Client #1 says: Hello from client 1"
 
 
 def test_client_disconnect(test_client):
-    with test_client.websocket_connect("/ws/chat/1") as websocket1:
-        with test_client.websocket_connect("/ws/chat/2") as websocket2:
-            # Close first client
-            websocket1.close()
+    manager = ConnectionManager()
+    with patch("http_app.routes.ws.chat.manager", manager):
+        with test_client.websocket_connect("/ws/chat/1") as websocket1:
+            with test_client.websocket_connect("/ws/chat/2") as websocket2:
+                # Close first client
+                websocket1.close()
 
-            # Second client should receive disconnect message
-            disconnect_message = websocket2.receive_text()
-            assert disconnect_message == "Client #1 left the chat"
+                # Second client should receive disconnect message
+                disconnect_message = websocket2.receive_text()
+                assert disconnect_message == "Client #1 left the chat"
 
 
-@pytest.mark.asyncio
 async def test_connection_manager():
     manager = ConnectionManager()
 

@@ -28,7 +28,7 @@ def reset_asyncapi_state():
 
 
 # Test message models
-class TestMessage(BaseModel):
+class SomeTestMessage(BaseModel):
     content: str
     timestamp: int
 
@@ -103,20 +103,23 @@ def test_register_channel_operation(reset_asyncapi_state):
 
     register_channel(address="test/topic", id=channel_id)
     register_channel_operation(
-        channel_id=channel_id, operation_type=operation_type, messages=[TestMessage], operation_name="test-operation"
+        channel_id=channel_id,
+        operation_type=operation_type,
+        messages=[SomeTestMessage],
+        operation_name="test-operation",
     )
 
     schema = get_schema()
     assert "test-operation" in schema.operations
     assert schema.operations["test-operation"].action == operation_type
     assert schema.operations["test-operation"].channel.ref == f"#/channels/{channel_id}"
-    assert TestMessage.__name__ in schema.components.schemas
+    assert SomeTestMessage.__name__ in schema.components.schemas
 
 
 def test_register_channel_operation_invalid_channel(reset_asyncapi_state):
     """Test channel operation registration with invalid channel"""
     with pytest.raises(ValueError, match="Channel non-existent does not exist"):
-        register_channel_operation(channel_id="non-existent", operation_type="receive", messages=[TestMessage])
+        register_channel_operation(channel_id="non-existent", operation_type="receive", messages=[SomeTestMessage])
 
 
 def test_multiple_messages_registration(reset_asyncapi_state):
@@ -124,10 +127,12 @@ def test_multiple_messages_registration(reset_asyncapi_state):
     channel_id = "test-channel"
 
     register_channel(address="test/topic", id=channel_id)
-    register_channel_operation(channel_id=channel_id, operation_type="send", messages=[TestMessage, AnotherTestMessage])
+    register_channel_operation(
+        channel_id=channel_id, operation_type="send", messages=[SomeTestMessage, AnotherTestMessage]
+    )
 
     schema = get_schema()
-    assert TestMessage.__name__ in schema.components.schemas
+    assert SomeTestMessage.__name__ in schema.components.schemas
     assert AnotherTestMessage.__name__ in schema.components.schemas
-    assert TestMessage.__name__ in schema.channels[channel_id].messages
+    assert SomeTestMessage.__name__ in schema.channels[channel_id].messages
     assert AnotherTestMessage.__name__ in schema.channels[channel_id].messages
