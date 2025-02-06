@@ -21,10 +21,10 @@ test:
 	uv run pytest -n auto --cov
 
 ci-test:
-	uv run pytest -n 0
+	uv run pytest
 
 ci-coverage:
-	uv run pytest -n 0 --cov --cov-report lcov
+	uv run pytest --cov --cov-report lcov
 
 typing:
 	uv run mypy
