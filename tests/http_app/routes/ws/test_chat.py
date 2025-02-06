@@ -52,7 +52,6 @@ def test_client_disconnect(test_client):
             assert disconnect_message == "Client #1 left the chat"
 
 
-@pytest.mark.asyncio
 async def test_connection_manager():
     manager = ConnectionManager()
 
