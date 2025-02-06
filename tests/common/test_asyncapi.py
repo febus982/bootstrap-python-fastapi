@@ -103,7 +103,10 @@ def test_register_channel_operation(reset_asyncapi_state):
 
     register_channel(address="test/topic", id=channel_id)
     register_channel_operation(
-        channel_id=channel_id, operation_type=operation_type, messages=[SomeTestMessage], operation_name="test-operation"
+        channel_id=channel_id,
+        operation_type=operation_type,
+        messages=[SomeTestMessage],
+        operation_name="test-operation",
     )
 
     schema = get_schema()
@@ -124,7 +127,9 @@ def test_multiple_messages_registration(reset_asyncapi_state):
     channel_id = "test-channel"
 
     register_channel(address="test/topic", id=channel_id)
-    register_channel_operation(channel_id=channel_id, operation_type="send", messages=[SomeTestMessage, AnotherTestMessage])
+    register_channel_operation(
+        channel_id=channel_id, operation_type="send", messages=[SomeTestMessage, AnotherTestMessage]
+    )
 
     schema = get_schema()
     assert SomeTestMessage.__name__ in schema.components.schemas
