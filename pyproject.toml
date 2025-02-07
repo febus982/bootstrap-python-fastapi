@@ -86,6 +86,8 @@ omit = [
     "src/common/config.py",
     "src/common/logs/*",
     "src/dramatiq_worker/__init__.py",
+    "src/**/__main__.py",
+    "src/**/dev_server.py",
 ]
 # It's not necessary to configure concurrency here
 # because pytest-cov takes care of that
