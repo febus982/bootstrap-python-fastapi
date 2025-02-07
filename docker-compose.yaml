@@ -51,8 +51,17 @@ services:
   #### Helper services ####
   #########################
 
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "6831:6831/udp" # UDP port for Jaeger agent
+      - "16686:16686" # Web UI
+      - "14268:14268" # HTTP port for spans
+
   otel-collector:
     image: otel/opentelemetry-collector-contrib
+    depends_on:
+      - jaeger
     volumes:
       - ./otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
 
