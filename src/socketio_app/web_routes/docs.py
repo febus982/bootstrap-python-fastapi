@@ -3,7 +3,6 @@ import json
 from pydantic import BaseModel
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, JSONResponse
-from starlette.routing import Route
 
 from common import AppConfig
 from common.asyncapi import get_schema
@@ -103,9 +102,3 @@ async def get_asyncapi_html(
     </html>
     """
     )
-
-
-routes = [
-    Route("/asyncapi.json", asyncapi_json, methods=["GET"]),
-    Route("/", get_asyncapi_html, methods=["GET"]),
-]

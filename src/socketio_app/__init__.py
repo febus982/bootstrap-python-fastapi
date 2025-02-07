@@ -1,7 +1,7 @@
 from typing import Union
 
 import socketio
-from starlette.routing import Mount, Router
+from starlette.routing import Mount, Router, Route
 
 from common import AppConfig, application_init
 from socketio_app.namespaces.chat import ChatNamespace
@@ -20,7 +20,11 @@ def create_app(
     sio.register_namespace(ChatNamespace("/chat"))
 
     # Render /docs endpoint using starlette, and all the rest handled with Socket.io
-    routes = [Mount("/docs", routes=docs.routes, name="docs"), Mount("", app=socketio.ASGIApp(sio), name="socketio")]
+    routes = [
+        Route("/docs/asyncapi.json", docs.asyncapi_json, methods=["GET"]),
+        Route("/docs", docs.get_asyncapi_html, methods=["GET"]),
+        Mount("", app=socketio.ASGIApp(sio), name="socketio")
+    ]
 
     # No need for whole starlette, we're rendering a simple couple of endpoints
     # https://www.starlette.io/routing/#working-with-router-instances
