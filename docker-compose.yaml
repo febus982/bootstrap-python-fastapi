@@ -16,15 +16,9 @@ services:
       - otel-collector
     command:
       - opentelemetry-instrument
-      - uvicorn
-      - http_app:create_app
-      - --host
-      - 0.0.0.0
-      - --port
-      - "8000"
-      - --factory
-      # Remember to disable the reloader in order to allow otel instrumentation
-      - --reload
+      - python
+      - ./http_app/dev_server.py
+
 
   # Production image
   http:
