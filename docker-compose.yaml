@@ -5,8 +5,6 @@ services:
       context: .
       target: dev
     env_file: local.env
-    environment:
-      OTEL_SERVICE_NAME: "bootstrap-fastapi-dev"
     ports:
       - '8000:8000'
     working_dir: "/app/src"
@@ -16,11 +14,28 @@ services:
       - redis
       - otel-collector
     command:
-      - opentelemetry-instrument
       - python
       - ./http_app/dev_server.py
 
   dev-socketio:
+    <<: *dev
+    ports:
+      - '8001:8001'
+    command:
+      - python
+      - ./socketio_app/dev_server.py
+
+  otel-http:
+    <<: *dev
+    environment:
+      OTEL_SERVICE_NAME: "bootstrap-fastapi-dev"
+    command:
+      - opentelemetry-instrument
+      - python
+      - -m
+      - http_app
+
+  otel-socketio:
     <<: *dev
     environment:
       OTEL_SERVICE_NAME: "bootstrap-socketio-dev"
@@ -29,7 +44,8 @@ services:
     command:
       - opentelemetry-instrument
       - python
-      - ./socketio_app/dev_server.py
+      - -m
+      - socketio_app
 
   #########################
   #### Helper services ####
