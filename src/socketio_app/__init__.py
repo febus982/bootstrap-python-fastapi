@@ -1,7 +1,7 @@
 from typing import Union
 
 import socketio
-from starlette.routing import Mount, Router, Route
+from starlette.routing import Mount, Route, Router
 
 from common import AppConfig, application_init
 from socketio_app.namespaces.chat import ChatNamespace
@@ -23,7 +23,7 @@ def create_app(
     routes = [
         Route("/docs/asyncapi.json", docs.asyncapi_json, methods=["GET"]),
         Route("/docs", docs.get_asyncapi_html, methods=["GET"]),
-        Mount("", app=socketio.ASGIApp(sio), name="socketio")
+        Mount("", app=socketio.ASGIApp(sio), name="socketio"),
     ]
 
     # No need for whole starlette, we're rendering a simple couple of endpoints

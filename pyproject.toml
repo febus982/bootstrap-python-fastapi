@@ -157,5 +157,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]  # Ignore unused imports on init files
+"__main__.py" = ["S104"]  # Ignore 0.0.0.0 bindings for startup script
+"dev_server.py" = ["S104"]  # Ignore 0.0.0.0 bindings for startup script
 "tests/**/*.py" = ["S101"]  # Allow assert usage on tests
 "src/migrations/env.py" = ["E501"]  # Allow long lines
