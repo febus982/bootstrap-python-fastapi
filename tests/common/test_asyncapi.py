@@ -36,6 +36,7 @@ class SomeTestMessage(BaseModel):
 class AnotherTestMessage(BaseModel):
     status: bool
     code: int
+    nested: SomeTestMessage
 
 
 # Test cases
