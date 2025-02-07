@@ -44,6 +44,11 @@ http = [
     "strawberry-graphql[debug-server]>=0.204.0",
     "uvicorn[standard]<1.0.0,>=0.34.0",
 ]
+websocket = [
+    "python-socketio>=5.12.1",
+    "starlette>=0.45.3",
+    "uvicorn[standard]<1.0.0,>=0.34.0",
+]
 dev = [
     "asynctest",
     "coverage",
