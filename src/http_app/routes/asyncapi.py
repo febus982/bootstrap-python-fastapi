@@ -10,7 +10,7 @@ from common import AppConfig
 from common.asyncapi import get_schema
 from http_app.dependencies import get_app_config
 
-router = APIRouter(prefix="/docs/ws")
+router = APIRouter(prefix="/asyncapi")
 
 
 @router.get(
@@ -49,7 +49,7 @@ async def get_asyncapi_html(
     """Generate HTML for displaying an AsyncAPI document."""
     config = {
         "schema": {
-            "url": "/docs/ws/asyncapi.json",
+            "url": "/asyncapi/asyncapi.json",
         },
         "config": {
             "show": {
