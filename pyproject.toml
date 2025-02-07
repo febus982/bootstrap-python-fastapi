@@ -23,12 +23,12 @@ dependencies = [
     "opentelemetry-instrumentor-dramatiq",
     "orjson<4.0.0,>=3.10.12",
     "pydantic<3.0.0,>=2.2.1",
+    "pydantic-asyncapi>=0.2.1",
     "pydantic-settings<3.0.0,>=2.0.3",
     "rich<14.0.0,>=13.2.0",
     "SQLAlchemy[asyncio,mypy]<3.0.0,>=2.0.0",
     "sqlalchemy-bind-manager",
     "structlog<25.1.1,>=25.1.0",
-    "pydantic-asyncapi>=0.2.1",
 ]
 
 [dependency-groups]
@@ -44,7 +44,7 @@ http = [
     "strawberry-graphql[debug-server]>=0.204.0",
     "uvicorn[standard]<1.0.0,>=0.34.0",
 ]
-websocket = [
+socketio = [
     "python-socketio>=5.12.1",
     "starlette>=0.45.3",
     "uvicorn[standard]<1.0.0,>=0.34.0",
