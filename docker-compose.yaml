@@ -1,5 +1,5 @@
 services:
-  dev:
+  dev-http: &dev
     build:
       dockerfile: Dockerfile
       context: .
@@ -13,28 +13,23 @@ services:
     volumes:
       - '.:/app'
     depends_on:
+      - redis
       - otel-collector
     command:
       - opentelemetry-instrument
       - python
       - ./http_app/dev_server.py
 
-
-  # Production image
-  http:
-    build:
-      dockerfile: Dockerfile
-      context: .
-      target: http_app
-    depends_on:
-      - otel-collector
-    env_file: local.env
+  dev-socketio:
+    <<: *dev
     environment:
-      OTEL_SERVICE_NAME: "bootstrap-fastapi-http"
+      OTEL_SERVICE_NAME: "bootstrap-socketio-dev"
     ports:
-      - '8001:8000'
-    volumes:
-      - './src/sqlite.db:/app/sqlite.db'
+      - '8001:8001'
+    command:
+      - opentelemetry-instrument
+      - python
+      - ./socketio_app/dev_server.py
 
   #########################
   #### Helper services ####
@@ -49,19 +44,10 @@ services:
     image: redis
 
   dramatiq-worker:
-    build:
-      dockerfile: Dockerfile
-      context: .
-      target: dramatiq_app
-    env_file: local.env
+    <<: *dev
     environment:
       OTEL_SERVICE_NAME: "bootstrap-fastapi-dramatiq-worker"
-    working_dir: "/app/src"
-    volumes:
-      - '.:/app'
-    depends_on:
-      - redis
-      - otel-collector
+    ports: []
     command:
       - opentelemetry-instrument
       - dramatiq
@@ -128,7 +114,7 @@ services:
     depends_on:
       - kratos
       - auth-ui
-      - dev
+      - dev-http
     ports:
       # Public traffic port
       - "8080:4455"
@@ -155,11 +141,3 @@ services:
       - "make"
       - "test"
 
-  ci-test:
-    build:
-      dockerfile: Dockerfile
-      context: .
-      target: dev
-    command:
-      - "make"
-      - "ci-test"

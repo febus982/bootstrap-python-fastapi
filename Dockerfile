@@ -61,6 +61,11 @@ FROM base_builder AS http_builder
 RUN --mount=type=cache,target=~/.cache/uv \
     uv sync --no-dev --group http --no-install-project --frozen --no-editable
 
+# Installs requirements to run production http application
+FROM base_builder AS socketio_builder
+RUN --mount=type=cache,target=~/.cache/uv \
+    uv sync --no-dev --group socketio --no-install-project --frozen --no-editable
+
 # Create the base app with the common python packages
 FROM base AS base_app
 USER nonroot
@@ -75,7 +80,14 @@ FROM base_app AS http_app
 COPY --from=http_builder /venv /venv
 COPY --chown=nonroot:nonroot src/http_app ./http_app
 # Run CMD using array syntax, so it's uses `exec` and runs as PID1
-CMD ["opentelemetry-instrument", "uvicorn", "http_app:create_app", "--host", "0.0.0.0", "--port", "8000", "--factory"]
+CMD ["opentelemetry-instrument", "python", "-m", "http_app"]
+
+# Copy the socketio python package and requirements from relevant builder
+FROM base_app AS socketio_app
+COPY --from=socketio_builder_builder /venv /venv
+COPY --chown=nonroot:nonroot src/socketio_app ./socketio_app
+# Run CMD using array syntax, so it's uses `exec` and runs as PID1
+CMD ["opentelemetry-instrument", "python", "-m", "socketio_app"]
 
 # Copy the dramatiq python package and requirements from relevant builder
 FROM base_app AS dramatiq_app

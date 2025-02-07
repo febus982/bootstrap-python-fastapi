@@ -8,8 +8,11 @@ containers:
 	# To build shared container layers only once we build a single container before the other ones
 	docker compose build --build-arg UID=`id -u`
 
-dev:
-	uv run uvicorn http_app:create_app --host 0.0.0.0 --port 8000 --factory --reload
+dev-http:
+	uv run ./src/http_app/dev_server.py
+
+dev-socketio:
+	uv run ./src/socketio_app/dev_server.py
 
 otel:
 	OTEL_SERVICE_NAME=bootstrap-fastapi OTEL_TRACES_EXPORTER=none OTEL_METRICS_EXPORTER=none OTEL_LOGS_EXPORTER=none uv run opentelemetry-instrument uvicorn http_app:create_app --host 0.0.0.0 --port 8000 --factory
