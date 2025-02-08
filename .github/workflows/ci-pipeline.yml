@@ -58,7 +58,12 @@ jobs:
       # This is used to complete the identity challenge
       # with sigstore/fulcio when running outside of PRs.
       id-token: write
-
+    strategy:
+      matrix:
+        docker_target:
+          - http_app
+          - socketio_app
+          - dramatiq_app
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -91,7 +96,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ env.IMAGE_NAME }}-${{ matrix.docker_target }}
           # generate Docker tags based on the following events/attributes
           tags: |
             type=sha
@@ -105,7 +110,7 @@ jobs:
         uses: docker/build-push-action@v6.13.0
         with:
           context: .
-          target: http_app
+          target: ${{ matrix.docker_target }}
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
