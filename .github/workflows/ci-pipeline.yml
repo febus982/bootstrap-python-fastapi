@@ -8,8 +8,11 @@ name: CI Pipeline
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+####### Uncomment this to test the CI pipeline in a PR
+####### You'll also need to comment the rules containing {{branch}}
+####### in the `Extract Docker metadata` step
+#  pull_request:
+#    branches: [ "main" ]
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -108,8 +111,8 @@ jobs:
           # generate Docker tags based on the following events/attributes
           tags: |
             type=sha
-#            type=raw,value={{branch}}-latest
-#            type=raw,value={{branch}}-{{date 'YYYYMMDDHHmmss'}}
+            type=raw,value={{branch}}-latest
+            type=raw,value={{branch}}-{{date 'YYYYMMDDHHmmss'}}
 
       # Build and push Docker image with Buildx
       # https://github.com/docker/build-push-action
