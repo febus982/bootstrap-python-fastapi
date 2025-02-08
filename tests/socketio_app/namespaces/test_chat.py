@@ -10,7 +10,6 @@ def chat_namespace():
     return ChatNamespace("/chat")
 
 
-@pytest.mark.asyncio
 async def test_on_connect(chat_namespace):
     sid = "test_session_id"
     environ = {}
@@ -19,7 +18,6 @@ async def test_on_connect(chat_namespace):
     chat_namespace.on_connect(sid, environ)
 
 
-@pytest.mark.asyncio
 async def test_on_disconnect(chat_namespace):
     sid = "test_session_id"
     reason = "test_reason"
@@ -28,7 +26,6 @@ async def test_on_disconnect(chat_namespace):
     chat_namespace.on_disconnect(sid, reason)
 
 
-@pytest.mark.asyncio
 async def test_on_echo_message(chat_namespace):
     sid = "test_session_id"
     test_data = {"message": "Hello, World!"}
