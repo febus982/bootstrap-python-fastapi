@@ -61,9 +61,9 @@ jobs:
     strategy:
       matrix:
         docker_target:
-          - http_app
-          - socketio_app
-          - dramatiq_app
+          - http
+          - socketio
+          - dramatiq
     steps:
       # GitHub gives only repository complete in <owner>/<repo> format.
       # Need some manual sheanigans
