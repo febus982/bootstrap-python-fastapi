@@ -69,30 +69,30 @@ RUN --mount=type=cache,target=~/.cache/uv \
 # Create the base app with the common python packages
 FROM base AS base_app
 USER nonroot
-COPY --chown=nonroot:nonroot src/migrations ./migrations
+COPY --chown=nonroot:nonroot src/common ./common
 COPY --chown=nonroot:nonroot src/domains ./domains
 COPY --chown=nonroot:nonroot src/gateways ./gateways
-COPY --chown=nonroot:nonroot src/common ./common
+COPY --chown=nonroot:nonroot src/migrations ./migrations
 COPY --chown=nonroot:nonroot src/alembic.ini .
 
 # Copy the http python package and requirements from relevant builder
-FROM base_app AS http_app
+FROM base_app AS http
 COPY --from=http_builder /venv /venv
 COPY --chown=nonroot:nonroot src/http_app ./http_app
-# Run CMD using array syntax, so it's uses `exec` and runs as PID1
+# Run CMD using array syntax, so it uses `exec` and runs as PID1
 CMD ["opentelemetry-instrument", "python", "-m", "http_app"]
 
 # Copy the socketio python package and requirements from relevant builder
-FROM base_app AS socketio_app
-COPY --from=socketio_builder_builder /venv /venv
+FROM base_app AS socketio
+COPY --from=socketio_builder /venv /venv
 COPY --chown=nonroot:nonroot src/socketio_app ./socketio_app
-# Run CMD using array syntax, so it's uses `exec` and runs as PID1
+# Run CMD using array syntax, so it uses `exec` and runs as PID1
 CMD ["opentelemetry-instrument", "python", "-m", "socketio_app"]
 
 # Copy the dramatiq python package and requirements from relevant builder
-FROM base_app AS dramatiq_app
+FROM base_app AS dramatiq
 COPY --from=dramatiq_builder /venv /venv
 COPY --chown=nonroot:nonroot src/dramatiq_worker ./dramatiq_worker
-# Run CMD using array syntax, so it's uses `exec` and runs as PID1
+# Run CMD using array syntax, so it uses `exec` and runs as PID1
 # TODO: Review processes/threads
 CMD ["opentelemetry-instrument", "dramatiq", "-p", "1", "-t", "1", "dramatiq_worker"]

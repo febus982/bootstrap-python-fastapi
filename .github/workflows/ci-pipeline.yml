@@ -8,49 +8,32 @@ name: CI Pipeline
 on:
   push:
     branches: [ "main" ]
+####### Uncomment this to test the CI pipeline in a PR
+####### You'll also need to comment the rules containing {{branch}}
+####### in the `Extract Docker metadata` step
+#  pull_request:
+#    branches: [ "main" ]
 
 env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}
+  REGISTRY_PATH: ${{ github.repository }}
   TEST_TAG: user/app:test
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-      # This is used to complete the identity challenge
-      # with sigstore/fulcio when running outside of PRs.
-      id-token: write
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      # Install the cosign tool except on PR
-      # https://github.com/sigstore/cosign-installer
-      - name: Install cosign
-        uses: sigstore/cosign-installer@v3.8.0
-
+      # This might be unnecessary as tests are not
+      # multiplatform
       - name: Setup Docker buildx
         uses: docker/setup-buildx-action@v3.9.0
 
-      # Login against a Docker registry except on PR
-      # https://github.com/docker/login-action
-      - name: Log into registry ${{ env.REGISTRY }}
-        uses: docker/login-action@v3.3.0
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      # Build and push Docker image with Buildx
+      # Build but don't push Docker image with Buildx
       # https://github.com/docker/build-push-action
       - name: Build test image
         id: build-test
@@ -63,9 +46,57 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Test
+      # This is a barrier check to make sure we push a functional
+      # docker image, we can avoid linting
+      - name: Run tests in the test image
         run: |
           docker run --rm ${{ env.TEST_TAG }} make ci-test
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: read
+      packages: write
+      # This is used to complete the identity challenge
+      # with sigstore/fulcio when running outside of PRs.
+      id-token: write
+    strategy:
+      matrix:
+        docker_target:
+          - http
+          - socketio
+          - dramatiq
+    steps:
+      # GitHub gives only repository complete in <owner>/<repo> format.
+      # Need some manual sheanigans
+      # Set IMAGE_NAME so we can push to <owner>/<repo>/<image>
+      - name: Set ENV variables
+        run: |
+          echo "IMAGE_NAME=${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}" >> $GITHUB_ENV
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      # Install the cosign tool
+      # https://github.com/sigstore/cosign-installer
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3.8.0
+
+      - name: Setup Docker buildx
+        uses: docker/setup-buildx-action@v3.9.0
+
+      # Login against a Docker registry
+      # https://github.com/docker/login-action
+      - name: Log into registry ${{ env.REGISTRY }}
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
@@ -74,8 +105,9 @@ jobs:
         uses: docker/metadata-action@v5.6.1
         with:
           # list of Docker images to use as base name for tags
+          # <registry/<owner>/<repo_name>/<repo_name>-<target>
           images: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+            ${{ env.REGISTRY }}/${{ env.REGISTRY_PATH }}/${{ env.IMAGE_NAME }}-${{ matrix.docker_target }}
           # generate Docker tags based on the following events/attributes
           tags: |
             type=sha
@@ -89,7 +121,7 @@ jobs:
         uses: docker/build-push-action@v6.13.0
         with:
           context: .
-          target: http_app
+          target: ${{ matrix.docker_target }}
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}

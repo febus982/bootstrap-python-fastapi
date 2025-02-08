@@ -17,7 +17,7 @@ build-http-app-amd64:
   variables:
     DOCKER_IMAGE_NAME: $CI_PROJECT_NAME-http
     DOCKER_PLATFORM: "linux/amd64"
-    DOCKER_TARGET: http_app
+    DOCKER_TARGET: http
   tags:
     - saas-linux-small-amd64
   rules:
@@ -32,7 +32,7 @@ build-http-app-arm64:
   variables:
     DOCKER_IMAGE_NAME: $CI_PROJECT_NAME-http
     DOCKER_PLATFORM: "linux/arm64"
-    DOCKER_TARGET: http_app
+    DOCKER_TARGET: http
   tags:
     - saas-linux-small-arm64
   rules:
