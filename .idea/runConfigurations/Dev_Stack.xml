@@ -1,0 +1,19 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Dev Stack" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
+    <deployment type="docker-compose.yml">
+      <settings>
+        <option name="envFilePath" value="" />
+        <option name="services">
+          <list>
+            <option value="dev-http" />
+            <option value="dev-socketio" />
+            <option value="dramatiq-worker" />
+          </list>
+        </option>
+        <option name="sourceFilePath" value="docker-compose.yaml" />
+        <option name="upDetach" value="false" />
+      </settings>
+    </deployment>
+    <method v="2" />
+  </configuration>
+</component>

@@ -5,7 +5,7 @@ on `/docs` and `/redoc` paths using OpenAPI format.
 
 AsyncAPI documentation is rendered using the
 [AsyncAPI react components](https://github.com/asyncapi/asyncapi-react).
-It is available on `/docs/ws` path.
+It is available on `/asyncapi` path.
 
 ## API versioning
 

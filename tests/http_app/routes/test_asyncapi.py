@@ -15,14 +15,14 @@ fake_schema = AsyncAPI(
 )
 
 
-@patch("http_app.routes.docs_ws.get_schema", return_value=fake_schema)
+@patch("http_app.routes.asyncapi.get_schema", return_value=fake_schema)
 async def test_asyncapi_json_is_whatever_returned_by_schema(
     mock_schema: MagicMock,
     testapp: FastAPI,
 ):
     ac = TestClient(app=testapp, base_url="http://test")
     response = ac.get(
-        "/docs/ws/asyncapi.json",
+        "/asyncapi/asyncapi.json",
     )
 
     assert response.status_code == status.HTTP_200_OK
@@ -51,7 +51,7 @@ async def test_ws_docs_renders_config_based_on_params(
     config = json.dumps(
         {
             "schema": {
-                "url": "/docs/ws/asyncapi.json",
+                "url": "/asyncapi/asyncapi.json",
             },
             "config": {
                 "show": {
@@ -76,7 +76,7 @@ async def test_ws_docs_renders_config_based_on_params(
 
     ac = TestClient(app=testapp, base_url="http://test")
     response = ac.get(
-        "/docs/ws",
+        "/asyncapi",
         params={
             "sidebar": sidebar,
             "info": info,

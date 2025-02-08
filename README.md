@@ -22,6 +22,7 @@ This template provides out of the box some commonly used functionalities:
 
 * Sync and Async API Documentation using [FastAPI](https://fastapi.tiangolo.com/) and [AsyncAPI](https://www.asyncapi.com/en)
 * Async tasks execution using [Dramatiq](https://dramatiq.io/index.html)
+* Websocket application using [Socket.io](https://python-socketio.readthedocs.io/en/stable/index.html)
 * Repository pattern for databases using [SQLAlchemy](https://www.sqlalchemy.org/) and [SQLAlchemy bind manager](https://febus982.github.io/sqlalchemy-bind-manager/stable/)
 * Database migrations using [Alembic](https://alembic.sqlalchemy.org/en/latest/) (configured supporting both sync and async SQLAlchemy engines)
 * Database fixtures support using customized [Alembic](https://alembic.sqlalchemy.org/en/latest/) configuration
@@ -50,7 +51,8 @@ Using Docker:
 
 * `make containers`: Build containers
 * `docker compose run --rm dev make migrate`: Run database migrations
-* `docker compose up dev`: Run HTTP application with hot reload
+* `docker compose up dev-http`: Run HTTP application with hot reload
+* `docker compose up dev-socketio`: Run HTTP application with hot reload
 * `docker compose up dramatiq-worker`: Run the dramatiq worker
 * `docker compose run --rm test`: Run test suite
 
@@ -61,7 +63,8 @@ Locally:
 * `make dev-dependencies`: Install dev requirements
 * `make update-dependencies`: Updates requirements
 * `make migrate`: Run database migrations
-* `make dev`: Run HTTP application with hot reload
+* `make dev-http`: Run HTTP application with hot reload
+* `make dev-socketio`: Run HTTP application with hot reload
 * `make test`: Run test suite
 
 ## Other commands for development

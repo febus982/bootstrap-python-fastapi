@@ -1,25 +1,22 @@
 import json
-from typing import Annotated
 
-import pydantic_asyncapi as pa
-from fastapi import APIRouter
-from fastapi.params import Depends
-from starlette.responses import HTMLResponse
+from pydantic import BaseModel
+from starlette.requests import Request
+from starlette.responses import HTMLResponse, JSONResponse
 
 from common import AppConfig
 from common.asyncapi import get_schema
-from http_app.dependencies import get_app_config
-
-router = APIRouter(prefix="/docs/ws")
 
 
-@router.get(
-    "/asyncapi.json",
-    response_model_exclude_unset=True,
-    include_in_schema=False,
-)
-def asyncapi_raw() -> pa.v3.AsyncAPI:
-    return get_schema()
+class PydanticResponse(JSONResponse):
+    def render(self, content: BaseModel) -> bytes:
+        return content.model_dump_json(
+            exclude_unset=True,
+        ).encode("utf-8")
+
+
+async def asyncapi_json(request: Request) -> JSONResponse:
+    return PydanticResponse(get_schema())
 
 
 ASYNCAPI_COMPONENT_VERSION = "latest"
@@ -34,35 +31,27 @@ ASYNCAPI_CSS_DEFAULT_URL = (
 
 
 # https://github.com/asyncapi/asyncapi-react/blob/v2.5.0/docs/usage/standalone-bundle.md
-@router.get("")
 async def get_asyncapi_html(
-    app_config: Annotated[AppConfig, Depends(get_app_config)],
-    sidebar: bool = True,
-    info: bool = True,
-    servers: bool = True,
-    operations: bool = True,
-    messages: bool = True,
-    schemas: bool = True,
-    errors: bool = True,
-    expand_message_examples: bool = False,
+    request: Request,
 ) -> HTMLResponse:
+    app_config = AppConfig()
     """Generate HTML for displaying an AsyncAPI document."""
     config = {
         "schema": {
-            "url": "/docs/ws/asyncapi.json",
+            "url": "/docs/asyncapi.json",
         },
         "config": {
             "show": {
-                "sidebar": sidebar,
-                "info": info,
-                "servers": servers,
-                "operations": operations,
-                "messages": messages,
-                "schemas": schemas,
-                "errors": errors,
+                "sidebar": request.query_params.get("sidebar", "true") == "true",
+                "info": request.query_params.get("info", "true") == "true",
+                "servers": request.query_params.get("servers", "true") == "true",
+                "operations": request.query_params.get("operations", "true") == "true",
+                "messages": request.query_params.get("messages", "true") == "true",
+                "schemas": request.query_params.get("schemas", "true") == "true",
+                "errors": request.query_params.get("errors", "true") == "true",
             },
             "expand": {
-                "messageExamples": expand_message_examples,
+                "messageExamples": request.query_params.get("expand_message_examples") == "true",
             },
             "sidebar": {
                 "showServers": "byDefault",
