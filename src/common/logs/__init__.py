@@ -2,6 +2,7 @@ import logging
 from typing import List
 
 import structlog
+from opentelemetry.sdk._logs import LoggingHandler
 from structlog.typing import Processor
 
 from ..config import AppConfig
@@ -76,9 +77,18 @@ def init_logger(config: AppConfig) -> None:
         )
     )
 
-    # Use structlog to format logs coming from stdlib logger
+    # Get root logger
     stdlib_logger = logging.getLogger()
-    stdlib_logger.handlers.clear()
+
+    # In case there's a OTEL handler we keep it but remove all the others,
+    # in case this function is called multiple times.
+    # NOTE all the processors are not applied to OTEL logs!
+    for l in stdlib_logger.handlers:
+        if not isinstance(l, LoggingHandler):
+            stdlib_logger.removeHandler(l)
+
+
+    # Use structlog to format logs coming from stdlib logger
     stdlib_logger.addHandler(stdlib_handler)
     stdlib_logger.setLevel(log_level)
 
