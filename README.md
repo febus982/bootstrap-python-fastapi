@@ -27,6 +27,7 @@ This template provides out of the box some commonly used functionalities:
 * Database migrations using [Alembic](https://alembic.sqlalchemy.org/en/latest/) (configured supporting both sync and async SQLAlchemy engines)
 * Database fixtures support using customized [Alembic](https://alembic.sqlalchemy.org/en/latest/) configuration
 * Authentication and Identity Provider using [ORY Zero Trust architecture](https://www.ory.sh/docs/kratos/guides/zero-trust-iap-proxy-identity-access-proxy)
+* Full observability setup using [OpenTelemetry](https://opentelemetry.io/) (Metrics, Traces and Logs)
 * Example CI/CD deployment pipeline for GitLab (The focus for this repository is still GitHub but, in case you want to use GitLab 🤷)
 * [TODO] Producer and consumer to emit and consume events using [CloudEvents](https://cloudevents.io/) format using HTTP, to be used with [Knative Eventing](https://knative.dev/docs/eventing/)
 
