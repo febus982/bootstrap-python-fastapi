@@ -15,11 +15,22 @@ from .processors import (
 
 def init_logger(config: AppConfig) -> None:
     """
-    Configure structlog and stdlib logging with shared handler and formatter.
+    Function to initialize logging configuration using `structlog` and Python's standard
+    logging module. It supports dynamic log level adjustment, shared processors for
+    structlog and standard loggers, and tailored configurations for different environments
+    (local, test, or production). Ensures consistent formatting across application logs
+    and integrates handlers for OpenTelemetry logs if present.
 
-    :param config: The app configuration
-    :type config: AppConfig
-    :return:
+    Args:
+        config (AppConfig): Configuration object containing application-wide settings
+        such as DEBUG flag and environment status.
+
+    Raises:
+        None
+
+    Returns:
+        None
+
     """
     # Strongly inspired by https://gist.github.com/nymous/f138c7f06062b7c43c060bf03759c29e
 
@@ -83,10 +94,9 @@ def init_logger(config: AppConfig) -> None:
     # In case there's a OTEL handler we keep it but remove all the others,
     # in case this function is called multiple times.
     # NOTE all the processors are not applied to OTEL logs!
-    for l in stdlib_logger.handlers:
-        if not isinstance(l, LoggingHandler):
-            stdlib_logger.removeHandler(l)
-
+    for handler in stdlib_logger.handlers:
+        if not isinstance(handler, LoggingHandler):
+            stdlib_logger.removeHandler(handler)
 
     # Use structlog to format logs coming from stdlib logger
     stdlib_logger.addHandler(stdlib_handler)

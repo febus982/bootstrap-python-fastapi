@@ -1,8 +1,8 @@
+import logging
 from collections.abc import Iterable
 
 from anyio import to_thread
 from dependency_injector.wiring import Provide, inject
-from structlog import get_logger
 
 from common.tracing import trace_function
 from common.utils import apply_decorator_to_methods
@@ -58,8 +58,12 @@ class BookService:
         book_id: int,
     ) -> None:  # pragma: no cover
         # This is just an example placeholder, there's nothing to test.
-        logger = get_logger()
-        await logger.ainfo(f"Processed book crated event for id `{book_id}`")
+        logging.info(
+            "Processed book crated event`",
+            extra={
+                "book_id": book_id,
+            },
+        )
 
     def _some_cpu_intensive_blocking_task(self, book: dict) -> dict:
         # This is just an example placeholder,
