@@ -1,0 +1,29 @@
+otelcol.exporter.otlp "jaeger" {
+	client {
+		endpoint = "jaeger:4317"
+
+		tls {
+			insecure = true
+		}
+	}
+}
+
+otelcol.exporter.debug "console" {
+	verbosity = "Detailed"
+}
+
+otelcol.processor.batch "default" {
+	output {
+		traces = [otelcol.exporter.otlp.jaeger.input]
+	}
+}
+
+otelcol.receiver.otlp "default" {
+	grpc { }
+
+	output {
+		metrics = [otelcol.exporter.debug.console.input]
+		logs    = [otelcol.exporter.debug.console.input]
+		traces  = [otelcol.processor.batch.default.input]
+	}
+}
