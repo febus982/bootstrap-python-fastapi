@@ -59,11 +59,19 @@ services:
       - "14268:14268" # HTTP port for spans
 
   otel-collector:
-    image: otel/opentelemetry-collector-contrib
+    image: grafana/alloy:latest
     depends_on:
       - jaeger
+    ports:
+      - "12345:12345"
     volumes:
-      - ./otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
+      - ./config.alloy:/etc/alloy/config.alloy
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:12345
+      - --stability.level=experimental
+#      - --stability.level=public-preview
+      - /etc/alloy/config.alloy
 
   redis:
     image: redis

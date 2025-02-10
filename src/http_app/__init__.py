@@ -1,10 +1,10 @@
+import logging
 from typing import Union
 
 from fastapi import FastAPI, Request
 from opentelemetry.instrumentation.asgi import OpenTelemetryMiddleware
 from starlette.responses import JSONResponse
 from starlette_prometheus import PrometheusMiddleware, metrics
-from structlog import get_logger
 
 from common import AppConfig, application_init
 from http_app import context
@@ -62,6 +62,5 @@ def init_exception_handlers(app: FastAPI) -> None:
         try:
             return await call_next(request)
         except Exception as e:
-            logger = get_logger(__name__)
-            await logger.aexception(e)
+            logging.exception(e)
             return JSONResponse({"error": "Internal server error"}, status_code=500)
