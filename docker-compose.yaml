@@ -5,6 +5,8 @@ services:
       context: .
       target: dev
     env_file: local.env
+    environment:
+      APP_NAME: "bootstrap-fastapi"
     ports:
       - '8000:8000'
     working_dir: "/app/src"
@@ -19,39 +21,13 @@ services:
 
   dev-socketio:
     <<: *dev
+    environment:
+      APP_NAME: "bootstrap-socketio"
     ports:
       - '8001:8001'
     command:
       - python
       - ./socketio_app/dev_server.py
-
-  otel-http:
-    <<: *dev
-    environment:
-      OTEL_SERVICE_NAME: "bootstrap-fastapi-dev"
-      OTEL_RESOURCE_ATTRIBUTES: "deployment.environment=local"
-      OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SERVER_REQUEST: ".*"
-      OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SERVER_RESPONSE: ".*"
-    command:
-      - opentelemetry-instrument
-      - python
-      - -m
-      - http_app
-
-  otel-socketio:
-    <<: *dev
-    environment:
-      OTEL_SERVICE_NAME: "bootstrap-socketio-dev"
-      OTEL_RESOURCE_ATTRIBUTES: "deployment.environment=local"
-      OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SERVER_REQUEST: ".*"
-      OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SERVER_RESPONSE: ".*"
-    ports:
-      - '8001:8001'
-    command:
-      - opentelemetry-instrument
-      - python
-      - -m
-      - socketio_app
 
   #########################
   #### Helper services ####
@@ -85,10 +61,9 @@ services:
   dramatiq-worker:
     <<: *dev
     environment:
-      OTEL_SERVICE_NAME: "bootstrap-fastapi-dramatiq-worker"
+      APP_NAME: "bootstrap-dramatiq-worker"
     ports: []
     command:
-      - opentelemetry-instrument
       - dramatiq
       - --watch
       - .

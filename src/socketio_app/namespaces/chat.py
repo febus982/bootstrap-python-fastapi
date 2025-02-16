@@ -2,7 +2,7 @@ import logging
 
 import socketio
 
-from common.tracing import trace_function
+from common.telemetry import trace_function
 
 
 class ChatNamespace(socketio.AsyncNamespace):

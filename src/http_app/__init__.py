@@ -2,11 +2,17 @@ import logging
 from typing import Union
 
 from fastapi import FastAPI, Request
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from starlette.responses import JSONResponse
 
 from common import AppConfig, application_init
+from common.telemetry import instrument_third_party
 from http_app import context
 from http_app.routes import init_routes
+
+# These instrumentors patch and wrap libraries, we want
+# to execute them ASAP
+instrument_third_party()
 
 
 def create_app(
@@ -31,6 +37,7 @@ def create_app(
     init_exception_handlers(app)
 
     init_routes(app)
+    FastAPIInstrumentor.instrument_app(app)
 
     return app
 

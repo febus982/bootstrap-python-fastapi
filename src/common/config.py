@@ -38,3 +38,7 @@ class AppConfig(BaseSettings):
             async_engine=True,
         ),
     )
+    OTEL_EXPORTER_OTLP_ENDPOINT: Optional[str] = None
+    OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: Optional[str] = None
+    OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: Optional[str] = None
+    OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: Optional[str] = None
