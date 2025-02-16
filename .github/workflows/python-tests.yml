@@ -26,9 +26,6 @@ jobs:
         python-version: "${{ matrix.version }}"
     - name: Install uv
       uses: astral-sh/setup-uv@v5
-      with:
-        # Install a specific version of uv.
-        version: "0.5.13"
     - name: Install dependencies
       run: make dev-dependencies
     - name: Test with pytest
