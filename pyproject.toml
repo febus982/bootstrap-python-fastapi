@@ -9,7 +9,6 @@ description = ""
 readme = "README.md"
 dependencies = [
     "aiosqlite>=0.18.0",
-    "alembic<2.0.0,>=1.11.1",
     "asgiref<4.0.0,>=3.7.2",
     "cloudevents-pydantic<1.0.0,>=0.0.3",
     "dependency-injector[pydantic]<5.0.0,>=4.41.0",
@@ -49,6 +48,10 @@ socketio = [
     "python-socketio>=5.12.1",
     "starlette>=0.45.3",
     "uvicorn[standard]<1.0.0,>=0.34.0",
+]
+migrations = [
+    "alembic<2.0.0,>=1.11.1",
+    "factory-boy<4.0.0,>=3.3.3",
 ]
 dev = [
     "asynctest",
