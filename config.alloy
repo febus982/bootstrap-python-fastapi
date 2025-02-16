@@ -1,3 +1,85 @@
+otelcol.receiver.otlp "default" {
+	grpc { }
+
+	output {
+		metrics = [
+		    otelcol.processor.transform.add_resource_attributes_as_metric_attributes.input,
+        ]
+		traces  = [
+		    // This transforms the traces in metrics, we still have to send traces out
+            otelcol.connector.spanmetrics.asgi_apm.input,
+		    // This also transforms the traces in metrics, we still have to send traces out
+		    otelcol.connector.host_info.default.input,
+		    // This sends the traces out
+            otelcol.processor.batch.default.input,
+		]
+		logs    = [
+		    otelcol.processor.batch.default.input,
+		]
+	}
+}
+
+otelcol.connector.host_info "default" {
+  // https://grafana.com/docs/alloy/latest/reference/components/otelcol.connector.host_info/
+  host_identifiers = ["host.name"]
+
+  output {
+    metrics = [otelcol.processor.batch.default.input]
+  }
+}
+
+otelcol.connector.spanmetrics "asgi_apm" {
+  dimension {
+    name = "http.status_code"
+  }
+
+  dimension {
+    name = "http.method"
+  }
+
+  dimension {
+    name = "http.route"
+  }
+
+  histogram {
+    explicit {
+        buckets = ["2ms", "4ms", "6ms", "8ms", "10ms", "50ms", "100ms", "200ms", "400ms", "800ms", "1s", "1400ms", "2s", "5s", "10s", "15s"]
+    }
+  }
+
+  output {
+    metrics = [otelcol.processor.transform.add_resource_attributes_as_metric_attributes.input]
+  }
+}
+
+otelcol.processor.transform "add_resource_attributes_as_metric_attributes" {
+	error_mode = "ignore"
+
+	metric_statements {
+		context    = "datapoint"
+		statements = [
+			"set(attributes[\"deployment.environment\"], resource.attributes[\"deployment.environment\"])",
+			"set(attributes[\"service.version\"], resource.attributes[\"service.version\"])",
+		]
+	}
+
+	output {
+        metrics = [otelcol.processor.batch.default.input]
+    }
+}
+
+otelcol.processor.batch "default" {
+	output {
+		// metrics = [otelcol.exporter.otlphttp.grafanacloud.input]
+		// logs    = [otelcol.exporter.otlphttp.grafanacloud.input]
+		// traces  = [otelcol.exporter.otlphttp.grafanacloud.input]
+
+		metrics = [otelcol.exporter.debug.console.input]
+		logs    = [otelcol.exporter.debug.console.input]
+		traces  = [otelcol.exporter.otlp.jaeger.input]
+	}
+}
+
 otelcol.exporter.otlp "jaeger" {
 	client {
 		endpoint = "jaeger:4317"
@@ -12,18 +94,15 @@ otelcol.exporter.debug "console" {
 	verbosity = "Detailed"
 }
 
-otelcol.processor.batch "default" {
-	output {
-		traces = [otelcol.exporter.otlp.jaeger.input]
-	}
+
+otelcol.auth.basic "grafanacloud" {
+  username = sys.env("GC_USERNAME")
+  password = sys.env("GC_PASSWORD")
 }
 
-otelcol.receiver.otlp "default" {
-	grpc { }
-
-	output {
-		metrics = [otelcol.exporter.debug.console.input]
-		logs    = [otelcol.exporter.debug.console.input]
-		traces  = [otelcol.processor.batch.default.input]
-	}
+otelcol.exporter.otlphttp "grafanacloud" {
+  client {
+    endpoint = sys.env("GC_ENDPOINT")
+    auth     = otelcol.auth.basic.grafanacloud.handler
+  }
 }

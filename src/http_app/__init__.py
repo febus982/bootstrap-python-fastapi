@@ -2,13 +2,17 @@ import logging
 from typing import Union
 
 from fastapi import FastAPI, Request
-from opentelemetry.instrumentation.asgi import OpenTelemetryMiddleware
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from starlette.responses import JSONResponse
-from starlette_prometheus import PrometheusMiddleware, metrics
 
 from common import AppConfig, application_init
+from common.telemetry import instrument_third_party
 from http_app import context
 from http_app.routes import init_routes
+
+# These instrumentors patch and wrap libraries, we want
+# to execute them ASAP
+instrument_third_party()
 
 
 def create_app(
@@ -33,21 +37,7 @@ def create_app(
     init_exception_handlers(app)
 
     init_routes(app)
-
-    """
-    OpenTelemetry prometheus exporter does not work together with automatic
-    instrumentation, for now we keep the prometheus middleware even if
-    having 2 different middlewares will add overhead.
-    """
-    app.add_middleware(PrometheusMiddleware)
-    app.add_route("/metrics/", metrics)
-
-    """
-    OpenTelemetry middleware has to be the last one to make sure the
-    tracing data handling is the outermost logic
-    Some typing issues to be addressed in OpenTelemetry but it works.
-    """
-    app.add_middleware(OpenTelemetryMiddleware)  # type: ignore
+    FastAPIInstrumentor.instrument_app(app)
 
     return app
 

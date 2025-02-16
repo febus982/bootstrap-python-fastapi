@@ -7,7 +7,6 @@ from dramatiq.brokers.redis import RedisBroker
 from dramatiq.brokers.stub import StubBroker
 from dramatiq.encoder import DecodeError, Encoder, MessageData
 from dramatiq.middleware import AsyncIO
-from opentelemetry_instrumentor_dramatiq import DramatiqInstrumentor
 
 from .config import AppConfig
 
@@ -27,10 +26,6 @@ class ORJSONEncoder(Encoder):
 
 def init_dramatiq(config: AppConfig):
     broker: Broker
-
-    dramatiq_instrumentor = DramatiqInstrumentor()
-    if not dramatiq_instrumentor.is_instrumented_by_opentelemetry:
-        dramatiq_instrumentor.instrument()
 
     if config.DRAMATIQ.REDIS_URL is not None:
         broker = RedisBroker(url=config.DRAMATIQ.REDIS_URL)

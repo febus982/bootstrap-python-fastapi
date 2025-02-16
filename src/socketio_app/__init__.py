@@ -4,8 +4,13 @@ import socketio
 from starlette.routing import Mount, Route, Router
 
 from common import AppConfig, application_init
+from common.telemetry import instrument_third_party
 from socketio_app.namespaces.chat import ChatNamespace
 from socketio_app.web_routes import docs
+
+# These instrumentors patch and wrap libraries, we want
+# to execute them ASAP
+instrument_third_party()
 
 
 def create_app(

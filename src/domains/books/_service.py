@@ -4,7 +4,7 @@ from collections.abc import Iterable
 from anyio import to_thread
 from dependency_injector.wiring import Provide, inject
 
-from common.tracing import trace_function
+from common.telemetry import trace_function
 from common.utils import apply_decorator_to_methods
 
 from ._gateway_interfaces import BookEventGatewayInterface, BookRepositoryInterface

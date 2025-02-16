@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, call, patch
 
 import pytest
 
-from common.tracing import trace_function
+from common.telemetry import trace_function
 
 
 @pytest.fixture
@@ -17,7 +17,7 @@ def mock_tracer():
 
     with (
         patch("opentelemetry.trace.get_tracer", return_value=mock_tracer),
-        patch("common.tracing.tracer", mock_tracer),
+        patch("common.telemetry.tracer", mock_tracer),
     ):
         yield mock_tracer, mock_span
 

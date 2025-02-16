@@ -10,6 +10,7 @@ from .di_container import Container
 from .dramatiq import init_dramatiq
 from .logs import init_logger
 from .storage import init_storage
+from .telemetry import instrument_opentelemetry
 
 
 class InitReference(BaseModel):
@@ -29,6 +30,7 @@ def application_init(app_config: AppConfig) -> InitReference:
     init_storage()
     init_dramatiq(app_config)
     init_asyncapi_info(app_config.APP_NAME)
+    instrument_opentelemetry(app_config)
 
     return InitReference(
         di_container=container,

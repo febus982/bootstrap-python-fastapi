@@ -16,11 +16,11 @@ dependencies = [
     "dramatiq[redis,watch]<2.0.0,>=1.17.1",
     "hiredis<4.0.0,>=3.1.0", # Recommended by dramatiq
     "httpx>=0.23.0",
-    "opentelemetry-distro[otlp]",
-    "opentelemetry-instrumentation",
     "opentelemetry-instrumentation-httpx",
     "opentelemetry-instrumentation-sqlalchemy",
     "opentelemetry-instrumentor-dramatiq",
+    "opentelemetry-exporter-otlp",
+    "opentelemetry-sdk",
     "orjson<4.0.0,>=3.10.12",
     "pydantic<3.0.0,>=2.2.1",
     "pydantic-asyncapi>=0.2.1",
@@ -36,11 +36,12 @@ http = [
     "cryptography>=44.0.0",
     "fastapi>=0.99.0",
     "jinja2<4.0.0,>=3.1.2",
-    # We use the generic ASGI instrumentation, so that if we decide to change
-    # Framework it will still work consistently.
-    "opentelemetry-instrumentation-asgi",
+    # FastAPI instrumentation is based on the generic ASGI instrumentation,
+    # but automatically creates span when routes are invoked.
+    # If we decide to change framework, the generic ASGI instrumentation
+    # will still name metrics with a generic naming.
+    "opentelemetry-instrumentation-fastapi",
     "pyjwt>=2.10.1",
-    "starlette-prometheus<1.0.0,>=0.10.0",
     "strawberry-graphql[debug-server]>=0.204.0",
     "uvicorn[standard]<1.0.0,>=0.34.0",
 ]
