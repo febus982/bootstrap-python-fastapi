@@ -42,6 +42,12 @@ services:
 
   otel-collector:
     image: grafana/alloy:latest
+    # You can add the Grafana Cloud credentials in this file
+    # and push observability directly to the provider.
+    # Refer to the config.alloy file to see what credentials we need.
+    env_file:
+      - path: ./credentials.env
+        required: false
     depends_on:
       - jaeger
     ports:
@@ -154,4 +160,3 @@ services:
     command:
       - "make"
       - "test"
-

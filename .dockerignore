@@ -314,3 +314,5 @@ cython_debug/
 .git
 .github
 .gitignore
+
+*.env
