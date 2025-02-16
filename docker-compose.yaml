@@ -29,6 +29,9 @@ services:
     <<: *dev
     environment:
       OTEL_SERVICE_NAME: "bootstrap-fastapi-dev"
+      OTEL_RESOURCE_ATTRIBUTES: "deployment.environment=local"
+      OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SERVER_REQUEST: ".*"
+      OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SERVER_RESPONSE: ".*"
     command:
       - opentelemetry-instrument
       - python
@@ -39,6 +42,9 @@ services:
     <<: *dev
     environment:
       OTEL_SERVICE_NAME: "bootstrap-socketio-dev"
+      OTEL_RESOURCE_ATTRIBUTES: "deployment.environment=local"
+      OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SERVER_REQUEST: ".*"
+      OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SERVER_RESPONSE: ".*"
     ports:
       - '8001:8001'
     command:

@@ -70,9 +70,13 @@ otelcol.processor.transform "add_resource_attributes_as_metric_attributes" {
 
 otelcol.processor.batch "default" {
 	output {
-		metrics = [otelcol.exporter.otlphttp.grafanacloud.input]
-		logs    = [otelcol.exporter.otlphttp.grafanacloud.input]
-		traces  = [otelcol.exporter.otlphttp.grafanacloud.input]
+		// metrics = [otelcol.exporter.otlphttp.grafanacloud.input]
+		// logs    = [otelcol.exporter.otlphttp.grafanacloud.input]
+		// traces  = [otelcol.exporter.otlphttp.grafanacloud.input]
+
+		metrics = [otelcol.exporter.debug.console.input]
+		logs    = [otelcol.exporter.debug.console.input]
+		traces  = [otelcol.exporter.otlp.jaeger.input]
 	}
 }
 
