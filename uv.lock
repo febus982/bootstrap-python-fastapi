@@ -1,4 +1,5 @@
 version = 1
+revision = 1
 requires-python = ">=3.10, <3.14"
 
 [[package]]
@@ -118,7 +119,6 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "aiosqlite" },
-    { name = "alembic" },
     { name = "asgiref" },
     { name = "cloudevents-pydantic" },
     { name = "dependency-injector", extra = ["pydantic"] },
@@ -168,6 +168,10 @@ http = [
     { name = "strawberry-graphql", extra = ["debug-server"] },
     { name = "uvicorn", extra = ["standard"] },
 ]
+migrations = [
+    { name = "alembic" },
+    { name = "factory-boy" },
+]
 socketio = [
     { name = "python-socketio" },
     { name = "starlette" },
@@ -177,7 +181,6 @@ socketio = [
 [package.metadata]
 requires-dist = [
     { name = "aiosqlite", specifier = ">=0.18.0" },
-    { name = "alembic", specifier = ">=1.11.1,<2.0.0" },
     { name = "asgiref", specifier = ">=3.7.2,<4.0.0" },
     { name = "cloudevents-pydantic", specifier = ">=0.0.3,<1.0.0" },
     { name = "dependency-injector", extras = ["pydantic"], specifier = ">=4.41.0,<5.0.0" },
@@ -226,6 +229,10 @@ http = [
     { name = "pyjwt", specifier = ">=2.10.1" },
     { name = "strawberry-graphql", extras = ["debug-server"], specifier = ">=0.204.0" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.34.0,<1.0.0" },
+]
+migrations = [
+    { name = "alembic", specifier = ">=1.11.1,<2.0.0" },
+    { name = "factory-boy", specifier = ">=3.3.3,<4.0.0" },
 ]
 socketio = [
     { name = "python-socketio", specifier = ">=5.12.1" },

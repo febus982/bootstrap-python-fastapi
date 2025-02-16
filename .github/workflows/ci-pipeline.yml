@@ -64,6 +64,7 @@ jobs:
     strategy:
       matrix:
         docker_target:
+          - migrations
           - http
           - socketio
           - dramatiq
