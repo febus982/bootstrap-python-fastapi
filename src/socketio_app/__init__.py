@@ -4,6 +4,7 @@ import socketio
 from starlette.routing import Mount, Route, Router
 
 from common import AppConfig, application_init
+from common.di_container import Container
 from common.telemetry import instrument_third_party
 from socketio_app.namespaces.chat import ChatNamespace
 from socketio_app.web_routes import docs
@@ -15,9 +16,10 @@ instrument_third_party()
 
 def create_app(
     test_config: Union[AppConfig, None] = None,
+    test_di_container: Union[Container, None] = None,
 ) -> Router:
     _config = test_config or AppConfig()
-    application_init(_config)
+    application_init(_config, test_di_container)
 
     # SocketIO App
     sio = socketio.AsyncServer(async_mode="asgi")
