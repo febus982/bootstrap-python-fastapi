@@ -284,3 +284,4 @@ dmypy.json
 cython_debug/
 
 credentials.env
+volumes/

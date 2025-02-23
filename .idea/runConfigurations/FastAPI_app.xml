@@ -1,11 +1,18 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="FastAPI app" type="PythonConfigurationType" factoryName="Python">
     <module name="bootstrap-python-fastapi" />
-    <option name="ENV_FILES" value="" />
+    <option name="ENV_FILES" value="$PROJECT_DIR$/local.env" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
+      <env name="CORS_ORIGINS" value="[&quot;*&quot;]" />
+      <env name="ENVIRONMENT" value="local" />
+      <env name="OTEL_EXPORTER_OTLP_ENDPOINT" value="http://127.0.0.1:4317" />
+      <env name="OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SERVER_REQUEST" value=".*" />
+      <env name="OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SERVER_RESPONSE" value=".*" />
       <env name="PYTHONUNBUFFERED" value="1" />
+      <env name="SQLALCHEMY_CONFIG__default__async_engine" value="true" />
+      <env name="SQLALCHEMY_CONFIG__default__engine_url" value="mysql+asyncmy://corinna:gioieiiere@127.0.0.1/backend?charset=utf8mb4" />
     </envs>
     <option name="SDK_HOME" value="" />
     <option name="SDK_NAME" value="Python 3.13 (bootstrap-python-fastapi)" />
@@ -21,6 +28,8 @@
     <option name="MODULE_MODE" value="false" />
     <option name="REDIRECT_INPUT" value="false" />
     <option name="INPUT_FILE" value="" />
-    <method v="2" />
+    <method v="2">
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="Dev Dependencies" run_configuration_type="docker-deploy" />
+    </method>
   </configuration>
 </component>

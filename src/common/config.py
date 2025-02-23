@@ -1,7 +1,6 @@
-from pathlib import Path
 from typing import Dict, Literal, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy_bind_manager import SQLAlchemyConfig
 
@@ -21,20 +20,16 @@ class AppConfig(BaseSettings):
     model_config = SettingsConfigDict(env_nested_delimiter="__")
 
     APP_NAME: str = "bootstrap"
+    CORS_ORIGINS: list[str] = Field(default_factory=list)
+    CORS_METHODS: list[str] = ["*"]
+    CORS_HEADERS: list[str] = ["*"]
     AUTH: AuthConfig = AuthConfig()
     DRAMATIQ: DramatiqConfig = DramatiqConfig()
     DEBUG: bool = False
     ENVIRONMENT: TYPE_ENVIRONMENT = "local"
     SQLALCHEMY_CONFIG: Dict[str, SQLAlchemyConfig] = dict(
         default=SQLAlchemyConfig(
-            engine_url=f"sqlite+aiosqlite:///{Path(__file__).parent.parent.joinpath('sqlite.db')}",
-            engine_options=dict(
-                connect_args={
-                    "check_same_thread": False,
-                },
-                echo=False,
-                future=True,
-            ),
+            engine_url="mysql+asyncmy://corinna:gioieiiere@127.0.0.1/backend?charset=utf8mb4",
             async_engine=True,
         ),
     )

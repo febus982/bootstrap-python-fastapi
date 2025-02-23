@@ -27,10 +27,10 @@ def downgrade(engine_name: str) -> None:
 def upgrade_default() -> None:
     op.create_table(
         "alembic_fixtures",
-        sa.Column("bind", sa.String(), nullable=False),
-        sa.Column("module_name", sa.String(), nullable=False),
-        sa.Column("signature", sa.String(), nullable=False),
-        sa.Column("alembic_head_revisions", sa.String(), nullable=False),
+        sa.Column("bind", sa.String(length=255), nullable=False),
+        sa.Column("module_name", sa.String(length=255), nullable=False),
+        sa.Column("signature", sa.String(length=255), nullable=False),
+        sa.Column("alembic_head_revisions", sa.String(length=255), nullable=False),
         sa.Column("processed_at", sa.DateTime(timezone=True), nullable=False),
         sa.PrimaryKeyConstraint("bind", "module_name"),
     )

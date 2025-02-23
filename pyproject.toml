@@ -10,6 +10,7 @@ readme = "README.md"
 dependencies = [
     "aiosqlite>=0.18.0",
     "asgiref<4.0.0,>=3.7.2",
+    "asyncmy>=0.2.10",
     "cloudevents-pydantic<1.0.0,>=0.0.3",
     "dependency-injector[pydantic]<5.0.0,>=4.41.0",
     "dramatiq[redis,watch]<2.0.0,>=1.17.1",
@@ -24,7 +25,6 @@ dependencies = [
     "pydantic<3.0.0,>=2.2.1",
     "pydantic-asyncapi>=0.2.1",
     "pydantic-settings<3.0.0,>=2.0.3",
-    "rich<14.0.0,>=13.2.0",
     "SQLAlchemy[asyncio,mypy]<3.0.0,>=2.0.0",
     "sqlalchemy-bind-manager",
     "structlog<25.1.1,>=25.1.0",

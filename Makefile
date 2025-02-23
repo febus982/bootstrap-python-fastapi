@@ -4,13 +4,16 @@ containers:
 	docker compose build --build-arg UID=`id -u`
 
 dev-http:
-	uv run ./src/http_app/dev_server.py
+	docker compose up dev-http
 
 dev-socketio:
-	uv run ./src/socketio_app/dev_server.py
+	docker compose up dev-socketio
 
-run:
-	uv run uvicorn http_app:create_app --host 0.0.0.0 --port 8000 --factory
+migrate:
+	docker compose run --rm migrate
+
+autogenerate-migration:
+	docker compose run --rm autogenerate-migration
 
 test:
 	uv run pytest -n auto --cov
@@ -34,9 +37,6 @@ update-dependencies:
 	uv lock --upgrade
 	uv sync --all-groups --frozen
 
-migrate:
-	uv run alembic upgrade heads
-
 format:
 	uv run ruff format --check .
 
@@ -52,9 +52,6 @@ check: lint format typing test
 
 docs:
 	uv run mkdocs serve
-
-adr:
-	adr-viewer --serve --adr-path docs/adr
 
 docs-build:
 	uv run mkdocs build
