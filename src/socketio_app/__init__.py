@@ -19,7 +19,8 @@ def create_app(
     test_di_container: Union[Container, None] = None,
 ) -> Router:
     _config = test_config or AppConfig()
-    application_init(_config, test_di_container)
+    ref = application_init(_config, test_di_container)
+    ref.di_container.wire(packages=["socketio_app"])
 
     # SocketIO App
     sio = socketio.AsyncServer(async_mode="asgi")
