@@ -44,29 +44,31 @@ Create your GitHub repository using this template (The big green `Use this templ
 Optionally tweak name and authors in the `pyproject.toml` file, however the metadata
 are not used when building the application, nor are referenced anywhere in the code.
 
-Before running any commands, install `uv`:
+Before running any commands, install `uv` and `Docker`:
 
-- On Mac (using `brew`): `brew install uv`
+- You can install `uv` on Mac using `brew`: `brew install uv`
+- Download and install Docker: https://www.docker.com/products/docker-desktop/
 
 Using Docker:
 
 * `make containers`: Build containers
-* `docker compose run --rm dev make migrate`: Run database migrations
 * `docker compose up dev-http`: Run HTTP application with hot reload
 * `docker compose up dev-socketio`: Run HTTP application with hot reload
 * `docker compose up dramatiq-worker`: Run the dramatiq worker
 * `docker compose run --rm test`: Run test suite
+* `docker compose run --rm migrate`: Run database migrations
+* `docker compose run --rm autogenerate-migration`: Generate a new migration file
 
-Locally:
+Using Make (you still need Docker for most of them):
 
-* `make migrate`: Run database migrations
 * `make install-dependencies`: Install requirements
 * `make dev-dependencies`: Install dev requirements
 * `make update-dependencies`: Updates requirements
-* `make migrate`: Run database migrations
 * `make dev-http`: Run HTTP application with hot reload
 * `make dev-socketio`: Run HTTP application with hot reload
 * `make test`: Run test suite
+* `make migrate`: Run database migrations
+* `make autogenerate-migration`: Generate a new migration file
 
 ## Other commands for development
 

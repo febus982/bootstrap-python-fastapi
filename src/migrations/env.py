@@ -47,11 +47,11 @@ def generate_fixture_migration_model(declarative_base: type):
     class FixtureMigration(declarative_base):
         __tablename__ = "alembic_fixtures"
 
-        bind: Mapped[str] = mapped_column(String(), primary_key=True)
-        module_name: Mapped[str] = mapped_column(String(), primary_key=True)
-        signature: Mapped[str] = mapped_column(String(), nullable=False)
+        bind: Mapped[str] = mapped_column(String(255), primary_key=True)
+        module_name: Mapped[str] = mapped_column(String(255), primary_key=True)
+        signature: Mapped[str] = mapped_column(String(255), nullable=False)
         alembic_head_revisions: Mapped[str] = mapped_column(
-            String(), nullable=True, default=str(context.get_head_revision())
+            String(255), nullable=False, default=str(context.get_head_revision())
         )
 
         processed_at: Mapped[datetime] = mapped_column(DateTime(), nullable=False, default=datetime.now)
@@ -327,6 +327,7 @@ def run_migrations_offline() -> None:
                 target_metadata=target_metadata.get(name),
                 literal_binds=True,
                 dialect_opts={"paramstyle": "named"},
+                render_as_batch=True,
             )
             with context.begin_transaction():
                 context.run_migrations(engine_name=name)
@@ -338,6 +339,7 @@ def do_run_migration(conn, name):
         upgrade_token=f"{name}_upgrades",
         downgrade_token=f"{name}_downgrades",
         target_metadata=target_metadata.get(name),
+        render_as_batch=True,
     )
     context.run_migrations(engine_name=name)
 

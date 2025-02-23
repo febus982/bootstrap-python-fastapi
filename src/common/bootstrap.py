@@ -1,6 +1,4 @@
-from typing import cast
-
-from dependency_injector.containers import DynamicContainer
+from dependency_injector.containers import Container as DI_Container
 from dependency_injector.providers import Object
 from pydantic import BaseModel, ConfigDict
 
@@ -14,17 +12,17 @@ from .telemetry import instrument_opentelemetry
 
 
 class InitReference(BaseModel):
-    di_container: DynamicContainer
+    di_container: DI_Container
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
-def application_init(app_config: AppConfig) -> InitReference:
-    container = cast(
-        DynamicContainer,  # Make mypy happy
-        Container(
-            config=Object(app_config),
-        ),
+def application_init(
+    app_config: AppConfig,
+    external_di_container: Container | None = None,
+) -> InitReference:
+    container = external_di_container or Container(
+        config=Object(app_config),
     )
     init_logger(app_config)
     init_storage()

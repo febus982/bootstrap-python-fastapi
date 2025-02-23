@@ -14,7 +14,4 @@ def anyio_backend():
 
 @pytest.fixture(scope="session")
 def test_config() -> AppConfig:
-    return AppConfig(
-        SQLALCHEMY_CONFIG={},
-        ENVIRONMENT="test",
-    )
+    return AppConfig(SQLALCHEMY_CONFIG={}, ENVIRONMENT="test", CORS_ORIGINS=["*"])
