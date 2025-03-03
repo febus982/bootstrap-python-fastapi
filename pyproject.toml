@@ -40,13 +40,14 @@ http = [
     # If we decide to change framework, the generic ASGI instrumentation
     # will still name metrics with a generic naming.
     "opentelemetry-instrumentation-fastapi",
+    "starlette>=0.45.3,<0.46",
     "pyjwt>=2.10.1",
     "strawberry-graphql[debug-server]>=0.204.0",
     "uvicorn[standard]<1.0.0,>=0.34.0",
 ]
 socketio = [
     "python-socketio>=5.12.1",
-    "starlette>=0.45.3",
+    "starlette>=0.45.3,<0.46",
     "uvicorn[standard]<1.0.0,>=0.34.0",
 ]
 migrations = [
