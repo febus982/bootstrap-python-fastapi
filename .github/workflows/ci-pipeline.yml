@@ -134,7 +134,7 @@ jobs:
       - name: Export digest
         run: |
           mkdir -p ${{ runner.temp }}/digests/${{ matrix.docker_target }}
-          digest="${{ steps.build.outputs.digest }}"
+          digest="${{ steps.build-and-push.outputs.digest }}"
           touch "${{ runner.temp }}/digests/${{ matrix.docker_target }}/${digest#sha256:}"
 
       - name: Upload digest
