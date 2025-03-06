@@ -115,7 +115,7 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.REGISTRY_PATH }}/${{ env.IMAGE_NAME }}-${{ matrix.docker_target }}
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=sha-${{ matrix.arch.platform }}
+            type=sha,suffix=${{ matrix.arch.platform }}
 
       # Build and push Docker image with Buildx
       # https://github.com/docker/build-push-action
