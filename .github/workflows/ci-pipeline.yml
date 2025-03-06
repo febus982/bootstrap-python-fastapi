@@ -178,9 +178,6 @@ jobs:
           pattern: digests-*
           merge-multiple: true
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       # Install the cosign tool
       # https://github.com/sigstore/cosign-installer
       - name: Install cosign
@@ -215,32 +212,32 @@ jobs:
 #            type=raw,value={{branch}}-{{date 'YYYYMMDDHHmmss'}}
 
       - name: Create manifest list and push
-        working-directory: ${{ runner.temp }}/digests
+        working-directory: ${{ runner.temp }}/digests/${{ matrix.docker_target }}
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
             $(printf '${{ env.REGISTRY }}/${{ env.REGISTRY_PATH }}/${{ env.IMAGE_NAME }}-${{ matrix.docker_target }}@sha256:%s ' *)
 
       - name: Inspect image
         run: |
-          docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ steps.meta.outputs.version }}
+          docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ env.REGISTRY_PATH }}/${{ env.IMAGE_NAME }}-${{ matrix.docker_target }}:${{ steps.meta.outputs.version }}
 
-      #TODO: Implement signature using generated key: https://docs.sigstore.dev/signing/quickstart/#signing-with-a-generated-key
-
-      # Sign the resulting Docker image digest except on PRs.
-      # This will only write to the public Rekor transparency log when the Docker
-      # repository is public to avoid leaking data.  If you would like to publish
-      # transparency data even for private images, pass --force to cosign below.
-      # https://github.com/sigstore/cosign
-      - name: Sign the published Docker image using GitHub OIDC Token
-        env:
-          # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
-          TAGS: ${{ steps.meta.outputs.tags }}
-          DIGEST: ${{ steps.build-and-push.outputs.digest }}
-        # This step uses the identity token to provision an ephemeral certificate
-        # against the sigstore community Fulcio instance.
-        run: |
-          images=""
-          for tag in ${TAGS}; do
-            images+="${tag}@${DIGEST} "
-          done
-          cosign sign --yes ${images}
+#      #TODO: Implement signature using generated key: https://docs.sigstore.dev/signing/quickstart/#signing-with-a-generated-key
+#
+#      # Sign the resulting Docker image digest except on PRs.
+#      # This will only write to the public Rekor transparency log when the Docker
+#      # repository is public to avoid leaking data.  If you would like to publish
+#      # transparency data even for private images, pass --force to cosign below.
+#      # https://github.com/sigstore/cosign
+#      - name: Sign the published Docker image using GitHub OIDC Token
+#        env:
+#          # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
+#          TAGS: ${{ steps.meta.outputs.tags }}
+#          DIGEST: ${{ steps.build-and-push.outputs.digest }}
+#        # This step uses the identity token to provision an ephemeral certificate
+#        # against the sigstore community Fulcio instance.
+#        run: |
+#          images=""
+#          for tag in ${TAGS}; do
+#            images+="${tag}@${DIGEST} "
+#          done
+#          cosign sign --yes ${images}
