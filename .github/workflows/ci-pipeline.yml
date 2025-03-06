@@ -11,8 +11,8 @@ on:
 ####### Uncomment this to test the CI pipeline in a PR
 ####### You'll also need to comment the rules containing {{branch}}
 ####### in the `Extract Docker metadata` step
-#  pull_request:
-#    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -52,8 +52,8 @@ jobs:
         run: |
           docker run --rm ${{ env.TEST_TAG }} make ci-test
 
-  build:
-    runs-on: ubuntu-latest
+  build-arch:
+    runs-on: ${{ matrix.arch.runner }}
     needs: test
     permissions:
       contents: read
@@ -63,11 +63,18 @@ jobs:
       id-token: write
     strategy:
       matrix:
+        arch:
+          - platform: "amd64"
+            runner: ubuntu-latest
+          - platform: "arm64"
+            # There is no latest for ARM yet
+            # https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+            runner: ubuntu-24.04-arm
         docker_target:
-          - migrations
+#          - migrations
           - http
-          - socketio
-          - dramatiq
+#          - socketio
+#          - dramatiq
     steps:
       # GitHub gives only repository complete in <owner>/<repo> format.
       # Need some manual sheanigans
@@ -78,9 +85,6 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
 
       # Install the cosign tool
       # https://github.com/sigstore/cosign-installer
@@ -111,9 +115,7 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.REGISTRY_PATH }}/${{ env.IMAGE_NAME }}-${{ matrix.docker_target }}
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=sha
-            type=raw,value={{branch}}-latest
-            type=raw,value={{branch}}-{{date 'YYYYMMDDHHmmss'}}
+            type=sha-${{ matrix.arch.platform }}
 
       # Build and push Docker image with Buildx
       # https://github.com/docker/build-push-action
@@ -123,7 +125,7 @@ jobs:
         with:
           context: .
           target: ${{ matrix.docker_target }}
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/${{ matrix.arch.platform }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
