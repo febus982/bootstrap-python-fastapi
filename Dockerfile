@@ -24,6 +24,7 @@ FROM base AS base_builder
 ENV UV_PROJECT_ENVIRONMENT=/venv
 # Enable bytecode compilation
 ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
 
 # Install build system requirements (gcc, library headers, etc.)
 # for compiled Python requirements like psycopg2
