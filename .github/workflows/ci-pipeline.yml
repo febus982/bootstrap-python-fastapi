@@ -24,6 +24,9 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       # GitHub gives only repository complete in <owner>/<repo> format.
       # Need some manual shenanigans
