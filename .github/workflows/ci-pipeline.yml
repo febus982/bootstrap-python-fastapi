@@ -84,7 +84,7 @@ jobs:
       - name: Set ENV variables
         run: |
           echo "IMAGE_NAME=${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}" >> $GITHUB_ENV
-          platform=${{ matrix.platform }}
+          platform=${{ matrix.arch.platform }}
           echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
 
       - name: Checkout repository
