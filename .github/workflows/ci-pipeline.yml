@@ -51,8 +51,8 @@ jobs:
           load: true
           target: dev
           tags: ${{ env.TEST_TAG }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REGISTRY_PATH }}/${{ env.IMAGE_NAME }}-cache:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.REGISTRY_PATH }}/${{ env.IMAGE_NAME }}-cache:buildcache,mode=max
 
       # This is a barrier check to make sure we push a functional
       # docker image, we can avoid linting
@@ -137,8 +137,8 @@ jobs:
           outputs: type=image,push-by-digest=true,name-canonical=true,push=true
           tags: ${{ env.REGISTRY }}/${{ env.REGISTRY_PATH }}/${{ env.IMAGE_NAME }}-${{ matrix.docker_target }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REGISTRY_PATH }}/${{ env.IMAGE_NAME }}-cache:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.REGISTRY_PATH }}/${{ env.IMAGE_NAME }}-cache:buildcache,mode=max
 
       - name: Export digest
         run: |
