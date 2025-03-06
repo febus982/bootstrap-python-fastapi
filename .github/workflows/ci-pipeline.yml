@@ -39,7 +39,7 @@ jobs:
         with:
           path: |
             home-nonroot-cache-uv
-          key: cache-uv-${{ hashFiles('uv.lock') }}
+          key: cache-uv-linux-amd64-${{ hashFiles('uv.lock') }}
 
       - name: APT Build Caches for Docker APT
         id: docker-build-apt-cache
@@ -48,7 +48,7 @@ jobs:
           path: |
             var-cache-apt
             var-lib-apt
-          key: cache-apt-${{ hashFiles('Dockerfile') }}
+          key: cache-apt-linux-amd64-${{ hashFiles('Dockerfile') }}
 
       - name: Inject UV cache in docker
         uses: reproducible-containers/buildkit-cache-dance@v3.1.2
@@ -57,7 +57,6 @@ jobs:
             {
               "home-nonroot-cache-uv": "/home/nonroot/.cache/uv"
             }
-          skip-extraction: ${{ steps.docker-build-uv-cache.outputs.cache-hit }}
 
       - name: Inject APT cache in docker
         uses: reproducible-containers/buildkit-cache-dance@v3.1.2
@@ -67,7 +66,6 @@ jobs:
               "var-cache-apt": "/var/cache/apt",
               "var-lib-apt": "/var/lib/apt"
             }
-          skip-extraction: ${{ steps.docker-build-apt-cache.outputs.cache-hit }}
 
       # Build but don't push Docker image with Buildx
       # https://github.com/docker/build-push-action
@@ -159,7 +157,7 @@ jobs:
         with:
           path: |
             home-nonroot-cache-uv
-          key: cache-uv-${{ hashFiles('uv.lock') }}
+          key: cache-uv-${{ env.PLATFORM_PAIR }}-${{ hashFiles('uv.lock') }}
 
       - name: APT Build Caches for Docker APT
         id: docker-build-apt-cache
@@ -168,7 +166,7 @@ jobs:
           path: |
             var-cache-apt
             var-lib-apt
-          key: cache-apt-${{ hashFiles('Dockerfile') }}
+          key: cache-apt-${{ env.PLATFORM_PAIR }}-${{ hashFiles('Dockerfile') }}
 
       - name: Inject UV cache in docker
         uses: reproducible-containers/buildkit-cache-dance@v3.1.2
@@ -177,7 +175,6 @@ jobs:
             {
               "home-nonroot-cache-uv": "/home/nonroot/.cache/uv"
             }
-          skip-extraction: ${{ steps.docker-build-uv-cache.outputs.cache-hit }}
 
       - name: Inject APT cache in docker
         uses: reproducible-containers/buildkit-cache-dance@v3.1.2
@@ -187,7 +184,6 @@ jobs:
               "var-cache-apt": "/var/cache/apt",
               "var-lib-apt": "/var/lib/apt"
             }
-          skip-extraction: ${{ steps.docker-build-apt-cache.outputs.cache-hit }}
 
       # This build an image WITHOUT tags and outputs the digests, so that we can aggragate them later
       - name: Build and push production image
