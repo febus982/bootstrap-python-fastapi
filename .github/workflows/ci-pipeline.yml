@@ -65,7 +65,7 @@ jobs:
           cache-map: |
             {
               "var-cache-apt": "/var/cache/apt",
-              "var-lib-apt": "/var/lib/apt",
+              "var-lib-apt": "/var/lib/apt"
             }
           skip-extraction: ${{ steps.docker-build-apt-cache.outputs.cache-hit }}
 
@@ -185,7 +185,7 @@ jobs:
           cache-map: |
             {
               "var-cache-apt": "/var/cache/apt",
-              "var-lib-apt": "/var/lib/apt",
+              "var-lib-apt": "/var/lib/apt"
             }
           skip-extraction: ${{ steps.docker-build-apt-cache.outputs.cache-hit }}
 
