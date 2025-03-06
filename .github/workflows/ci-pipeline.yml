@@ -52,6 +52,7 @@ jobs:
         run: |
           docker run --rm ${{ env.TEST_TAG }} make ci-test
 
+  # Inspired to https://docs.docker.com/build/ci/github-actions/multi-platform/#distribute-build-across-multiple-runners
   build-arch:
     runs-on: ${{ matrix.arch.runner }}
     needs: test
@@ -64,9 +65,9 @@ jobs:
     strategy:
       matrix:
         arch:
-          - platform: "amd64"
+          - platform: linux/amd64
             runner: ubuntu-latest
-          - platform: "arm64"
+          - platform: linux/arm64
             # There is no latest for ARM yet
             # https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
             runner: ubuntu-24.04-arm
@@ -77,11 +78,14 @@ jobs:
 #          - dramatiq
     steps:
       # GitHub gives only repository complete in <owner>/<repo> format.
-      # Need some manual sheanigans
+      # Need some manual shenanigans
       # Set IMAGE_NAME so we can push to <owner>/<repo>/<image>
+      # Transform os/arch to os-arch for suffix target
       - name: Set ENV variables
         run: |
           echo "IMAGE_NAME=${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}" >> $GITHUB_ENV
+          platform=${{ matrix.platform }}
+          echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -115,9 +119,9 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.REGISTRY_PATH }}/${{ env.IMAGE_NAME }}-${{ matrix.docker_target }}
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=sha,suffix=${{ matrix.arch.platform }}
+            type=sha,suffix=-${{ env.PLATFORM_PAIR }}
 
-      # Build and push Docker image with Buildx
+      # Build and push Docker image with Buildx by digest
       # https://github.com/docker/build-push-action
       - name: Build and push production image
         id: build-and-push
@@ -125,12 +129,105 @@ jobs:
         with:
           context: .
           target: ${{ matrix.docker_target }}
-          platforms: linux/${{ matrix.arch.platform }}
-          push: true
+          platforms: ${{ matrix.arch.platform }}
+          outputs: type=image,push-by-digest=true,name-canonical=true,push=true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Export digest
+        run: |
+          mkdir -p ${{ runner.temp }}/digests/${{ matrix.docker_target }}
+          digest="${{ steps.build.outputs.digest }}"
+          touch "${{ runner.temp }}/digests/${{ matrix.docker_target }}/${digest#sha256:}"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digests-${{ env.PLATFORM_PAIR }}
+          path: ${{ runner.temp }}/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+
+  aggregate-manifests:
+    runs-on: ubuntu-latest
+    needs: build-arch
+    permissions:
+      contents: read
+      packages: write
+      # This is used to complete the identity challenge
+      # with sigstore/fulcio when running outside of PRs.
+      id-token: write
+    strategy:
+      matrix:
+        docker_target:
+          #          - migrations
+          - http
+  #          - socketio
+  #          - dramatiq
+
+    steps:
+      # GitHub gives only repository complete in <owner>/<repo> format.
+      # Need some manual sheanigans
+      # Set IMAGE_NAME so we can push to <owner>/<repo>/<image>
+      - name: Set ENV variables
+        run: |
+          echo "IMAGE_NAME=${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}" >> $GITHUB_ENV
+
+      - name: Download digests
+        uses: actions/download-artifact@v4
+        with:
+          path: ${{ runner.temp }}/digests/${{ matrix.docker_target }}
+          pattern: digests-*
+          merge-multiple: true
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Install the cosign tool
+      # https://github.com/sigstore/cosign-installer
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3.8.1
+
+      - name: Setup Docker buildx
+        uses: docker/setup-buildx-action@v3.10.0
+
+      # Login against a Docker registry
+      # https://github.com/docker/login-action
+      - name: Log into registry ${{ env.REGISTRY }}
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Extract metadata (tags, labels) for Docker
+      # https://github.com/docker/metadata-action
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5.7.0
+        with:
+          # list of Docker images to use as base name for tags
+          # <registry/<owner>/<repo_name>/<repo_name>-<target>
+          images: |
+            ${{ env.REGISTRY }}/${{ env.REGISTRY_PATH }}/${{ env.IMAGE_NAME }}-${{ matrix.docker_target }}
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=sha
+            type=raw,value={{branch}}-latest
+            type=raw,value={{branch}}-{{date 'YYYYMMDDHHmmss'}}
+
+      - name: Create manifest list and push
+        working-directory: ${{ runner.temp }}/digests
+        run: |
+          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
+
+      - name: Inspect image
+        run: |
+          docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ steps.meta.outputs.version }}
 
       #TODO: Implement signature using generated key: https://docs.sigstore.dev/signing/quickstart/#signing-with-a-generated-key
 
