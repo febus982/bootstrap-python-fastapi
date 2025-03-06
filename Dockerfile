@@ -14,8 +14,8 @@ RUN mkdir /venv && chown nonroot:nonroot /venv
 ENV PATH="/venv/bin:$PATH"
 
 # Install necessary runtime libraries (e.g. libmysql)
-RUN --mount=type=cache,id=apt-cache,target=/var/cache/apt,sharing=locked  \
-    --mount=type=cache,id=apt-lib,target=/var/lib/apt,sharing=locked \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked  \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update \
     && apt-get install -y --no-install-recommends \
     make
@@ -28,8 +28,8 @@ ENV UV_LINK_MODE=copy
 
 # Install build system requirements (gcc, library headers, etc.)
 # for compiled Python requirements like psycopg2
-RUN --mount=type=cache,id=apt-cache,target=/var/cache/apt,sharing=locked  \
-    --mount=type=cache,id=apt-lib,target=/var/lib/apt,sharing=locked \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked  \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update \
     && apt-get install -y --no-install-recommends \
     build-essential gcc git
@@ -47,7 +47,7 @@ COPY --chown=nonroot:nonroot Makefile .
 # Dev image, contains all files and dependencies
 FROM base_builder AS dev
 COPY --chown=nonroot:nonroot . .
-RUN --mount=type=cache,id=uv,target=/home/nonroot/.cache/uv,sharing=locked,uid=$UID,gid=$GID \
+RUN --mount=type=cache,target=/home/nonroot/.cache/uv,sharing=locked,uid=$UID,gid=$GID \
     make dev-dependencies
 
 # Note that opentelemetry doesn't play well together with uvicorn reloader
@@ -56,17 +56,17 @@ CMD ["uvicorn", "http_app:create_app", "--host", "0.0.0.0", "--port", "8000", "-
 
 # Installs requirements to run production dramatiq application
 FROM base_builder AS dramatiq_builder
-RUN --mount=type=cache,id=uv,target=/home/nonroot/.cache/uv,sharing=locked,uid=$UID,gid=$GID \
+RUN --mount=type=cache,target=/home/nonroot/.cache/uv,sharing=locked,uid=$UID,gid=$GID \
     uv sync --no-dev --no-install-project --frozen --no-editable
 
 # Installs requirements to run production http application
 FROM base_builder AS http_builder
-RUN --mount=type=cache,id=uv,target=/home/nonroot/.cache/uv,sharing=locked,uid=$UID,gid=$GID \
+RUN --mount=type=cache,target=/home/nonroot/.cache/uv,sharing=locked,uid=$UID,gid=$GID \
     uv sync --no-dev --group http --no-install-project --frozen --no-editable
 
 # Installs requirements to run production socketio application
 FROM base_builder AS socketio_builder
-RUN --mount=type=cache,id=uv,target=/home/nonroot/.cache/uv,sharing=locked,uid=$UID,gid=$GID \
+RUN --mount=type=cache,target=/home/nonroot/.cache/uv,sharing=locked,uid=$UID,gid=$GID \
     uv sync --no-dev --group socketio --no-install-project --frozen --no-editable
 
 # Installs requirements to run production migrations application
