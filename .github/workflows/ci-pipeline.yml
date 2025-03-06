@@ -53,6 +53,7 @@ jobs:
       - name: Inject UV cache in docker
         uses: reproducible-containers/buildkit-cache-dance@v3.1.2
         with:
+          skip-extraction: false
           cache-map: |
             {
               "home-nonroot-cache-uv": {
@@ -66,6 +67,7 @@ jobs:
       - name: Inject APT cache in docker
         uses: reproducible-containers/buildkit-cache-dance@v3.1.2
         with:
+          skip-extraction: false
           cache-map: |
             {
               "var-cache-apt": "/var/cache/apt",
@@ -176,6 +178,7 @@ jobs:
       - name: Inject UV cache in docker
         uses: reproducible-containers/buildkit-cache-dance@v3.1.2
         with:
+          skip-extraction: false
           cache-map: |
             {
               "home-nonroot-cache-uv": {
@@ -189,6 +192,7 @@ jobs:
       - name: Inject APT cache in docker
         uses: reproducible-containers/buildkit-cache-dance@v3.1.2
         with:
+          skip-extraction: false
           cache-map: |
             {
               "var-cache-apt": "/var/cache/apt",
