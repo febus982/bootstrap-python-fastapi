@@ -11,8 +11,8 @@ on:
 ####### Uncomment this to test the CI pipeline in a PR
 ####### You'll also need to comment the rules containing {{branch}}
 ####### in the `Extract Docker metadata` step
-  pull_request:
-    branches: [ "main" ]
+#  pull_request:
+#    branches: [ "main" ]
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -250,8 +250,8 @@ jobs:
           # generate Docker tags based on the following events/attributes
           tags: |
             type=sha
-#            type=raw,value={{branch}}-latest
-#            type=raw,value={{branch}}-{{date 'YYYYMMDDHHmmss'}}
+            type=raw,value={{branch}}-latest
+            type=raw,value={{branch}}-{{date 'YYYYMMDDHHmmss'}}
 
       - name: Create manifest list and push
         working-directory: ${{ runner.temp }}/digests/${{ matrix.docker_target }}
