@@ -11,8 +11,8 @@ on:
 ####### Uncomment this to test the CI pipeline in a PR
 ####### You'll also need to comment the rules containing {{branch}}
 ####### in the `Extract Docker metadata` step
-  pull_request:
-    branches: [ "main" ]
+#  pull_request:
+#    branches: [ "main" ]
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -92,10 +92,10 @@ jobs:
             # https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
             runner: ubuntu-24.04-arm
         docker_target:
-#          - migrations
+          - migrations
           - http
-#          - socketio
-#          - dramatiq
+          - socketio
+          - dramatiq
     steps:
       # GitHub gives only repository complete in <owner>/<repo> format.
       # Need some manual shenanigans
@@ -179,10 +179,10 @@ jobs:
     strategy:
       matrix:
         docker_target:
-          #          - migrations
+          - migrations
           - http
-  #          - socketio
-  #          - dramatiq
+          - socketio
+          - dramatiq
 
     steps:
       # GitHub gives only repository complete in <owner>/<repo> format.
@@ -229,9 +229,8 @@ jobs:
           # generate Docker tags based on the following events/attributes
           tags: |
             type=sha
-            type=sha,suffix=-test
-#            type=raw,value={{branch}}-latest
-#            type=raw,value={{branch}}-{{date 'YYYYMMDDHHmmss'}}
+            type=raw,value={{branch}}-latest
+            type=raw,value={{branch}}-{{date 'YYYYMMDDHHmmss'}}
 
       - name: Create manifest list and push
         working-directory: ${{ runner.temp }}/digests/${{ matrix.docker_target }}
