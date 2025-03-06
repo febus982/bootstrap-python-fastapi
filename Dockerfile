@@ -46,7 +46,7 @@ COPY --chown=nonroot:nonroot Makefile .
 # Dev image, contains all files and dependencies
 FROM base_builder AS dev
 COPY --chown=nonroot:nonroot . .
-RUN --mount=type=cache,id=uv,target=~/.cache/uv,sharing=locked \
+RUN --mount=type=cache,id=uv,target=/home/nonroot/.cache/uv,sharing=locked \
     make dev-dependencies
 
 # Note that opentelemetry doesn't play well together with uvicorn reloader
@@ -55,22 +55,22 @@ CMD ["uvicorn", "http_app:create_app", "--host", "0.0.0.0", "--port", "8000", "-
 
 # Installs requirements to run production dramatiq application
 FROM base_builder AS dramatiq_builder
-RUN --mount=type=cache,id=uv,target=~/.cache/uv,sharing=locked \
+RUN --mount=type=cache,id=uv,target=/home/nonroot/.cache/uv,sharing=locked \
     uv sync --no-dev --no-install-project --frozen --no-editable
 
 # Installs requirements to run production http application
 FROM base_builder AS http_builder
-RUN --mount=type=cache,id=uv,target=~/.cache/uv,sharing=locked \
+RUN --mount=type=cache,id=uv,target=/home/nonroot/.cache/uv,sharing=locked \
     uv sync --no-dev --group http --no-install-project --frozen --no-editable
 
 # Installs requirements to run production socketio application
 FROM base_builder AS socketio_builder
-RUN --mount=type=cache,id=uv,target=~/.cache/uv,sharing=locked \
+RUN --mount=type=cache,id=uv,target=/home/nonroot/.cache/uv,sharing=locked \
     uv sync --no-dev --group socketio --no-install-project --frozen --no-editable
 
 # Installs requirements to run production migrations application
 FROM base_builder AS migrations_builder
-RUN --mount=type=cache,target=~/.cache/uv,sharing=locked \
+RUN --mount=type=cache,target=/home/nonroot/.cache/uv,sharing=locked \
     uv sync --no-dev --group migrations --no-install-project --frozen --no-editable
 
 # Create the base app with the common python packages
