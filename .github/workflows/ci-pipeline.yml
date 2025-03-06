@@ -25,6 +25,14 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      # GitHub gives only repository complete in <owner>/<repo> format.
+      # Need some manual shenanigans
+      # Set IMAGE_NAME so we can push to <owner>/<repo>/<image>
+      # Transform os/arch to os-arch for suffix target
+      - name: Set ENV variables
+        run: |
+          echo "IMAGE_NAME=${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}" >> $GITHUB_ENV
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
