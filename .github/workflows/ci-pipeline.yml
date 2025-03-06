@@ -107,8 +107,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Extract metadata (tags, labels) for Docker
-      # https://github.com/docker/metadata-action
+      # We extract metadata without tags for single image
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5.7.0
@@ -117,12 +116,8 @@ jobs:
           # <registry/<owner>/<repo_name>/<repo_name>-<target>
           images: |
             ${{ env.REGISTRY }}/${{ env.REGISTRY_PATH }}/${{ env.IMAGE_NAME }}-${{ matrix.docker_target }}
-          # generate Docker tags based on the following events/attributes
-          tags: |
-            type=sha,suffix=-${{ env.PLATFORM_PAIR }}
 
-      # Build and push Docker image with Buildx by digest
-      # https://github.com/docker/build-push-action
+      # This build an image WITHOUT tags and outputs the digests, so that we can aggragate them later
       - name: Build and push production image
         id: build-and-push
         uses: docker/build-push-action@v6.15.0
@@ -131,7 +126,7 @@ jobs:
           target: ${{ matrix.docker_target }}
           platforms: ${{ matrix.arch.platform }}
           outputs: type=image,push-by-digest=true,name-canonical=true,push=true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ env.REGISTRY }}/${{ env.REGISTRY_PATH }}/${{ env.IMAGE_NAME }}-${{ matrix.docker_target }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
