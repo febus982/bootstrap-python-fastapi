@@ -55,7 +55,12 @@ jobs:
         with:
           cache-map: |
             {
-              "home-nonroot-cache-uv": "/home/nonroot/.cache/uv"
+              "home-nonroot-cache-uv": {
+                "target": "/home/nonroot/.cache/uv",
+                "sharing": "locked",
+                "uid": "2000",
+                "gid": "2000"
+              }
             }
 
       - name: Inject APT cache in docker
@@ -173,7 +178,12 @@ jobs:
         with:
           cache-map: |
             {
-              "home-nonroot-cache-uv": "/home/nonroot/.cache/uv"
+              "home-nonroot-cache-uv": {
+                "target": "/home/nonroot/.cache/uv",
+                "sharing": "locked",
+                "uid": "2000",
+                "gid": "2000"
+              }
             }
 
       - name: Inject APT cache in docker
