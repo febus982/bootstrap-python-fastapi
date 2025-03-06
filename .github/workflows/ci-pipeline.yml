@@ -11,8 +11,8 @@ on:
 ####### Uncomment this to test the CI pipeline in a PR
 ####### You'll also need to comment the rules containing {{branch}}
 ####### in the `Extract Docker metadata` step
-#  pull_request:
-#    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -114,9 +114,12 @@ jobs:
       # Transform os/arch to os-arch for suffix target
       - name: Set ENV variables
         run: |
-          echo "IMAGE_NAME=${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}" >> $GITHUB_ENV
+          image_name=${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}
+          echo "IMAGE_NAME=$image_name" >> $GITHUB_ENV
           platform=${{ matrix.arch.platform }}
           echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+          image_without_tag=${{ env.REGISTRY }}/${{ env.REGISTRY_PATH }}/$image_name-${{ matrix.docker_target }}
+          echo "FULL_IMAGE_WITHOUT_TAG=$(echo $image_without_tag | tr '[A-Z]' '[a-z]')" >> $GITHUB_ENV
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -168,7 +171,7 @@ jobs:
           target: ${{ matrix.docker_target }}
           platforms: ${{ matrix.arch.platform }}
           outputs: type=image,push-by-digest=true,name-canonical=true,push=true
-          tags: ${{ env.REGISTRY }}/${{ env.REGISTRY_PATH }}/${{ env.IMAGE_NAME }}-${{ matrix.docker_target }}
+          tags: ${{ env.FULL_IMAGE_WITHOUT_TAG }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=registry,ref=${{ steps.meta-cache.outputs.tags }}
           cache-to: type=registry,ref=${{ steps.meta-cache.outputs.tags }},mode=max
@@ -211,7 +214,10 @@ jobs:
       # Set IMAGE_NAME so we can push to <owner>/<repo>/<image>
       - name: Set ENV variables
         run: |
-          echo "IMAGE_NAME=${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}" >> $GITHUB_ENV
+          image_name=${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}
+          echo "IMAGE_NAME=$image_name" >> $GITHUB_ENV
+          image_without_tag=${{ env.REGISTRY }}/${{ env.REGISTRY_PATH }}/$image_name-${{ matrix.docker_target }}
+          echo "FULL_IMAGE_WITHOUT_TAG=$(echo $image_without_tag | tr '[A-Z]' '[a-z]')" >> $GITHUB_ENV
 
       - name: Download digests
         uses: actions/download-artifact@v4
@@ -257,11 +263,11 @@ jobs:
         working-directory: ${{ runner.temp }}/digests/${{ matrix.docker_target }}
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ env.REGISTRY }}/${{ env.REGISTRY_PATH }}/${{ env.IMAGE_NAME }}-${{ matrix.docker_target }}@sha256:%s ' *)
+            $(printf '${{ env.FULL_IMAGE_WITHOUT_TAG }}@sha256:%s ' *)
 
       - name: Inspect image
         run: |
-          docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ env.REGISTRY_PATH }}/${{ env.IMAGE_NAME }}-${{ matrix.docker_target }}:${{ steps.meta.outputs.version }}
+          docker buildx imagetools inspect ${{ env.FULL_IMAGE_WITHOUT_TAG }}:${{ steps.meta.outputs.version }}
 
       #TODO: Implement signature using generated key: https://docs.sigstore.dev/signing/quickstart/#signing-with-a-generated-key
 
