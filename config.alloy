@@ -95,14 +95,14 @@ otelcol.exporter.debug "console" {
 }
 
 
-otelcol.auth.basic "grafanacloud" {
-  username = sys.env("GC_USERNAME")
-  password = sys.env("GC_PASSWORD")
-}
-
-otelcol.exporter.otlphttp "grafanacloud" {
-  client {
-    endpoint = sys.env("GC_ENDPOINT")
-    auth     = otelcol.auth.basic.grafanacloud.handler
-  }
-}
+// otelcol.auth.basic "grafanacloud" {
+//   username = sys.env("GC_USERNAME")
+//   password = sys.env("GC_PASSWORD")
+// }
+//
+// otelcol.exporter.otlphttp "grafanacloud" {
+//   client {
+//     endpoint = sys.env("GC_ENDPOINT")
+//     auth     = otelcol.auth.basic.grafanacloud.handler
+//   }
+// }
