@@ -1,0 +1,7 @@
+config_version = "0"
+exclude_patterns = []
+test_patterns = ["**/tests/**"]
+
+[[source]]
+name = "default"
+default = true
