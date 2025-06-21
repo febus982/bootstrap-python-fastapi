@@ -27,6 +27,8 @@ jobs:
       run: make dev-dependencies
     - name: Install dependencies
       run: make dev-dependencies
+    - name: Run coverage
+      run: make ci-coverage
     - uses: qltysh/qlty-action/coverage@v1
       with:
         token: ${{secrets.QLTY_COVERAGE_TOKEN}}
