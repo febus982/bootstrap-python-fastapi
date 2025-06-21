@@ -1,8 +1,8 @@
 # Bootstrap python service
 [![CI Pipeline](https://github.com/febus982/bootstrap-python-fastapi/actions/workflows/ci-pipeline.yml/badge.svg)](https://github.com/febus982/bootstrap-python-fastapi/actions/workflows/ci-pipeline.yml)
 [![Python tests](https://github.com/febus982/bootstrap-python-fastapi/actions/workflows/python-tests.yml/badge.svg?branch=main)](https://github.com/febus982/bootstrap-python-fastapi/actions/workflows/python-tests.yml)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/a2ab183e64778e21ae14/test_coverage)](https://codeclimate.com/github/febus982/bootstrap-python-fastapi/test_coverage)
-[![Maintainability](https://api.codeclimate.com/v1/badges/a2ab183e64778e21ae14/maintainability)](https://codeclimate.com/github/febus982/bootstrap-python-fastapi/maintainability)
+[![Code Coverage](https://qlty.sh/badges/8b83a4d5-bb29-402c-828b-7e6bb5fffde7/test_coverage.svg)](https://qlty.sh/gh/febus982/projects/bootstrap-python-fastapi)
+[![Maintainability](https://qlty.sh/badges/8b83a4d5-bb29-402c-828b-7e6bb5fffde7/maintainability.svg)](https://qlty.sh/gh/febus982/projects/bootstrap-python-fastapi)
 
 [![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v1.json)](https://github.com/charliermarsh/ruff)

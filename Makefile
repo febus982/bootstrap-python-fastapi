@@ -1,4 +1,4 @@
-.PHONY: docs docs-build adr
+.PHONY: docs docs-build adr qlty
 
 containers:
 	docker compose build --build-arg UID=`id -u`
@@ -47,6 +47,9 @@ fix:
 	uv run ruff format .
 	uv run ruff check . --fix
 	uv run ruff format .
+
+qlty:
+	qlty smells --all
 
 check: lint format typing test
 
