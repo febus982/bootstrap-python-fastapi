@@ -30,4 +30,4 @@ jobs:
     - uses: qltysh/qlty-action/coverage@v1
       with:
         token: {{secrets.QLTY_COVERAGE_TOKEN}}
-        files: ${{github.workspace}}/coverage.lcov
+        files: coverage.lcov
