@@ -1,15 +1,15 @@
 from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
 from dependency_injector.providers import Dependency, Factory, Singleton
-from sqlalchemy_bind_manager import SQLAlchemyBindManager
-from sqlalchemy_bind_manager.repository import SQLAlchemyAsyncRepository
-
-from common.config import AppConfig
 from domains.books._gateway_interfaces import (
     BookEventGatewayInterface,
     BookRepositoryInterface,
 )
 from domains.books._models import BookModel
 from gateways.event import NullEventGateway
+from sqlalchemy_bind_manager import SQLAlchemyBindManager
+from sqlalchemy_bind_manager.repository import SQLAlchemyAsyncRepository
+
+from common.config import AppConfig
 
 
 class Container(DeclarativeContainer):

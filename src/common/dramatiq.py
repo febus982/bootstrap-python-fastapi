@@ -1,6 +1,7 @@
 import logging
 
 import orjson
+
 from dramatiq import set_broker, set_encoder
 from dramatiq.broker import Broker
 from dramatiq.brokers.redis import RedisBroker
