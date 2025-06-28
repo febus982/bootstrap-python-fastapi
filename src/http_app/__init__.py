@@ -1,14 +1,14 @@
 import logging
 
+from common import AppConfig, application_init
+from common.di_container import Container
+from common.errors import ApplicationError
+from common.telemetry import instrument_third_party
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from starlette.responses import JSONResponse
 
-from common import AppConfig, application_init
-from common.di_container import Container
-from common.errors import ApplicationError
-from common.telemetry import instrument_third_party
 from http_app import context
 from http_app.routes import init_routes
 

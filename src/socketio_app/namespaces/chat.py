@@ -1,7 +1,6 @@
 import logging
 
 import socketio
-
 from common.telemetry import trace_function
 
 

@@ -1,11 +1,11 @@
 from typing import Union
 
 import socketio
-from starlette.routing import Mount, Route, Router
-
 from common import AppConfig, application_init
 from common.di_container import Container
 from common.telemetry import instrument_third_party
+from starlette.routing import Mount, Route, Router
+
 from socketio_app.namespaces.chat import ChatNamespace
 from socketio_app.web_routes import docs
 

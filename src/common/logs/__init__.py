@@ -5,7 +5,8 @@ import structlog
 from opentelemetry.sdk._logs import LoggingHandler
 from structlog.typing import Processor
 
-from ..config import AppConfig
+from common.config import AppConfig
+
 from .processors import (
     add_logging_open_telemetry_spans,
     drop_color_message_key,
