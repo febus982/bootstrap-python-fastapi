@@ -146,6 +146,7 @@ select = [
     "I",  # isort
     "N",  # pep8-naming
     "S",  # flake8-bandit
+    "TID",  # flake8-tidy-imports
     "RUF",  # ruff-specific-rules
 ]
 # Ignoring rules problematic with formatter

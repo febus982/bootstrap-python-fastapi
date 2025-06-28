@@ -1,0 +1,9 @@
+[tool.ruff]
+# Extend the `pyproject.toml` file in the parent directory...
+extend = "../../pyproject.toml"
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"dramatiq_worker".msg = "Clean Architecture dependency rule break: import of `dramatiq_worker` is not allowed"
+"http_app".msg = "Clean Architecture dependency rule break: import of `http_app` is not allowed"
+"gateways".msg = "Clean Architecture dependency rule break: import of `gateways` is not allowed"
+"socketio_app".msg = "Clean Architecture dependency rule break: import of `socketio_app` is not allowed"
