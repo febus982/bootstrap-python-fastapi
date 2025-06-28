@@ -285,3 +285,4 @@ cython_debug/
 
 credentials.env
 volumes/
+.qlty

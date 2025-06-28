@@ -7,6 +7,7 @@ from starlette.responses import JSONResponse
 
 from common import AppConfig, application_init
 from common.di_container import Container
+from common.errors import ApplicationError
 from common.telemetry import instrument_third_party
 from http_app import context
 from http_app.routes import init_routes
@@ -64,6 +65,23 @@ def init_exception_handlers(app: FastAPI) -> None:
     async def add_exception_middleware(request: Request, call_next):
         try:
             return await call_next(request)
+        except ApplicationError as e:
+            logging.exception(
+                e.internal_message,
+                extra={
+                    "code": e.code,
+                    "metadata": e.metadata,
+                },
+            )
+            return JSONResponse(
+                {
+                    "error": {
+                        "message": e.public_message,
+                        "code": e.code,
+                    }
+                },
+                status_code=500,
+            )
         except Exception as e:
             logging.exception(e)
             return JSONResponse({"error": "Internal server error"}, status_code=500)
