@@ -1,10 +1,10 @@
 from typing import Annotated, Optional
 
 import jwt
-from common import AppConfig
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer, SecurityScopes
 
+from common import AppConfig
 from http_app.dependencies import get_app_config
 
 

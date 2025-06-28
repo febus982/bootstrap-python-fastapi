@@ -1,4 +1,5 @@
 import uvicorn
+
 from common import AppConfig
 from common.logs import init_logger
 

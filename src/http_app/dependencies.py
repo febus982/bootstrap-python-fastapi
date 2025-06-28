@@ -1,5 +1,4 @@
 from common import AppConfig
-
 from http_app import context
 
 

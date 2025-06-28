@@ -134,6 +134,11 @@ testpaths = [
 [tool.ruff]
 target-version = "py39"
 line-length = 120
+# The `src` settings makes sure that imports are correctly
+# evaluated during formatting when using nested `pyproject.toml`
+src = [
+    "src",
+]
 extend-exclude = [
     "docs",
 ]

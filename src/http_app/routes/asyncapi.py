@@ -2,12 +2,12 @@ import json
 from typing import Annotated
 
 import pydantic_asyncapi as pa
-from common import AppConfig
-from common.asyncapi import get_schema
 from fastapi import APIRouter
 from fastapi.params import Depends
 from starlette.responses import HTMLResponse
 
+from common import AppConfig
+from common.asyncapi import get_schema
 from http_app.dependencies import get_app_config
 
 router = APIRouter(prefix="/asyncapi")

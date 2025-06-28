@@ -9,11 +9,12 @@ from typing import (
     get_origin,
 )
 
-from domains.books import BookService
-from domains.books.events import BookCreatedV1, BookUpdatedV1
 from fastapi import APIRouter, Body, Header, HTTPException
 from fastapi.openapi.models import Example
 from pydantic import Field
+
+from domains.books import BookService
+from domains.books.events import BookCreatedV1, BookUpdatedV1
 
 router = APIRouter(prefix="/events")
 

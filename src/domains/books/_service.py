@@ -2,9 +2,10 @@ import logging
 from collections.abc import Iterable
 
 from anyio import to_thread
+from dependency_injector.wiring import Provide, inject
+
 from common.telemetry import trace_function
 from common.utils import apply_decorator_to_methods
-from dependency_injector.wiring import Provide, inject
 
 from ._gateway_interfaces import BookEventGatewayInterface, BookRepositoryInterface
 from ._models import BookModel

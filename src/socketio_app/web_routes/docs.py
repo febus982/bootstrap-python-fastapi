@@ -1,10 +1,11 @@
 import json
 
-from common import AppConfig
-from common.asyncapi import get_schema
 from pydantic import BaseModel
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, JSONResponse
+
+from common import AppConfig
+from common.asyncapi import get_schema
 
 
 class PydanticResponse(JSONResponse):
