@@ -34,7 +34,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked  \
     && apt-get install -y --no-install-recommends \
     build-essential gcc git
 
-COPY --from=ghcr.io/astral-sh/uv:0.7.16 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.7.18 /uv /uvx /bin/
 
 # From here we shouldn't need anymore a root user
 # Switch to nonroot and config uv
