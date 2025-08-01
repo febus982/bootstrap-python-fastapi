@@ -55,7 +55,7 @@ jobs:
 
       - name: Extract Docker cache metadata
         id: meta-cache
-        uses: docker/metadata-action@v5.7.0
+        uses: docker/metadata-action@v5.8.0
         with:
           # list of Docker images to use as base name for tags
           # <registry/<owner>/<repo_name>/<repo_name>-<target>
@@ -144,7 +144,7 @@ jobs:
       # We extract metadata without tags for single image
       - name: Extract Docker metadata
         id: meta
-        uses: docker/metadata-action@v5.7.0
+        uses: docker/metadata-action@v5.8.0
         with:
           # list of Docker images to use as base name for tags
           # <registry/<owner>/<repo_name>/<repo_name>-<target>
@@ -153,7 +153,7 @@ jobs:
 
       - name: Extract Docker cache metadata
         id: meta-cache
-        uses: docker/metadata-action@v5.7.0
+        uses: docker/metadata-action@v5.8.0
         with:
           # list of Docker images to use as base name for tags
           # <registry/<owner>/<repo_name>/<repo_name>-<target>
@@ -247,7 +247,7 @@ jobs:
       # https://github.com/docker/metadata-action
       - name: Extract Docker metadata
         id: meta
-        uses: docker/metadata-action@v5.7.0
+        uses: docker/metadata-action@v5.8.0
         with:
           # list of Docker images to use as base name for tags
           # <registry/<owner>/<repo_name>/<repo_name>-<target>
