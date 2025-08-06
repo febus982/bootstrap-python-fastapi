@@ -220,7 +220,7 @@ jobs:
           echo "FULL_IMAGE_WITHOUT_TAG=$(echo $image_without_tag | tr '[A-Z]' '[a-z]')" >> $GITHUB_ENV
 
       - name: Download digests
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           path: ${{ runner.temp }}/digests/${{ matrix.docker_target }}
           pattern: digests-${{ matrix.docker_target }}-*
