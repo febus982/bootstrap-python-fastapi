@@ -29,7 +29,7 @@ jobs:
       run: make dev-dependencies
     - name: Run coverage
       run: make ci-coverage
-    - uses: qltysh/qlty-action/coverage@v1
+    - uses: qltysh/qlty-action/coverage@v2
       with:
         token: ${{secrets.QLTY_COVERAGE_TOKEN}}
         files: ${{github.workspace}}/coverage.lcov
