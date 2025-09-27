@@ -3,6 +3,9 @@
   "extends": [
     "config:recommended"
   ],
+  "ignorePaths": [
+    "**/pyproject.toml"
+  ],
   "packageRules": [
     {
       "groupName": "all non-major dependencies",
