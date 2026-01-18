@@ -1,0 +1,60 @@
+# IDE and editor files
+.idea/
+.vscode/
+*.iws
+*.iml
+
+# Python cache and bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+.mypy_cache/
+.dmypy.json
+.pytest_cache/
+.hypothesis/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Build and distribution
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+
+# Documentation build
+docs/_build/
+/site
+
+# Database files
+*.db
+db.sqlite3
+
+# Credentials and secrets
+credentials.env
+.env
+
+# Docker volumes
+volumes/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Lock files (large, not useful for code understanding)
+uv.lock
+
+# Quality tools cache
+.qlty
+.tox/
+.nox/
