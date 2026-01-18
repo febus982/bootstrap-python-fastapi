@@ -27,8 +27,8 @@ async def test_hello_renders_what_returned_by_decoder(
     assert '"token": "some_token"' in response.text
 
 
-async def test_hello_returns_403_without_token(testapp: FastAPI):
+async def test_hello_returns_401_without_token(testapp: FastAPI):
     testapp.dependency_overrides[decode_jwt] = _fake_decode_jwt
     ac = TestClient(app=testapp, base_url="http://test")
     response = ac.get("/hello/")
-    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
