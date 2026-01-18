@@ -1911,15 +1911,15 @@ mypy = [
 
 [[package]]
 name = "sqlalchemy-bind-manager"
-version = "0.14.2"
+version = "0.14.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
     { name = "sqlalchemy", extra = ["asyncio", "mypy"] },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b4/d7/dfe3c1932a9f6e53b8d6046516c1c2058d03ecb0c4d10ed342e1fb7e6007/sqlalchemy_bind_manager-0.14.2.tar.gz", hash = "sha256:282188ccf2abb0f2a2be4af48dfcf4253b4c5ac637f11c8e127567452582361e", size = 18229, upload-time = "2026-01-18T12:51:02.178Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/fe/c5/d36917cde110d538b755d0b97870f0df603089c08ce10043270c4a8ba486/sqlalchemy_bind_manager-0.14.3.tar.gz", hash = "sha256:b61d99fc67b7a8900a2634eef93b027f9b95c1c1dfc7a0c09b45805efaacd466", size = 18225, upload-time = "2026-01-18T22:48:18.597Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/dc/83/e826df27ca49cf07e11b4fbaa213ee5f0c061ebc0a1cf6cae7b706c9d14e/sqlalchemy_bind_manager-0.14.2-py3-none-any.whl", hash = "sha256:8b64299f4f600e97de7aa3d4dac91018a151fc1dc1c2340d951faa705468af6e", size = 30854, upload-time = "2026-01-18T12:51:00.563Z" },
+    { url = "https://files.pythonhosted.org/packages/4f/3c/77f55e778b2ccaea364651ba241aa2dcd1fb4186fb6474be7a60bc965ed7/sqlalchemy_bind_manager-0.14.3-py3-none-any.whl", hash = "sha256:fe24cc44c9e2bd5507955a76139bacc90d3750489e10e536ad767b65f39158d0", size = 30854, upload-time = "2026-01-18T22:48:16.928Z" },
 ]
 
 [[package]]
