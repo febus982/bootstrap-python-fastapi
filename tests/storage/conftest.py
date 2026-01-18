@@ -24,3 +24,4 @@ async def test_sa_manager() -> AsyncIterator[SQLAlchemyBindManager]:
 
     yield sa_manager
     clear_mappers()
+    sa_manager.dispose_engines()

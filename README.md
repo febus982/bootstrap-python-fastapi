@@ -29,6 +29,7 @@ This template provides out of the box some commonly used functionalities:
 * Authentication and Identity Provider using [ORY Zero Trust architecture](https://www.ory.sh/docs/kratos/guides/zero-trust-iap-proxy-identity-access-proxy)
 * Full observability setup using [OpenTelemetry](https://opentelemetry.io/) (Metrics, Traces and Logs)
 * Example CI/CD deployment pipeline for GitLab (The focus for this repository is still GitHub but, in case you want to use GitLab 🤷)
+* (experimental) Boilerplate config files for [Claude Code](https://claude.ai/docs)
 * [TODO] Producer and consumer to emit and consume events using [CloudEvents](https://cloudevents.io/) format using HTTP, to be used with [Knative Eventing](https://knative.dev/docs/eventing/)
 
 ## Documentation

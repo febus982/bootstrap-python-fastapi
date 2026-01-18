@@ -1,4 +1,4 @@
-import asyncio
+from inspect import iscoroutinefunction
 
 import pytest
 
@@ -32,7 +32,7 @@ async def test_class_decorator(
             result = await func(*args, **kwargs)
             return result + 10
 
-        return wrapper if not asyncio.iscoroutinefunction(func) else async_wrapper
+        return wrapper if not iscoroutinefunction(func) else async_wrapper
 
     @apply_decorator_to_methods(
         decorator=add_ten_decorator,

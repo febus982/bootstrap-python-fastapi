@@ -1,5 +1,5 @@
-import asyncio
 from functools import wraps
+from inspect import iscoroutinefunction
 
 from opentelemetry import metrics, trace
 from opentelemetry.exporter.otlp.proto.grpc._log_exporter import OTLPLogExporter
@@ -72,7 +72,7 @@ def trace_function(trace_attributes: bool = True, trace_result: bool = True):
                     span.set_status(trace.status.Status(trace.status.StatusCode.ERROR))
                     raise
 
-        return async_wrapper if asyncio.iscoroutinefunction(func) else sync_wrapper
+        return async_wrapper if iscoroutinefunction(func) else sync_wrapper
 
     return decorator
 

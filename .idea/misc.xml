@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="Python 3.13 (bootstrap-python-fastapi)" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.13 (bootstrap-python-fastapi)" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="uv (bootstrap-python-fastapi)" project-jdk-type="Python SDK" />
 </project>
