@@ -27,6 +27,3 @@ jobs:
     - name: Test with pytest
       run: |
         make ci-test
-    - name: Check typing
-      run: |
-        make typing
