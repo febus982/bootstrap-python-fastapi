@@ -112,7 +112,7 @@ services:
   #################################
 
   kratos-migrate:
-    image: oryd/kratos:v1.3.1
+    image: oryd/kratos:v25.4.0
     environment:
       DSN: "sqlite:///etc/config/kratos/db.sqlite?_fk=true&mode=rwc"
     volumes:
@@ -123,7 +123,7 @@ services:
   kratos:
     depends_on:
       - kratos-migrate
-    image: oryd/kratos:v1.3.1
+    image: oryd/kratos:v25.4.0
     # It's not needed to expose these, leaving for documentation
 #    ports:
 #      - '4433:4433' # public API
