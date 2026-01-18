@@ -137,7 +137,7 @@ services:
     command: serve -c /etc/config/kratos/kratos.yml --dev --watch-courier
 
   auth-ui:
-    image: oryd/kratos-selfservice-ui-node:v1.3.1
+    image: oryd/kratos-selfservice-ui-node:v25.4.0
     environment:
       PORT: 3000
       # Internal access URL for the BFF instance
