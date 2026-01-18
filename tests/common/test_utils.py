@@ -1,4 +1,3 @@
-import asyncio
 from inspect import iscoroutinefunction
 
 import pytest
