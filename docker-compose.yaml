@@ -158,7 +158,7 @@ services:
 #      - '4437:4437'
 
   oathkeeper:
-    image: oryd/oathkeeper:v0.40.9
+    image: oryd/oathkeeper:v25.4.0
     depends_on:
       - kratos
       - auth-ui
