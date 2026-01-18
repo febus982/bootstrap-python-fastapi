@@ -15,7 +15,7 @@ from socketio_app.web_routes.docs import (
 
 
 # Test model
-class TestModel(BaseModel):
+class SomeModel(BaseModel):
     name: str
     value: int
 
@@ -23,7 +23,7 @@ class TestModel(BaseModel):
 # Fixtures
 @pytest.fixture
 def test_model():
-    return TestModel(name="test", value=42)
+    return SomeModel(name="test", value=42)
 
 
 @pytest.fixture
