@@ -1,8 +1,8 @@
+import asyncio
 import hashlib
 import importlib
 import logging
 import sys
-from asyncio import get_event_loop
 from datetime import datetime
 from os import listdir, path
 from os.path import isfile, join
@@ -423,6 +423,8 @@ async def run_migrations_online() -> None:
                 await rec["connection"].close()
             else:
                 rec["connection"].close()
+        # Dispose all engines to prevent hanging connections
+        sa_manager.dispose_engines()
 
 
 background_tasks = set()
@@ -430,8 +432,9 @@ background_tasks = set()
 if context.is_offline_mode():
     run_migrations_offline()
 else:
-    loop = get_event_loop()
-    if loop.is_running():
+    try:
+        loop = asyncio.get_running_loop()
+        # We're already in an event loop (e.g., running in async context)
         task = loop.create_task(run_migrations_online())
         # Add task to the set. This creates a strong reference.
         background_tasks.add(task)
@@ -440,5 +443,6 @@ else:
         # make each task remove its own reference from the set after
         # completion:
         task.add_done_callback(background_tasks.discard)
-    else:
-        loop.run_until_complete(run_migrations_online())
+    except RuntimeError:
+        # No event loop is running, so we need to create one
+        asyncio.run(run_migrations_online())
