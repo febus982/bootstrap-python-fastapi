@@ -51,7 +51,7 @@ jobs:
       # This might be unnecessary as tests are not
       # multiplatform
       - name: Setup Docker buildx
-        uses: docker/setup-buildx-action@v3.12.0
+        uses: docker/setup-buildx-action@v4.1.0
 
       - name: Extract Docker cache metadata
         id: meta-cache
@@ -130,7 +130,7 @@ jobs:
         uses: sigstore/cosign-installer@v4.0.0
 
       - name: Setup Docker buildx
-        uses: docker/setup-buildx-action@v3.12.0
+        uses: docker/setup-buildx-action@v4.1.0
 
       # Login against a Docker registry
       # https://github.com/docker/login-action
@@ -232,7 +232,7 @@ jobs:
         uses: sigstore/cosign-installer@v4.0.0
 
       - name: Setup Docker buildx
-        uses: docker/setup-buildx-action@v3.12.0
+        uses: docker/setup-buildx-action@v4.1.0
 
       # Login against a Docker registry
       # https://github.com/docker/login-action
